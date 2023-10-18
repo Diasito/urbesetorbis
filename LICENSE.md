@@ -1,4 +1,4 @@
-# The 2-Clause BSD License
+# BSD 3-Clause License
 
 **Copyright (c) 2023, Diasito. 
 All rights reserved.**
