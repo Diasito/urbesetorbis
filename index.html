@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Urbes et orbis — The Roman Empire under Emperor Hadrian</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="The Roman Empire, Emperor Hadrian, Barrington Atlas, Pleiades, DARE, Orbis, Tabula Peutingeriana, Trismegistos, Ancient Rome, roman provinces, map, 117 AD, roman cities, roman places, urbi et orbi">
+	<meta name="description" content="Map of the Roman Empire under Emperor Hadrian with borders, provinces, settlements and links to scientific databases">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL,Object.assign"></script>
+	<script src="node_modules/clipboard/dist/clipboard.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+	
+	<style>
+	
+@font-face {
+    font-family: CapitalisTypOasis;
+    src: url(CapitalisTypOasis.woff2) format("woff2");
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+}
+
+@font-face {
+    font-family: QuickJuliusC;
+    src: url(QuickJuliusC.woff2) format("woff2");
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+}
+
+
+.sidebar {
+	height: 100%;
+	width: 30%;
+	position: fixed;
+	z-index: 9999;	
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #fff;
+	border-left: 1px solid #555;
+	overflow-x: hidden;
+}
+
+.tablink {
+	background-color: #555;
+	color: white;
+	float: left;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 0.8vw 0 0.8vw 0;
+	font-family: CapitalisTypOasis, serif;
+	font-size: 1vw;
+	width: 20%;
+}
+
+.tablink:hover {
+	background-color: #777;
+}
+
+.tabcontent {
+	color: black;
+	display: none;
+	padding: 3vw 0;
+	height: 100%;
+}
+
+h1 {
+	display: block;
+	text-align: center;
+	font-family: CapitalisTypOasis, QuickJuliusC, serif;
+	font-size: 2.5vw;
+	margin: 0;
+}
+
+h2 {
+	display: block;
+	text-align: center;
+	font-family: CapitalisTypOasis, serif;
+	font-size: 1.5vw;
+	margin: 0;
+}
+
+h3 {
+	display: block;
+	text-align: center;
+	font-family: CapitalisTypOasis, serif;
+	font-size: 1vw;
+	margin: 0 0 3vh 0;
+}
+
+
+
+	</style>
+		
+</head>
+
+<body>
+
+<div id="map">
+
+
+</div>
+
+<div class="sidebar">
+		<button type="button" class="tablink" onclick="openPage('home', this, '#895E8A')" id="defaultOpen">HOME</button>
+		<button type="button" class="tablink" onclick="openPage('legend', this, '#6CA198')">LEGEND</button>
+		<button type="button" class="tablink" onclick="openPage('places', this, '#C9904F')" id="workOpen">PLACES</button>
+		<button type="button" class="tablink" onclick="openPage('data', this, '#6287A1')">DATA</button>
+		<button type="button" class="tablink" onclick="openPage('about', this, '#C7645A')">ABOUT</button>
+
+
+		<div id="home" class="tabcontent">
+			<div class="tabhome">
+				<p><h1>URBES & ORBIS</h1></p>
+				<p><img class="imghadrian" src="./icons/hadrian200.png" width="195" height="200" alt="Hadrian on a coin"></p>
+				<p><h2>THE ROMAN EMPIRE<br>UNDER EMPEROR HADRIAN</h2></p>
+				<p><h3>CROSS-REFERENCES TO THE MAIN CATALOGUES OF ROMAN SETTLEMENTS</h3></p>
+				<p class="anons">This is a map of the Roman Empire at the end of 883 from the foundation of the City (AD 130), as Emperor Hadrian himself could have drawn it, if he had modern cartographic tools and a little extra time, in addition to mourning his favorite Antinous.</p>
+				<p class="anons">There are <strong>7891</strong> settlements represented here both within the borders of the Empire and beyond. All objects on the map generally correspond to two unsurpassed catalogs of ancient geography — <a href="https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html" target="_blank">The Barrington Atlas</a> and <a href="https://pleiades.stoa.org/" target="_blank">Pleiades project</a>.</p>
+				<p class="anons"><strong>Click on any of the cities to get more detailed information about it.</strong> The search button is located at the top left, near the zoom slider.</p>
+				<p class="anons">You can download data files in the <strong>DATA</strong> tab. The <strong>ABOUT</strong> tab explains where and how everything was obtained.</p>
+			</div>
+		</div>
+
+		<div id="legend" class="tabcontent">
+			<table class="tablelegend">
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank1.png" width="11" height="11" alt="rank1">
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="rank1">
+							<p>ROMA</p>
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="legend">
+							<p>— Rome and four largest capitals of provinces</p>
+						</div>
+					</td>
+				</tr>
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank2.png" width="10" height="10" alt="rank2">
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="rank2">
+							<p>Corduba</p>
+						</div>
+					</td>
+					<td class="tdlegend" rowspan="2" style="border-left: 1px solid black;">
+						<div class="legend">
+							<p>— other capitals of provinces and kingdoms</p>
+						</div>
+					</td>
+				</tr>
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank4.png" width="9" height="9" alt="rank4">
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="rank4">
+							<p>Ctesiphon<p>
+						</div>
+					</td>
+				</tr>
+				<tr style="height:10px"><td></td>
+				</tr>
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank3.png" width="10" height="10" alt="rank3">
+						</div>				
+					</td>
+					<td class="tdlegend">
+						<div class="rank3">
+							<p>Byzantium<p>
+						</div>
+					</td>
+					<td class="tdlegend" rowspan="4" style="border-left: 1px solid black;">
+						<div class="legend">
+							<p>— other cities sorted by <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank">Hanson's</a> ranks: 1, 2, 3, 4-5</p>
+						</div>
+					</td>
+				</tr>
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank5.png" width="9" height="9" alt="rank5">
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="rank5">
+							<p>Mantinea<p>
+						</div>
+					</td>
+				</tr>
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank6.png" width="8" height="8" alt="rank6">
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="rank6">
+							<p>Antinoopolis<p>
+						</div>
+					</td>
+				</tr>
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank7.png" width="7" height="7" alt="rank7">
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="rank7">
+							<p>Delos<p>
+						</div>
+					</td>
+				</tr>
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank8.png" width="6" height="6" alt="rank8">
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="rank8">
+							<p>Pityous<p>
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="legend">
+							<p>— other cities</p>
+						</div>
+					</td>
+				</tr>
+				<tr class="trlegend">
+					<td class="tdlegend">
+						<div class="imglegend">
+							<img src="./icons/rank9.png" width="5" height="5" alt="rank9">
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="rank9">
+							<p>Wheathampstead<p>
+						</div>
+					</td>
+					<td class="tdlegend">
+						<div class="legend">
+							<p>— alternative late names of cities whose ancient names are unknown</p>
+						</div>
+					</td>
+				</tr>
+				<tr style="height:10px"><td></td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="places" class="tabcontent">
+			<div id="pusto">Click on any city to get more detailed information about it.</div>
+			<div id="hopa">
+				<table class="tableplaces">
+					<tr>
+						<th colspan="2" id="thtitle">
+							<span id="title"></span>
+						</th>
+					</tr>
+					<tr>
+						<td class="tdplaces">Alt name(s): </td>
+						<td class="tdplaces"><span id="alt"></span></td>
+					</tr>
+					<tr>
+						<td class="tdplaces">Roman province: </td>
+						<td class="tdplaces"><span id="province"></span></td>
+					</tr>
+					<tr>
+						<td class="tdplaces">Start date: </td>
+						<td class="tdplaces"><span id="start"></span></td>
+					</tr>
+					<tr>
+						<td class="tdplaces">Modern place: </td>
+						<td class="tdplaces"><span id="modern"></span>&nbsp;<span id="flag"></span>&nbsp;<span id="country"></span></td>
+					</tr>
+					<tr>
+						<td class="tdplaces">Description (Pleiades): </td>
+						<td class="tdplaces"><span id="description"></span></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div class="divsmall">
+								Decimal: <span id="coords"></span> | 
+								DMS: <span id="coords2"></span>
+								<button type="button" class="btn" data-clipboard-target="#coords2">
+									<img src="./icons/clipboard.png" width="16" height="15" alt="Copy to clipboard">
+								</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div id="minimap" class="map"></div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div class="divsmall">
+								<p>Open this place in <span id="googlelink"></span> | <span id="OSMlink"></span> | <span id="wikimapialink"></span></p>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<table class="tableplaces">
+					<tr>
+						<td class="tdatlas">Barrington Atlas: </td>
+						<td class="tdatlas"><span id="batlas"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Ancient World Mapping Center (UNC-Chapel Hill): </td>
+						<td class="tdatlas"><span id="awmc"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Digital Atlas of Roman and Medieval Civilizations (Harvard): </td>
+						<td class="tdatlas"><span id="darmc"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Digital Atlas of the Roman Empire (University of Gothenburg): </td>
+						<td class="tdatlas"><span id="darelink"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Orbis (Stanford): </td>
+						<td class="tdatlas"><span id="orbis"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Pleiades: </td>
+						<td class="tdatlas"><span id="pleiadeslink"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">The Princeton Encyclopedia of Classical Sites: </td>
+						<td class="tdatlas"><span id="pecslink"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Tabula Peutingeriana (Cambridge): </td>
+						<td class="tdatlas"><span id="tpplacelink"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">ToposText: </td>
+						<td class="tdatlas"><span id="topostextlink"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Trismegistos: </td>
+						<td class="tdatlas"><span id="trismegistos"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Urban Geography of the Roman World (Hanson 2016, Oxford): </td>
+						<td class="tdatlas"><span id="hanson"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Vici.org: </td>
+						<td class="tdatlas"><span id="vicilink"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Wikidata: </td>
+						<td class="tdatlas"><span id="wikidatalink"></span></td>
+					</tr>
+					<tr>
+						<td class="tdatlas">Wikipedia:en: </td>
+						<td class="tdatlas"><span id="wikipedialink"></span></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+		<div id="data" class="tabcontent">
+			<div class="tabdata">
+				<p>You can freely download <strong>csv</strong> and <strong>geojson</strong> files of this project:</p>
+				<p><a href="./downloads/301023_AD130.csv" download="301023_AD130.csv">Full CSV file of cities and settlements (ver. 30.10.2023)</a></p>
+				<p><a href="./downloads/oceanbase.geojson" download="oceanbase.geojson">GEOJSON file with the Ocean base (ver. 30.10.2023)</a></p>
+				<p><a href="./downloads/empire.geojson" download="empire.geojson">GEOJSON file with all provinces (ver. 30.10.2023)</a></p>
+			</div>
+		</div>
+		
+		<div id="about" class="tabcontent">
+			<div class="tababout">
+				<p class="anons">This project has two main goals. The first is to present, using modern means, an interactive map of the Roman Empire as of the end of AD 130, the time of the founding of Antinoopolis. The second goal is to connect disparate scientific databases of ancient Roman settlements, collecting their IDs and hyperlinks to them in one place.</p>
+				<p class="anons">The whole project is made on OpenLayers v8, in the form of several layers from geojson files. The map base, including coastline, inland water and provincial outlines, is taken from <a href="http://awmc.unc.edu/awmc/map_data/" target="_blank">Ancient World Mapping Center</a>. Numerous polygon errors have been fixed. Several provincial boundaries are aligned with certain geographic features. All settlements are linked to <a href="https://pleiades.stoa.org/" target="_blank">Pleiades catalog</a> and, with rare exceptions, to <a href="https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html" target="_blank">The Barrington Atlas</a> and <a href="http://imperium.ahlfeldt.se/" target="_blank">Digital Atlas of Roman Empire</a>.</p>
+				<p class="anons" style="color: red"><strong>If in some way someone's copyright has been violated or incorrectly attributed, please consider it an unintentional mistake and contact me.</strong></p>
+				<p class="anons">This non-profit project does not pretend to be scientific and was made for fun, and yet I tried to be accurate. I will gladly accept criticism and advice both on the content and on the program code. Please send your comments and suggestions to <a href="mailto:admin@urbesetorbis.com">me</a>.</p>
+				<p class="anons" style="text-align: end">Ver. 1.0. © 2023 Diasito. BSD-2-Clause.</p>
+			</div>
+		</div>
+
+</div>
+
+
+
+<script>
+function openPage(pageName, elmnt, color) {
+	// Hide all elements with class="tabcontent" by default */
+	var i, tabcontent, tablinks;
+	tabcontent = document.getElementsByClassName("tabcontent");
+	for (i = 0; i < tabcontent.length; i++) {
+	tabcontent[i].style.display = "none";
+	}
+
+	// Remove the background color of all tablinks/buttons
+	tablinks = document.getElementsByClassName("tablink");
+	for (i = 0; i < tablinks.length; i++) {
+	tablinks[i].style.backgroundColor = "";
+	}
+
+	// Show the specific tab content
+	document.getElementById(pageName).style.display = "block";
+
+	// Add the specific color to the button used to open the tab content
+	elmnt.style.backgroundColor = color;
+	
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+
+</script>
+	
+<!-- Pointer events polyfill for old browsers, see https://caniuse.com/#feat=pointer -->
+<script src="https://cdn.jsdelivr.net/npm/elm-pep@1.0.6/dist/elm-pep.js"></script>
+	
+<script type="module" src="./main.js"></script>
+
+
+
+<!--
+Copyright 2005-present, OpenLayers Contributors All rights reserved.
+Copyright 2016-2021, Jean-Marc Viglino, IGN-France All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+	
+</body>
+</html>
