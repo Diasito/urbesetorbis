@@ -12,20 +12,20 @@ The project has two main goals. The first is to present, using modern means, an 
 
 The project provides references and, where possible, hyperlinks to the following databases:
 
-Barrington Atlas
-Ancient World Mapping Center (UNC-Chapel Hill)
-Digital Atlas of Roman and Medieval Civilizations (Harvard)
-Digital Atlas of the Roman Empire (University of Gothenburg)
-Orbis (Stanford)
-Pleiades
-The Princeton Encyclopedia of Classical Sites
-Tabula Peutingeriana (Cambridge)
-ToposText
-Trismegistos
-Urban Geography of the Roman World (Hanson 2016, Oxford)
-Vici.org
-Wikidata
-Wikipedia:en
+* Barrington Atlas
+* Ancient World Mapping Center (UNC-Chapel Hill)
+* Digital Atlas of Roman and Medieval Civilizations (Harvard)
+* Digital Atlas of the Roman Empire (University of Gothenburg)
+* Orbis (Stanford)
+* Pleiades
+* The Princeton Encyclopedia of Classical Sites
+* Tabula Peutingeriana (Cambridge)
+* ToposText
+* Trismegistos
+* Urban Geography of the Roman World (Hanson 2016, Oxford)
+* Vici.org
+* Wikidata
+* Wikipedia:en
 
 ![](https://urbesetorbis.com/misc/urbesetorbisscreen2.png)
 
