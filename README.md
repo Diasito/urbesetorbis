@@ -1,31 +1,32 @@
 # [Urbes et Orbis](https://urbesetorbis.com/)
 ## The Roman Empire under Emperor Hadrian
 ### Cross-references to the main catalogues of Roman settlements
- 
+
+
 This is a map of the Roman Empire at the end of AD 130. 
 
-![](https://urbesetorbis.com/misc/urbesetorbisscreen1.png)
-
 There are 7891 settlements represented here both within the borders of the Empire and beyond. All objects on the map generally correspond to two unsurpassed catalogs of ancient geography — [The Barrington Atlas](https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html) and [Pleiades project](https://pleiades.stoa.org/).
+
+![](https://urbesetorbis.com/misc/urbesetorbisscreen1.png)
  
 The project has two main goals. The first is to present, using modern means, an interactive map of the Roman Empire at the time of the founding of Antinoopolis. The second goal is to connect disparate scientific databases of ancient Roman settlements, collecting their IDs and hyperlinks to them in one place.
 
 The project provides references and, where possible, hyperlinks to the following databases:
 
-Barrington Atlas
-Ancient World Mapping Center (UNC-Chapel Hill)
-Digital Atlas of Roman and Medieval Civilizations (Harvard)
-Digital Atlas of the Roman Empire (University of Gothenburg)
-Orbis (Stanford)
-Pleiades
-The Princeton Encyclopedia of Classical Sites
-Tabula Peutingeriana (Cambridge)
-ToposText
-Trismegistos
-Urban Geography of the Roman World (Hanson 2016, Oxford)
-Vici.org
-Wikidata
-Wikipedia:en
+* Barrington Atlas
+* Ancient World Mapping Center (UNC-Chapel Hill)
+* Digital Atlas of Roman and Medieval Civilizations (Harvard)
+* Digital Atlas of the Roman Empire (University of Gothenburg)
+* Orbis (Stanford)
+* Pleiades
+* The Princeton Encyclopedia of Classical Sites
+* Tabula Peutingeriana (Cambridge)
+* ToposText
+* Trismegistos
+* Urban Geography of the Roman World (Hanson 2016, Oxford)
+* Vici.org
+* Wikidata
+* Wikipedia:en
 
 ![](https://urbesetorbis.com/misc/urbesetorbisscreen2.png)
 
