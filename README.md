@@ -1,5 +1,5 @@
 # [Urbes et Orbis](https://urbesetorbis.com/)
-## The Roman Empire under Emperor Hadrian
+## Map of the Roman Empire under Emperor Hadrian
 ### Cross-references to the main catalogues of Roman settlements
 
 
