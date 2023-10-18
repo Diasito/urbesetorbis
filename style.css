@@ -29,14 +29,26 @@ body {
 	line-height: 1.2vh;
 	margin: 1vw;
 	font-size: 100%;
+	width: 100%;
 }
 
 .trlegend {
 	vertical-align: middle;
 }
 
-.tdlegend {
-	padding: 0 0 1vmax 0;
+.tdlegend1 {
+	width: 3%;
+	padding: 0 0.15vw 1vh 0;
+	text-align: right;
+}
+
+.tdlegend2 {
+	width: 15%;
+	padding: 0 0 1vh 0;
+}
+
+.tdlegend3 {
+	padding: 0 0 1vh 0;
 }
 
 .imglegend {
@@ -53,7 +65,7 @@ body {
 	font-size: 13px;
 }
 
-.rank2 {
+.rank2, .rank3 {
 	line-height: 20px;
 	height: 20px;
 	font-family: Tahoma, Verdana, sans-serif;
@@ -61,23 +73,7 @@ body {
 	font-size: 12px;
 }
 
-.rank3 {
-	line-height: 20px;
-	height: 20px;
-	font-family: Tahoma, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 12px;
-}
-
-.rank4 {
-	line-height: 20px;
-	height: 20px;
-	font-family: Tahoma, Verdana, sans-serif;
-	font-weight: bold;
-	font-size: 11px;
-}
-
-.rank5 {
+.rank4, .rank5 {
 	line-height: 20px;
 	height: 20px;
 	font-family: Tahoma, Verdana, sans-serif;
@@ -91,7 +87,6 @@ body {
 	font-family: Tahoma, Verdana, sans-serif;
 	font-weight: bold;
 	font-size: 10px;
-	padding-right: 2em;
 }
 
 .rank7 {
@@ -103,7 +98,7 @@ body {
 }
 
 .rank8 {
-	line-height: 20px;
+	line-height: 30px;
 	height: 20px;
 	font-family: Tahoma, Verdana, sans-serif;
 	font-size: 9px;
