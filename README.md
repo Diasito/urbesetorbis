@@ -32,7 +32,7 @@ The project provides references and, where possible, hyperlinks to the following
 
 ![](https://urbesetorbis.com/misc/urbesetorbisscreen2.png)
 
-The whole project is made on OpenLayers v8, in the form of several layers from geojson files. The map base, including coastline, inland water and provincial outlines, is taken from [Ancient World Mapping Center](http://awmc.unc.edu/awmc/map_data/). Numerous polygon errors have been fixed. Several provincial boundaries are aligned with geographic features.
+The whole project is made on OpenLayers v8, in the form of several layers from geojson files. The map base, including coastline and provincial outlines, is taken mainly from [Ancient World Mapping Center](http://awmc.unc.edu/awmc/map_data/). Numerous polygon errors have been fixed. Several provincial boundaries are aligned with geographic features.
 
 Code licensed under the BSD-2-Clause. You can download maps and data in GEOJSON and CSV format in the DATA tab on the website or from the DATA and DOWNLOADS folders in this repository.
 
