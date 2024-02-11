@@ -9,7 +9,7 @@ https://urbesetorbis.com
 
 There are 7891 settlements represented here both within the borders of the Empire and beyond. All objects on the map generally correspond to two unsurpassed catalogs of ancient geography — [The Barrington Atlas](https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html) and [Pleiades project](https://pleiades.stoa.org/).
 
-![screen1](https://urbesetorbis.com/misc/urbesetorbisscreen1.png)
+![screen1](urbesetorbisscreen1.png)
  
 The project has two main goals. The first is to present, using modern means, an interactive map of the Roman Empire at the time of the founding of Antinoopolis. The second goal is to connect disparate scientific databases of ancient Roman settlements, collecting their IDs and hyperlinks to them in one place.
 
@@ -30,7 +30,7 @@ The project provides references and, where possible, hyperlinks to the following
 * Wikidata
 * Wikipedia:en
 
-![](https://urbesetorbis.com/misc/urbesetorbisscreen1a.png)
+![](urbesetorbisscreen1a.png)
 
 The whole project is made on OpenLayers v8, in the form of several layers from geojson files. The map base, including coastline and provincial outlines, is taken mainly from [Ancient World Mapping Center](http://awmc.unc.edu/awmc/map_data/). Numerous polygon errors have been fixed. Several provincial boundaries are aligned with geographic features.
 
