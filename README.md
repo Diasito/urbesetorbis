@@ -30,8 +30,6 @@ The project provides references and, where possible, hyperlinks to the following
 * Wikidata
 * Wikipedia:en
 
-![](urbesetorbisscreen1a.png)
-
 The whole project was made on OpenLayers v8, in the form of several layers from GeoJSON files. The map base, including coastline and provincial outlines, was taken mainly from [the Ancient World Mapping Center](http://awmc.unc.edu/awmc/map_data/). Numerous polygon errors were fixed. Several provincial boundaries were aligned with geographic features.
 
 Code licensed under the BSD-2-Clause. You can download maps and data in GeoJSON and CSV format from the DATA tab on the website or from the DATA and DOWNLOADS folders in this repository.
