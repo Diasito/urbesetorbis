@@ -14,40 +14,40 @@ The project is built with OpenLayers v8 and utilizes multiple GeoJSON layers. Th
 
 This project has two primary objectives. First, to present an interactive map of the Roman Empire as it existed at the end of AD 130—coinciding with the foundation of Antinoopolis—using modern web technologies. Second, to create a unified reference point that connects disparate scholarly databases of ancient Roman settlements by aggregating their identifiers and cross-references in a single, accessible location. This facilitates interdisciplinary research and provides direct pathways for further exploration. The following table details the key resources linked within the application:
 
-**Ancient World Mapping Center (UNC-Chapel Hill)**
+**Ancient World Mapping Center (UNC-Chapel Hill)**  
 <https://awmc.unc.edu/>
 
-**Digital Atlas of Roman and Medieval Civilizations (Harvard)**
+**Digital Atlas of Roman and Medieval Civilizations (Harvard)**  
 <https://darmc.harvard.edu/>
 
-**Digital Atlas of the Roman Empire (University of Gothenburg)**
+**Digital Atlas of the Roman Empire (University of Gothenburg)**  
 <http://imperium.ahlfeldt.se/>
 
-**Orbis (Stanford)**
+**Orbis (Stanford)**  
 <https://orbis.stanford.edu/>
 
-**Pleiades**
+**Pleiades**  
 <https://pleiades.stoa.org/>
 
-**The Princeton Encyclopedia of Classical Sites**
+**The Princeton Encyclopedia of Classical Sites**  
 <https://www.perseus.tufts.edu/hopper/>
 
-**Tabula Peutingeriana (Cambridge)**
+**Tabula Peutingeriana (Cambridge)**  
 <https://www.cambridge.org/us/talbert/talbertdatabase/prm.html>
 
-**ToposText**
+**ToposText**  
 <https://topostext.org/the-places>
 
-**Trismegistos**
+**Trismegistos**  
 <https://www.trismegistos.org/geo/>
 
-**Urban Geography of the Roman World (Hanson 2016, Oxford)**
+**Urban Geography of the Roman World (Hanson 2016, Oxford)**  
 <https://ora.ox.ac.uk/objects/uuid:f7f02498-4ae1-4ff0-81f6-aad909f041b1>
 
-**Vici.org**
+**Vici.org**  
 <https://vici.org>
 
-==**If any copyright has been inadvertently infringed or attribution improperly given, please accept my apologies for the oversight and contact me to rectify the matter.**==
+***If any copyright has been inadvertently infringed or attribution improperly given, please accept my apologies for the oversight and contact me to rectify the matter.***
 
 This is a non-commercial project developed as a personal endeavor. While it does not claim to be a scholarly work, every effort has been made to ensure accuracy. I welcome constructive criticism and suggestions regarding both the content and the technical implementation. Feedback may be sent to <admin@urbesetorbis.com>.
 
