@@ -716,7 +716,7 @@ function showCityDetails(feature) {
   wikimapialinkElement.innerHTML = `<a href='http://www.wikimapia.org/#lat=${coordlat}&lon=${coordlon}&z=16&l=0&m=w&v=0' target='_blank' title='Wikimapia'>Wikimapia</a>`;
   
   darelinkElement.innerHTML = drlink ? `<a href='http://imperium.ahlfeldt.se/places/${drlink}' target='_blank' title='DARE place'>${drlink}</a>` : '';
-  pecslinkElement.innerHTML = pelink ? `<a href='http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0006:entry=${pelink}' target='_blank' title='Pleiades place'>${pelink}</a>` : '';
+  pecslinkElement.innerHTML = pelink ? `<a href='http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0006:entry=${pelink}' target='_blank' title='Princeton place'>${pelink}</a>` : '';
   pleiadeslinkElement.innerHTML = pllink ? `<a href='https://pleiades.stoa.org/places/${pllink}' target='_blank' title='Pleiades place'>${pllink}</a>` : '';
   tpplacelinkElement.innerHTML = tplink ? `<a href='https://www.cambridge.org/us/talbert/talbertdatabase/TPPlace${tplink}.html' target='_blank' title='TPPlace place'>${tplink}</a>` : '';
   topostextlinkElement.innerHTML = ttlink ? `<a href='https://topostext.org/place/${ttlink}' target='_blank' title='ToposText place'>${ttlink}</a>` : '';
