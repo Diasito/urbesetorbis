@@ -51,6 +51,16 @@ This project has two primary objectives. First, to present an interactive map of
 
 This is a non-commercial project developed as a personal endeavor. While it does not claim to be a scholarly work, every effort has been made to ensure accuracy. I welcome constructive criticism and suggestions regarding both the content and the technical implementation. Feedback may be sent to <admin@urbesetorbis.com>.
 
+**Known Issues & Limitations**
+
+This project is an ongoing effort. The following limitations and areas for future improvement are currently known:
+
+1. Mobile Responsiveness: The user interface is not yet fully optimized for small screens and mobile devices. The sidebar and map controls may not provide an ideal experience on smartphones.
+
+2. Cartographic Base Layer: The current map tile set is inherited from older projects. A planned update aims to migrate to a more modern and accurate source, such as the CAWM Tile Server.
+
+3. Road Network Geometry: The road layer contains geometric inaccuracies and stylistic inconsistencies inherited from legacy data sources. Future work will focus on correcting these artifacts.
+
 ***Version 1.0. © 2023–2025 Diasito.***
 
 Code, data, and cartographic materials are licensed under the 2-Clause BSD License.
