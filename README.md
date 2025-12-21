@@ -51,6 +51,6 @@ This project has two primary objectives. First, to present an interactive map of
 
 This is a non-commercial project developed as a personal endeavor. While it does not claim to be a scholarly work, every effort has been made to ensure accuracy. I welcome constructive criticism and suggestions regarding both the content and the technical implementation. Feedback may be sent to <admin@urbesetorbis.com>.
 
-Version 1.0. © 2023–2025 Diasito.
+***Version 1.0. © 2023–2025 Diasito.***
 
 Code, data, and cartographic materials are licensed under the 2-Clause BSD License.
