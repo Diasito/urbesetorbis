@@ -1,0 +1,20 @@
+{
+  "name": "urbesetorbis",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.9"
+  },
+  "dependencies": {
+    "clipboard": "^2.0.11",
+    "geojson-vt": "^4.0.2",
+    "ol": "^10.2.1",
+    "ol-ext": "^4.0.24",
+    "ol-mapbox-style": "^12.3.5",
+    "ol-zoom-level": "^1.0.13"
+  }
+}

@@ -1,0 +1,372 @@
+@import "node_modules/ol/ol.css";
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.9em;
+    height: 100%;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 70%;
+    height: 100%;
+}
+
+.tabhome,
+.tababout {
+    width: 100%;
+    line-height: 1.5;
+    padding: 1vw 1vw 0 1vw;
+    font-size: 100%;
+}
+
+.tablelegend {
+    line-height: 1.2vh;
+    margin: 1vw;
+    font-size: 100%;
+    width: 100%;
+}
+
+.trlegend {
+    vertical-align: t;
+}
+
+.tdlegend-icon {
+    width: 3%;
+    padding: 0 0.15vw 1vh 0;
+    text-align: left;
+}
+
+.tdlegend-name {
+    width: 15%;
+    padding: 0 0 1vh 0;
+}
+
+.tdlegend-desc {
+    padding: 0 0 1vh 0;
+}
+
+.rank1 {
+    line-height: 20px;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.rank2,
+.rank3 {
+    line-height: 20px;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.rank4,
+.rank5 {
+    line-height: 20px;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.rank6 {
+    line-height: 20px;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.rank7 {
+    line-height: 20px;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 9px;
+}
+
+.rank8 {
+    line-height: 30px;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9px;
+}
+
+.rank9 {
+    line-height: 20px;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
+    font-size: 9px;
+}
+
+.legend {
+    line-height: 20px;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 1em;
+}
+
+.imghadrian {
+    display: block;
+    margin: auto;
+    width: 40%;
+    height: auto;
+}
+
+.tableplaces {
+    width: 95%;
+    line-height: 1.1;
+    border-collapse: collapse;
+    margin: 1em;
+    font-size: 90%;
+}
+
+.tabdata {
+    width: 100%;
+    line-height: 1.5;
+    padding: 1vw 1vw 0 1vw;
+    font-size: 100%;
+}
+
+#thtitle {
+    text-align: center;
+}
+
+
+.tdlabel {
+    width: 30%;
+    text-align: left;
+    padding: 0.25em 0;
+}
+
+.tdvalue {
+    width: 70%;
+    text-align: left;
+    padding: 0.25em 0;
+}
+
+.tdatlas {
+    width: 70%;
+    text-align: left;
+    padding: 0.25em 0;
+}
+
+.tdnumber {
+    text-align: left;
+    padding: 0.25em 0.5em;
+}
+
+.anons {
+    margin-top: 1vh;
+}
+
+a:link {
+    color: blue;
+    text-decoration: underline;
+}
+
+a:visited {
+    color: purple;
+    text-decoration: underline;
+}
+
+a:active {
+    color: blue;
+    text-decoration: underline;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#nazvanie {
+    margin: 0 0 2em 0;
+}
+
+#title {
+    font-family: CapitalisTypOasis, serif;
+    font-size: 2em;
+    text-transform: uppercase;
+}
+
+#pusto {
+	margin: 0 0 0 1em;
+	text-align: center;
+}
+
+.divsmall {
+    padding: 0;
+    line-height: 1.4;
+}
+
+.btn {
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+#minimap {
+    position: relative;
+	padding: 1em 0 0 0;
+    width: 100%;
+    height: 15vw;
+}
+
+.ol-search {
+    top: 0.5em;
+    left: 3em;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.ol-touch .ol-search {
+    left: 3.5em;
+}
+
+.ol-search input {
+    display: inline-block;
+    width: 250px;
+    padding: 8px 12px;
+    border: 1px solid #895E8A;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: white;
+    color: #333;
+    height: auto;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.ol-search input:focus {
+    outline: none;
+    border-color: #6CA198;
+}
+
+.ol-touch .ol-search input {
+    font-size: 16px;
+}
+
+.ol-search ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    background: white;
+    border: 1px solid #895E8A;
+    border-top: none;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    cursor: pointer;
+    max-width: 266px;
+}
+
+.ol-touch .ol-search ul {
+    font-size: 16px;
+    max-width: 280px;
+}
+
+.ol-search ul li {
+    padding: 8px 12px;
+    color: #333;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #eee;
+}
+
+.ol-search ul li:last-child {
+    border-bottom: none;
+}
+
+.ol-search ul li:hover {
+    background-color: #6d4a6e;
+    color: white;
+}
+
+.ol-search ul li:focus {
+    background-color: #5a3d5b;
+    color: white;
+    outline: none;
+}
+
+.ol-search ul li:only-child {
+    color: #666;
+    font-style: italic;
+    cursor: default;
+}
+
+.ol-search ul li:only-child:hover {
+    background-color: transparent;
+    color: #666;
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: opacity 0.5s ease;
+}
+
+#loading-screen > div {
+    text-align: center;
+    max-width: 600px;
+    padding: 2rem;
+}
+
+#loading-screen h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+#loading-screen h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+#loading-progress-bar {
+    width: 0%;
+    height: 4px;
+    background: #895E8A;
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+
+#loading-screen > div > div {
+    margin: 2rem 0;
+}
+
+#loading-screen > div > div > div:first-child {
+    width: 100%;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+#loading-progress-text {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}

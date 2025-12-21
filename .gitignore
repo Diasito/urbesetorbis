@@ -1,0 +1,26 @@
+# Зависимости
+node_modules/
+
+# Сборка
+dist/
+test-build/
+
+# Тайлы карты (тысячи файлов!)
+public/data/base2/
+
+# Логи
+*.log
+npm-debug.log*
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+instruction.txt
+
+# Временные файлы
+*.tmp
+*.temp
+
+# IDE файлы (если используете)
+.vscode/
+.idea/
