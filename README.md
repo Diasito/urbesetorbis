@@ -4,11 +4,11 @@
 
 ### A digital catalog of Roman settlements with cross-references
 
+This map depicts the Roman Empire in the year 883 ab Urbe condita (AD 130). There are 7,891 settlements represented here both within the borders of the empire and beyond.
+
 <https://urbesetorbis.com/>
 
 ![Urbes et Orbis screen](./public/misc/urbesetorbisscreen1.jpg)
-
-This map depicts the Roman Empire in the year 883 ab Urbe condita (AD 130). There are 7,891 settlements represented here both within the borders of the empire and beyond.
 
 The project is built with OpenLayers v8 and utilizes multiple GeoJSON layers. The base map, including coastlines and provincial boundaries, is derived primarily from [the Ancient World Mapping Center](https://awmc.unc.edu/). Numerous geometric errors in the original data were corrected, and several provincial borders were adjusted to align with relevant geographic features. Every settlement is linked to [the Pleiades gazetteer](https://pleiades.stoa.org/) and, with few exceptions, to both [the Barrington Atlas](https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html) and [the Digital Atlas of the Roman Empire](http://imperium.ahlfeldt.se/).
 
