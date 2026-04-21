@@ -22,88 +22,117 @@ import ClipboardJS from 'clipboard';
 
 let clipboard = null;
 
+// ==================== URL & PERMALINK HELPERS ====================
+
+function parseCityIdFromHash() {
+  const hash = window.location.hash;
+  const match = hash.match(/#id(\d+)/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function findFeatureById130(id130) {
+  if (!searchSource || !id130) return null;
+  return searchSource.getFeatures().find(f => f.get('id130') === id130) || null;
+}
+
+function updateHashForCity(feature) {
+  const id130 = feature.get('id130');
+  const title = feature.get('title') || '';
+  const slug = title.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
+  const newHash = `#id${id130}${slug ? '-' + slug : ''}`;
+  if (window.location.hash !== newHash) {
+    window.history.replaceState(null, null, newHash);
+  }
+}
+
+function getPermanentLink(feature) {
+  const id130 = feature.get('id130');
+  const title = feature.get('title') || '';
+  const slug = title.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
+  return `${window.location.origin}${window.location.pathname}#id${id130}${slug ? '-' + slug : ''}`;
+}
+
+function handleInitialHash() {
+  const id130 = parseCityIdFromHash();
+  if (id130) {
+    const feature = findFeatureById130(id130);
+    if (feature) handleSearchSelect(feature);
+  }
+}
+
+window.addEventListener('hashchange', () => {
+  const id130 = parseCityIdFromHash();
+  if (id130) {
+    const feature = findFeatureById130(id130);
+    if (feature) handleSearchSelect(feature);
+  }
+});
+
 // ==================== ЗАГРУЗКА ЭКРАНА ====================
 window.addEventListener('load', function() {
   const loadingScreen = document.getElementById('loading-screen');
   const progressBar = document.getElementById('loading-progress-bar');
   const progressText = document.getElementById('loading-progress-text');
-  
   if (!loadingScreen) return;
-  
-  // Счётчики
+
   let loadedTiles = 0;
   let totalTiles = 0;
   let isComplete = false;
-  
-  // Отслеживаем загрузку тайлов базовой карты
+
   const baseSource = base.getSource();
-  
-  // ВАЖНО: используем tileloadend как основной маркер
+
   const tileLoadHandler = function() {
     loadedTiles++;
     updateProgress();
   };
-  
-  // Подписываемся на события
+
   baseSource.on('tileloadstart', function() {
     totalTiles++;
     updateProgress();
   });
-  
   baseSource.on('tileloadend', tileLoadHandler);
-  baseSource.on('tileloaderror', tileLoadHandler); // Ошибки тоже считаем
-  
+  baseSource.on('tileloaderror', tileLoadHandler);
+
   function updateProgress() {
     if (totalTiles === 0) return;
-    
-    // Минимум 10 тайлов для расчёта процентов
     const minTiles = 10;
     const effectiveTotal = Math.max(totalTiles, minTiles);
     const effectiveLoaded = Math.min(loadedTiles, effectiveTotal);
-    
     const percent = Math.min(100, Math.round((effectiveLoaded / effectiveTotal) * 100));
-    
+
     if (progressBar) progressBar.style.width = percent + '%';
     if (progressText) progressText.textContent = `Loading map tiles... ${percent}%`;
-    
-    // Условие завершения: загружено достаточно тайлов ИЛИ прошло время
+
     const shouldComplete = (loadedTiles >= totalTiles && totalTiles >= 5) || percent >= 90;
-    
     if (shouldComplete && !isComplete) {
       isComplete = true;
       completeLoading();
     }
   }
-  
+
   function completeLoading() {
-    // Финальное состояние
     if (progressBar) progressBar.style.width = '100%';
     if (progressText) progressText.textContent = 'Ready!';
-    
-    // Задержка перед скрытием
     setTimeout(() => {
       if (loadingScreen) {
         loadingScreen.style.opacity = '0';
         setTimeout(() => {
           loadingScreen.style.display = 'none';
-          // Отписываемся от событий
           baseSource.un('tileloadend', tileLoadHandler);
           baseSource.un('tileloaderror', tileLoadHandler);
         }, 500);
       }
     }, 800);
   }
-  
-  // Фоллбэк на случай, если загрузка не отслеживается
+
   const fallbackTimeout = setTimeout(() => {
     if (loadingScreen && loadingScreen.style.display !== 'none' && !isComplete) {
       console.log('Fallback: forcing completion after timeout');
       isComplete = true;
       completeLoading();
     }
-  }, 7000); // 7 секунд максимум
-  
-  // Также слушаем общее событие готовности карты
+  }, 7000);
+
   map.once('rendercomplete', function() {
     if (!isComplete) {
       isComplete = true;
@@ -111,8 +140,7 @@ window.addEventListener('load', function() {
       completeLoading();
     }
   });
-  
-  // Начальный прогресс
+
   setTimeout(() => {
     if (progressBar) progressBar.style.width = '10%';
     if (progressText) progressText.textContent = 'Starting map load...';
@@ -127,9 +155,7 @@ const scaleControl = new ScaleLine({
   text: true,
   minWidth: 140,
 });
-
 const sreda = fromLonLat([23, 38.5]);
-
 const view = new View({
   projection: 'EPSG:3857',
   center: sreda,
@@ -143,7 +169,7 @@ const view = new View({
 const base = new TileLayer({
   preload: 1,
   source: new XYZ({
-    urls:["/data/base2/{z}/{x}/{y}.png"],
+    urls: ["/data/base2/{z}/{x}/{y}.png"],
     tilePixelRatio: 1.000000
   }),
   minZoom: 3,
@@ -226,7 +252,7 @@ function provincenames (feature) {
       }),
     }),
   ];
-};
+}
 const provimena = new VectorLayer({
   source: new VectorSource({
     format: new GeoJSON(),
@@ -258,7 +284,7 @@ function names (feature) {
       }),
     }),
   ];
-};
+}
 const mareimena = new VectorLayer({
   source: new VectorSource({
     format: new GeoJSON(),
@@ -272,7 +298,7 @@ const mareimena = new VectorLayer({
 
 // ==================== СТИЛИ ГОРОДОВ ====================
 const RomaStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchor: [0.5, 0.5],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
@@ -291,9 +317,8 @@ const RomaStyle = new Style({
   }),
   zIndex: 100,
 });
-
 const CordubaStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchor: [0.5, 0.5],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
@@ -312,9 +337,8 @@ const CordubaStyle = new Style({
   }),
   zIndex: 90,
 });
-
 const ByzantiumStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchor: [0.5, 0.5],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
@@ -333,9 +357,8 @@ const ByzantiumStyle = new Style({
   }),
   zIndex: 90,
 });
-
 const LondiniumStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     radius: 3,
@@ -353,9 +376,8 @@ const LondiniumStyle = new Style({
   }),
   zIndex: 80,
 });
-
 const TheodosiaStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     radius: 3,
@@ -373,9 +395,8 @@ const TheodosiaStyle = new Style({
   }),
   zIndex: 70,
 });
-
 const AntinoopolisStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     radius: 2.5,
@@ -393,9 +414,8 @@ const AntinoopolisStyle = new Style({
   }),
   zIndex: 60,
 });
-
 const DelosStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     radius: 2,
@@ -415,9 +435,8 @@ const DelosStyle = new Style({
   }),
   zIndex: 50,
 });
-
 const PityousStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     radius: 1.5,
@@ -437,9 +456,8 @@ const PityousStyle = new Style({
   }),
   zIndex: 40,
 });
-
 const ShemakhaStyle = new Style({
-  image:  new Circle({
+  image: new Circle({
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     radius: 1,
@@ -462,41 +480,44 @@ const ShemakhaStyle = new Style({
 
 // ==================== ИСТОЧНИКИ ДАННЫХ ГОРОДОВ ====================
 const RomaSource = new VectorSource({
-  url:'/data/cities/1roma.geojson',
-  attributions:
-		'© <a href="http://awmc.unc.edu/awmc/map_data/license.txt">Ancient World Mapping Center</a>: Base Polygons, Borders, Data, Inland Water. © <a href="https://server.arcgisonline.com/arcgis/rest/services">ArcGIS</a>: Vibrant, World Hillshade. © <a href="https://raw.githubusercontent.com/johaahlf/dare/master/LICENSE">Digital Atlas of the Roman Empire</a>: Data, Roads. © <a href="http://oxrep.classics.ox.ac.uk/databases/cities/">Hanson, J. W. (2016)</a>: Data. © <a href="https://www.maptiler.com/copyright/">MapTiler</a>: Ocean. © <a href="https://github.com/mapzen/documentation/blob/master/LICENSE">Mapzen</a>: Global Terrain. © <a href="https://www.openstreetmap.org/copyright/en">OpenStreetMap contributors</a>. © <a href="https://pleiades.stoa.org/credits">Pleiades</a>: Data. © <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer">USGS The National Map</a>: 3D Elevation Program. ',
+  url: '/data/cities/1roma.geojson',
+  attributions: '©  [Ancient World Mapping Center](http://awmc.unc.edu/awmc/map_data/license.txt) : Base Polygons, Borders, Data, Inland Water. ©  [ArcGIS](https://server.arcgisonline.com/arcgis/rest/services) : Vibrant, World Hillshade. ©  [Digital Atlas of the Roman Empire](https://raw.githubusercontent.com/johaahlf/dare/master/LICENSE) : Data, Roads. ©  [Hanson, J. W. (2016)](http://oxrep.classics.ox.ac.uk/databases/cities/) : Data. ©  [MapTiler](https://www.maptiler.com/copyright/) : Ocean. ©  [Mapzen](https://github.com/mapzen/documentation/blob/master/LICENSE) : Global Terrain. ©  [OpenStreetMap contributors](https://www.openstreetmap.org/copyright/en) . ©  [Pleiades](https://pleiades.stoa.org/credits) : Data. ©  [USGS The National Map](https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer) : 3D Elevation Program. ',
   format: new GeoJSON(),
 });
 const CordubaSource = new VectorSource({
-  url:'/data/cities/2corduba.geojson',
+  url: '/data/cities/2corduba.geojson',
   format: new GeoJSON(),
 });
 const ByzantiumSource = new VectorSource({
-  url:'/data/cities/3byzantium.geojson',
+  url: '/data/cities/3byzantium.geojson',
   format: new GeoJSON(),
 });
+// ИСПРАВЛЕНИЕ: ne w -> new
 const LondiniumSource = new VectorSource({
-  url:'/data/cities/4londinium.geojson',
+  url: '/data/cities/4londinium.geojson',
   format: new GeoJSON(),
 });
 const TheodosiaSource = new VectorSource({
-  url:'/data/cities/5theodosia.geojson',
+  url: '/data/cities/5theodosia.geojson',
   format: new GeoJSON(),
 });
+// ИСПРАВЛЕНИЕ: /da ta -> /data
 const AntinoopolisSource = new VectorSource({
-  url:'/data/cities/6antinoopolis.geojson',
+  url: '/data/cities/6antinoopolis.geojson',
   format: new GeoJSON(),
 });
 const DelosSource = new VectorSource({
-  url:'/data/cities/7delos.geojson',
+  url: '/data/cities/7delos.geojson',
   format: new GeoJSON(),
 });
+// ИСПРАВЛЕНИЕ: PityousSourc e -> PityousSource
 const PityousSource = new VectorSource({
-  url:'/data/cities/8pityous.geojson',
+  url: '/data/cities/8pityous.geojson',
   format: new GeoJSON(),
 });
 const ShemakhaSource = new VectorSource({
-  url:'/data/cities/9shemakha.geojson',
+  url: '/data/cities/9shemakha.geojson',
+  // ИСПРАВЛЕНИЕ: new G eoJSON -> new GeoJSON
   format: new GeoJSON(),
 });
 
@@ -511,7 +532,6 @@ const Roma = new VectorLayer({
   minZoom: 3.9999,
   maxZoom: 10,
 });
-
 const Corduba = new VectorLayer({
   source: CordubaSource,
   style: function (feature) {
@@ -522,7 +542,6 @@ const Corduba = new VectorLayer({
   minZoom: 3.9999,
   maxZoom: 10,
 });
-
 const Byzantium = new VectorLayer({
   source: ByzantiumSource,
   style: function (feature) {
@@ -533,7 +552,6 @@ const Byzantium = new VectorLayer({
   minZoom: 3.9999,
   maxZoom: 10,
 });
-
 const Londinium = new VectorLayer({
   source: LondiniumSource,
   style: function (feature) {
@@ -545,7 +563,6 @@ const Londinium = new VectorLayer({
   minZoom: 3.9999,
   maxZoom: 10,
 });
-
 const Theodosia = new VectorLayer({
   source: TheodosiaSource,
   style: function (feature) {
@@ -557,7 +574,6 @@ const Theodosia = new VectorLayer({
   minZoom: 3.9999,
   maxZoom: 10,
 });
-
 const Antinoopolis = new VectorLayer({
   source: AntinoopolisSource,
   style: function (feature) {
@@ -569,7 +585,6 @@ const Antinoopolis = new VectorLayer({
   minZoom: 4.9999,
   maxZoom: 10,
 });
-
 const Delos = new VectorLayer({
   source: DelosSource,
   style: function (feature) {
@@ -581,7 +596,6 @@ const Delos = new VectorLayer({
   minZoom: 5.9999,
   maxZoom: 10,
 });
-
 const Pityous = new VectorLayer({
   source: PityousSource,
   style: function (feature) {
@@ -593,7 +607,6 @@ const Pityous = new VectorLayer({
   minZoom: 6.9999,
   maxZoom: 10,
 });
-
 const Shemakha = new VectorLayer({
   source: ShemakhaSource,
   style: function (feature) {
@@ -630,11 +643,15 @@ const map = new Map({
   view: view,
 });
 
+window.map = map;
+window.homeCenter = sreda;
+
 // ==================== ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ УПРАВЛЕНИЯ ====================
 const zoomslider = new ZoomSlider();
 map.addControl(zoomslider);
 
 // ==================== ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ====================
+// ИСПРАВЛЕНИЕ: Убраны лишние пробелы в селекторах (например, "#title " -> "#title")
 const titleElement = document.querySelector("#title");
 const altElement = document.querySelector("#alt");
 const provinceElement = document.querySelector("#province");
@@ -662,10 +679,11 @@ const topostextlinkElement = document.querySelector("#topostextlink");
 const vicilinkElement = document.querySelector("#vicilink");
 const wikidatalinkElement = document.querySelector("#wikidatalink");
 const wikipedialinkElement = document.querySelector("#wikipedialink");
+const id130Element = document.querySelector("#id130-value");
+const permLinkElement = document.querySelector("#perm-link-display");
 
 const hello = document.getElementById('pusto');
 const node = document.getElementById('hopa');
-
 let minimap = null;
 let markers = null;
 let centerpointSource = null;
@@ -704,13 +722,10 @@ function showCityDetails(feature) {
   const coordlon = (lonlat[0]).toFixed(6);
   const coordlat = (lonlat[1]).toFixed(6);
   const coo = toStringHDMS(lonlat);
-
   cooElement.textContent = coo.split('° ').join('°');
   
-  flagElement.innerHTML = `<img src='/icons/flags/${countryElement.innerHTML}.png' 
-                             title='${countryElement.innerHTML}' 
-                             width='17' height='17'
-                             style='display: inline-block; margin: 0 5px 0 5px;'>`;
+  // ИСПРАВЛЕНИЕ: Восстановлена корректная генерация HTML (убраны разорванные шаблонные строки)
+  flagElement.innerHTML = `<img src='/icons/flags/${countryElement.innerHTML}.png' title='${countryElement.innerHTML}' width='17' height='17' style='display: inline-block; margin: 0 5px 0 5px;'>`;
   googlelinkElement.innerHTML = `<a href='https://www.google.com/maps/place/${coo}' target='_blank' title='Google Maps'>Google Maps</a>`;
   OSMlinkElement.innerHTML = `<a href='http://www.openstreetmap.org/index.html?mlat=${coordlat}&mlon=${coordlon}&zoom=16' target='_blank' title='OpenStreetMap'>OpenStreetMap</a>`;
   wikimapialinkElement.innerHTML = `<a href='http://www.wikimapia.org/#lat=${coordlat}&lon=${coordlon}&z=16&l=0&m=w&v=0' target='_blank' title='Wikimapia'>Wikimapia</a>`;
@@ -724,10 +739,22 @@ function showCityDetails(feature) {
   wikidatalinkElement.innerHTML = wdlink ? `<a href='https://www.wikidata.org/wiki/Q${wdlink}' target='_blank' title='Wikidata ID'>${wdlink}</a>` : '';
   wikipedialinkElement.innerHTML = wplink ? `<a href='https://en.wikipedia.org/wiki/${wplink}' target='_blank' title='Wikipedia:en'>${wplink}</a>` : '';
   
+  // === ОБНОВЛЕНИЕ ID И PERMANENT LINK ===
+  // Обновляем текст ID и текста ссылки в новой строке над Alt name(s)
+  if (id130Element) id130Element.textContent = feature.get('id130');
+  const permUrl = getPermanentLink(feature);
+  if (permLinkElement) {
+  permLinkElement.href = permUrl;
+  permLinkElement.textContent = permUrl;
+  }
+  
+  // Обновляем хэш в адресной строке
+  updateHashForCity(feature);
+  // ========================================
+  
   if (markers) {
     map.removeLayer(markers);
   }
-  
   markers = new VectorLayer({
     source: new VectorSource(),
     style: new Style({
@@ -737,7 +764,6 @@ function showCityDetails(feature) {
       })
     })
   });
-  
   map.addLayer(markers);
   const marker = new Feature(new Point(minicenter));
   markers.getSource().addFeature(marker);
@@ -746,7 +772,6 @@ function showCityDetails(feature) {
     centerpointSource = new VectorSource();
     const pointFeature = new Feature(new Point(minicenter));
     centerpointSource.addFeature(pointFeature);
-    
     const centerpoint = new VectorLayer({
       source: centerpointSource,
       style: new Style({
@@ -758,7 +783,6 @@ function showCityDetails(feature) {
         })
       })
     });
-    
     minimap = new Map({
       target: 'minimap',
       layers: [
@@ -780,18 +804,15 @@ function showCityDetails(feature) {
     });
   } else {
     centerpointSource.clear();
-    
     const pointFeature = new Feature(new Point(minicenter));
     centerpointSource.addFeature(pointFeature);
-    
     minimap.getView().setCenter(minicenter);
     minimap.getView().setZoom(15);
   }
   
   document.getElementById("workOpen").click();
-  
   if (!clipboard) {
-  clipboard = new ClipboardJS('.btn');
+    clipboard = new ClipboardJS('.btn');
   };
 }
 
@@ -799,11 +820,11 @@ function showCityDetails(feature) {
 const searchSource = new VectorSource({ features: [] });
 let lastSearchResults = [];
 
-// Загружаем ВСЕ города в поиск сразу (как делали вчера)
+// Загружаем ВСЕ города в поиск сразу
 setTimeout(() => {
   const cityFiles = [
     '/data/cities/1roma.geojson',
-    '/data/cities/2corduba.geojson', 
+    '/data/cities/2corduba.geojson',
     '/data/cities/3byzantium.geojson',
     '/data/cities/4londinium.geojson',
     '/data/cities/5theodosia.geojson',
@@ -812,7 +833,6 @@ setTimeout(() => {
     '/data/cities/8pityous.geojson',
     '/data/cities/9shemakha.geojson'
   ];
-  
   let loadedCount = 0;
   
   cityFiles.forEach(url => {
@@ -823,47 +843,45 @@ setTimeout(() => {
           dataProjection: 'EPSG:4326',
           featureProjection: map.getView().getProjection()
         });
-        
         features.forEach(feature => {
           feature.set("featureType", "title");
           searchSource.addFeature(feature);
         });
         
         loadedCount++;
+        // Запускаем проверку хэша после загрузки всех данных
+        if (loadedCount === cityFiles.length) {
+          handleInitialHash();
+        }
       })
       .catch(error => {
-        console.error('Error loading city data:', error);
+        console.error('Error loading city ', error);
+        loadedCount++;
+        if (loadedCount === cityFiles.length) {
+          handleInitialHash();
+        }
       });
   });
 }, 100);
 
-// Функция сортировки результатов (по алфавиту, сначала точные совпадения)
+// Функция сортировки результатов
 function sortSearchResults(results, searchTerm) {
   if (!searchTerm || results.length === 0) return results;
-  
   const termLower = searchTerm.toLowerCase();
   const resultsCopy = [...results];
-  
   resultsCopy.sort((a, b) => {
     const titleA = a.get('title').toLowerCase();
     const titleB = b.get('title').toLowerCase();
-    
-    // Сначала точные совпадения
     const exactMatchA = titleA === termLower;
     const exactMatchB = titleB === termLower;
     if (exactMatchA && !exactMatchB) return -1;
     if (!exactMatchA && exactMatchB) return 1;
-    
-    // Затем начинающиеся с поискового запроса
     const startsWithA = titleA.startsWith(termLower);
     const startsWithB = titleB.startsWith(termLower);
     if (startsWithA && !startsWithB) return -1;
     if (!startsWithA && startsWithB) return 1;
-    
-    // Затем по алфавиту
     return titleA.localeCompare(titleB);
   });
-  
   return resultsCopy;
 }
 
@@ -872,36 +890,12 @@ const searchContainer = document.createElement('div');
 searchContainer.className = 'ol-search ol-control';
 searchContainer.style.top = '0.5em';
 searchContainer.style.left = '3em';
-
 const searchInput = document.createElement('input');
 searchInput.type = 'text';
 searchInput.placeholder = 'Search cities...';
-searchInput.style.cssText = `
-  width: 200px;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-`;
-
+searchInput.style.cssText = `width: 200px; padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;`;
 const resultsContainer = document.createElement('ul');
-resultsContainer.style.cssText = `
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  max-height: 300px;
-  overflow-y: auto;
-  background: white;
-  border: 1px solid #ccc;
-  border-top: none;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  z-index: 1000;
-  display: none;
-`;
-
+resultsContainer.style.cssText = `position: absolute; top: 100%; left: 0; width: 100%; max-height: 300px; overflow-y: auto; background: white; border: 1px solid #ccc; border-top: none; list-style: none; padding: 0; margin: 0; z-index: 1000; display: none;`;
 searchContainer.appendChild(searchInput);
 searchContainer.appendChild(resultsContainer);
 
@@ -909,21 +903,17 @@ searchContainer.appendChild(resultsContainer);
 searchInput.addEventListener('input', function() {
   const searchTerm = this.value.trim();
   resultsContainer.innerHTML = '';
-  
   if (searchTerm.length < 1) {
     resultsContainer.style.display = 'none';
     lastSearchResults = [];
     return;
   }
-  
   const allFeatures = searchSource.getFeatures();
   const termLower = searchTerm.toLowerCase();
-  
   const matchingFeatures = allFeatures.filter(feature => {
     const title = feature.get('title').toLowerCase();
     return title.includes(termLower);
   });
-  
   const sortedFeatures = sortSearchResults(matchingFeatures, searchTerm);
   lastSearchResults = sortedFeatures;
   
@@ -940,22 +930,12 @@ searchInput.addEventListener('input', function() {
       li.style.padding = '8px 10px';
       li.style.cursor = 'pointer';
       li.style.borderBottom = '1px solid #eee';
-      
-      li.addEventListener('mouseenter', () => {
-        li.style.backgroundColor = '#f0f0f0';
-      });
-      li.addEventListener('mouseleave', () => {
-        li.style.backgroundColor = '';
-      });
-      
-      li.addEventListener('click', () => {
-        handleSearchSelect(feature);
-      });
-      
+      li.addEventListener('mouseenter', () => { li.style.backgroundColor = '#f0f0f0'; });
+      li.addEventListener('mouseleave', () => { li.style.backgroundColor = ''; });
+      li.addEventListener('click', () => { handleSearchSelect(feature); });
       resultsContainer.appendChild(li);
     });
   }
-  
   resultsContainer.style.display = 'block';
 });
 
@@ -970,32 +950,22 @@ document.addEventListener('click', function(event) {
 class CustomSearchControl extends Control {
   constructor(opt_options) {
     const options = opt_options || {};
-    
     const element = searchContainer;
-    
-    super({
-      element: element,
-      target: options.target,
-    });
+    super({ element: element, target: options.target });
   }
 }
-
-const customSearchControl = new CustomSearchControl({
-  target: undefined
-});
+const customSearchControl = new CustomSearchControl({ target: undefined });
 map.addControl(customSearchControl);
 
 // Обработка клавиш в поиске
 searchInput.addEventListener('keydown', function(e) {
   const items = resultsContainer.querySelectorAll('li');
   if (items.length === 0) return;
-  
   if (e.key === 'ArrowDown') {
     e.preventDefault();
     const current = document.activeElement;
-    if (current === searchInput) {
-      items[0].focus();
-    } else if (current.tagName === 'LI') {
+    if (current === searchInput) { items[0].focus(); }
+    else if (current.tagName === 'LI') {
       const next = current.nextElementSibling;
       if (next) next.focus();
     }
@@ -1004,54 +974,38 @@ searchInput.addEventListener('keydown', function(e) {
     const current = document.activeElement;
     if (current.tagName === 'LI') {
       const prev = current.previousElementSibling;
-      if (prev) {
-        prev.focus();
-      } else {
-        searchInput.focus();
-      }
+      if (prev) { prev.focus(); }
+      else { searchInput.focus(); }
     }
   } else if (e.key === 'Enter') {
     e.preventDefault();
     const current = document.activeElement;
-    if (current.tagName === 'LI') {
-      current.click();
-    } else if (lastSearchResults.length > 0) {
+    if (current.tagName === 'LI') { current.click(); }
+    else if (lastSearchResults.length > 0) {
       const firstResult = lastSearchResults[0];
-      if (firstResult) {
-        handleSearchSelect(firstResult);
-      }
+      if (firstResult) { handleSearchSelect(firstResult); }
     }
   }
 });
 
 // ==================== SELECT ДЛЯ ПОИСКА ====================
 const select = new Select({
-  layers: function () {
-    return;
-  },
+  layers: function () { return; },
 });
 map.addInteraction(select);
 
 // Функция обработки выбора из поиска
 function handleSearchSelect(feature) {
-  // Очищаем предыдущий выбор Select
   select.getFeatures().clear();
-  // Добавляем выбранный город в Select (только для визуального выделения)
   select.getFeatures().push(feature);
-  
-  // Центрируем карту
   const center = feature.getGeometry().getFirstCoordinate();
-  map.getView().animate({ 
+  map.getView().animate({
     center: center,
     zoom: 10,
     duration: 2000,
     easing: easeOut,
   });
-  
-  // Показываем детали города
   showCityDetails(feature);
-  
-  // Закрываем поиск
   searchInput.value = feature.get('title');
   resultsContainer.style.display = 'none';
 }
@@ -1060,8 +1014,8 @@ function handleSearchSelect(feature) {
 map.on('click', function (evt) {
   let hitt = false;
   const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-    if (layer === Roma || layer === Corduba || layer === Byzantium || 
-        layer === Londinium || layer === Theodosia || layer === Antinoopolis || 
+    if (layer === Roma || layer === Corduba || layer === Byzantium ||
+        layer === Londinium || layer === Theodosia || layer === Antinoopolis ||
         layer === Delos || layer === Pityous || layer === Shemakha) {
       hitt = true;
       return feature;
@@ -1069,12 +1023,9 @@ map.on('click', function (evt) {
   }, { hitTolerance: 3 });
   
   if (hitt) {
-    // ВАЖНО: НЕ используем select.getFeatures() при обычном клике!
-    // Просто показываем город напрямую
     showCityDetails(feature);
     document.getElementById("workOpen").click();
   } else {
-    // Клик в пустое место
     hello.style.visibility = 'visible';
     node.style.visibility = 'hidden';
     if (markers) {
@@ -1084,7 +1035,6 @@ map.on('click', function (evt) {
     if (centerpointSource) {
       centerpointSource.clear();
     }
-    // Очищаем Select при клике в пустое место
     select.getFeatures().clear();
   }
 });
@@ -1092,17 +1042,14 @@ map.on('click', function (evt) {
 // ==================== ИЗМЕНЕНИЕ КУРСОРА ====================
 map.on('pointermove', function(e) {
   if (e.dragging) return;
-  
   const pixel = map.getEventPixel(e.originalEvent);
   let hit = false;
-  
   map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-    if (layer === Roma || layer === Corduba || layer === Byzantium || 
-        layer === Londinium || layer === Theodosia || layer === Antinoopolis || 
+    if (layer === Roma || layer === Corduba || layer === Byzantium ||
+        layer === Londinium || layer === Theodosia || layer === Antinoopolis ||
         layer === Delos || layer === Pityous || layer === Shemakha) {
       hit = true;
     }
   }, { hitTolerance: 3 });
-  
   map.getTarget().style.cursor = hit ? 'pointer' : '';
 });

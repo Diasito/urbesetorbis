@@ -24,3 +24,6 @@ instruction.txt
 # IDE файлы (если используете)
 .vscode/
 .idea/
+
+# Песочница
+sandbox/

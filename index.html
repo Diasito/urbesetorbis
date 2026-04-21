@@ -54,7 +54,7 @@
             border: none;
             outline: none;
             cursor: pointer;
-            padding: 0.8vw 0 0.8vw 0;
+            padding: 0.4vw 0 0.4vw 0;
             font-family: CapitalisTypOasis, serif;
             font-size: 1vw;
             width: 20%;
@@ -67,7 +67,7 @@
         .tabcontent {
             color: black;
             display: none;
-            padding: 3vw 0;
+            padding: 2vw 0;
             height: 100%;
         }
 
@@ -192,6 +192,16 @@
                         </th>
                     </tr>
                     <tr>
+                        <td colspan="2" class="tdvalue" style="padding: 0.3em 0;">
+                            <strong>ID:</strong> <span id="id130-value"></span>
+                            <span style="margin: 0 10px; color: #ccc;">|</span>
+                            <strong>Link:</strong> <a id="perm-link-display" href="#" target="_blank" rel="noopener noreferrer" style="word-break: break-all; color: #0645ad; text-decoration: underline; cursor: pointer;"></a>
+                            <button type="button" class="btn" data-clipboard-target="#perm-link-display" style="display: inline-block; vertical-align: middle; margin-left: 5px;">
+                                <img src="/icons/clipboard.png" width="16" height="15" alt="Copy">
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="tdlabel">Alt name(s): </td>
                         <td class="tdvalue"><span id="alt"></span></td>
                     </tr>
@@ -212,10 +222,10 @@
 							<span id="country"></span>
 						</td>
 					</tr>
-                    <tr>
-                        <td class="tdlabel">Description (Pleiades): </td>
-                        <td class="tdvalue"><span id="description"></span></td>
-                    </tr>
+					<tr>
+						<td class="tdlabel">Description (Pleiades): </td>
+						<td class="tdvalue"><span id="description"></span></td>
+					</tr>
 					<tr>
 						<td colspan="2">
 							<div id="minimap" class="map"></div>
@@ -224,7 +234,7 @@
 					<tr>
 						<td colspan="2" class="tdlabel">
 							<div class="divsmall">
-								Open this place in <span id="googlelink"></span> | <span id="OSMlink"></span> | <span id="wikimapialink"></span>
+								Open this place in:<span style="margin: 0 10px;"></span><span id="googlelink"></span><span style="margin: 0 10px; color: #ccc;">|</span><span id="OSMlink"></span><span style="margin: 0 10px; color: #ccc;">|</span><span id="wikimapialink"></span>
 							</div>
 						</td>
 					</tr>
@@ -349,25 +359,43 @@
     </div>
 </div>
 
-    <script>
-        function openPage(pageName, elmnt, color) {
-            const tabcontent = document.getElementsByClassName("tabcontent");
-            for (let i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
+<script>
+    let isPageFullyLoaded = false;
+    window.addEventListener('load', () => { isPageFullyLoaded = true; });
 
-            const tablinks = document.getElementsByClassName("tablink");
-            for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].style.backgroundColor = "";
-            }
-
-            document.getElementById(pageName).style.display = "block";
-            elmnt.style.backgroundColor = color;
+    function openPage(pageName, elmnt, color) {
+        const tabcontent = document.getElementsByClassName("tabcontent");
+        for (let i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
         }
 
-        document.getElementById("defaultOpen").click();
-    </script>
-    
+        const tablinks = document.getElementsByClassName("tablink");
+        for (let i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = "";
+        }
+
+        document.getElementById(pageName).style.display = "block";
+        elmnt.style.backgroundColor = color;
+
+        if (pageName === 'home') {
+            // 1. Очищаем хэш из URL (только после полной загрузки)
+            if (window.location.hash.match(/^#id\d+/) && isPageFullyLoaded) {
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
+            // 2. Плавный полёт карты к исходному состоянию
+            if (window.map && window.homeCenter) {
+                window.map.getView().animate({
+                    center: window.homeCenter,
+                    zoom: 6,
+                    duration: 1000 // длительность полёта в мс (можно менять)
+                });
+            }
+        }
+    }
+
+    document.getElementById("defaultOpen").click();
+</script>
+
     <script type="module" src="/main.js"></script>
 </body>
 </html>

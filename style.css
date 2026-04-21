@@ -19,7 +19,8 @@ body {
 }
 
 .tabhome,
-.tababout {
+.tababout,
+.tabdata {
     width: 100%;
     line-height: 1.5;
     padding: 1vw 1vw 0 1vw;
@@ -127,15 +128,8 @@ body {
     width: 95%;
     line-height: 1.1;
     border-collapse: collapse;
-    margin: 1em;
+    margin: 0 1em;
     font-size: 90%;
-}
-
-.tabdata {
-    width: 100%;
-    line-height: 1.5;
-    padding: 1vw 1vw 0 1vw;
-    font-size: 100%;
 }
 
 #thtitle {
@@ -167,7 +161,7 @@ body {
 }
 
 .anons {
-    margin-top: 1vh;
+    margin-top: 0;
 }
 
 a:link {
