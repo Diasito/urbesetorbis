@@ -724,21 +724,58 @@ function showCityDetails(feature) {
   const coo = toStringHDMS(lonlat);
   cooElement.textContent = coo.split('° ').join('°');
   
-  // ИСПРАВЛЕНИЕ: Восстановлена корректная генерация HTML (убраны разорванные шаблонные строки)
-  flagElement.innerHTML = `<img src='/icons/flags/${countryElement.innerHTML}.png' title='${countryElement.innerHTML}' width='17' height='17' style='display: inline-block; margin: 0 5px 0 5px;'>`;
+  // === ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ: экранирование HTML ===
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // === ФЛАГ СТРАНЫ ===
+  const country = countryElement.innerHTML?.trim();
+  flagElement.innerHTML = country 
+    ? `<img src='/icons/flags/${escapeHtml(country)}.png' title='${escapeHtml(country)}' width='17' height='17' style='display: inline-block; margin: 0 5px 0 5px;'>`
+    : '';
+
+  // === ВНЕШНИЕ ССЫЛКИ (координаты — доверенные, экранировать не нужно) ===
   googlelinkElement.innerHTML = `<a href='https://www.google.com/maps/place/${coo}' target='_blank' title='Google Maps'>Google Maps</a>`;
   OSMlinkElement.innerHTML = `<a href='http://www.openstreetmap.org/index.html?mlat=${coordlat}&mlon=${coordlon}&zoom=16' target='_blank' title='OpenStreetMap'>OpenStreetMap</a>`;
   wikimapialinkElement.innerHTML = `<a href='http://www.wikimapia.org/#lat=${coordlat}&lon=${coordlon}&z=16&l=0&m=w&v=0' target='_blank' title='Wikimapia'>Wikimapia</a>`;
   
-  darelinkElement.innerHTML = drlink ? `<a href='http://imperium.ahlfeldt.se/places/${drlink}' target='_blank' title='DARE place'>${drlink}</a>` : '';
-  pecslinkElement.innerHTML = pelink ? `<a href='http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0006:entry=${pelink}' target='_blank' title='Princeton place'>${pelink}</a>` : '';
-  pleiadeslinkElement.innerHTML = pllink ? `<a href='https://pleiades.stoa.org/places/${pllink}' target='_blank' title='Pleiades place'>${pllink}</a>` : '';
-  tpplacelinkElement.innerHTML = tplink ? `<a href='https://www.cambridge.org/us/talbert/talbertdatabase/TPPlace${tplink}.html' target='_blank' title='TPPlace place'>${tplink}</a>` : '';
-  topostextlinkElement.innerHTML = ttlink ? `<a href='https://topostext.org/place/${ttlink}' target='_blank' title='ToposText place'>${ttlink}</a>` : '';
-  vicilinkElement.innerHTML = vclink ? `<a href='https://vici.org/vici/${vclink}' target='_blank' title='Vici place'>${vclink}</a>` : '';
-  wikidatalinkElement.innerHTML = wdlink ? `<a href='https://www.wikidata.org/wiki/Q${wdlink}' target='_blank' title='Wikidata ID'>${wdlink}</a>` : '';
-  wikipedialinkElement.innerHTML = wplink ? `<a href='https://en.wikipedia.org/wiki/${wplink}' target='_blank' title='Wikipedia:en'>${wplink}</a>` : '';
-  
+  // === ССЫЛКИ НА БАЗЫ ДАННЫХ (с экранированием входных значений) ===
+  darelinkElement.innerHTML = drlink 
+    ? `<a href='http://imperium.ahlfeldt.se/places/${escapeHtml(drlink)}' target='_blank' title='DARE place'>${escapeHtml(drlink)}</a>` 
+    : '';
+    
+  pecslinkElement.innerHTML = pelink 
+    ? `<a href='http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0006:entry=${escapeHtml(pelink)}' target='_blank' title='Princeton place'>${escapeHtml(pelink)}</a>` 
+    : '';
+    
+  pleiadeslinkElement.innerHTML = pllink 
+    ? `<a href='https://pleiades.stoa.org/places/${escapeHtml(pllink)}' target='_blank' title='Pleiades place'>${escapeHtml(pllink)}</a>` 
+    : '';
+    
+  tpplacelinkElement.innerHTML = tplink 
+    ? `<a href='https://www.cambridge.org/us/talbert/talbertdatabase/TPPlace${escapeHtml(tplink)}.html' target='_blank' title='TPPlace place'>${escapeHtml(tplink)}</a>` 
+    : '';
+    
+  topostextlinkElement.innerHTML = ttlink 
+    ? `<a href='https://topostext.org/place/${escapeHtml(ttlink)}' target='_blank' title='ToposText place'>${escapeHtml(ttlink)}</a>` 
+    : '';
+    
+  vicilinkElement.innerHTML = vclink 
+    ? `<a href='https://vici.org/vici/${escapeHtml(vclink)}' target='_blank' title='Vici place'>${escapeHtml(vclink)}</a>` 
+    : '';
+    
+  wikidatalinkElement.innerHTML = wdlink 
+    ? `<a href='https://www.wikidata.org/wiki/Q${escapeHtml(wdlink)}' target='_blank' title='Wikidata ID'>${escapeHtml(wdlink)}</a>` 
+    : '';
+    
+  wikipedialinkElement.innerHTML = wplink 
+    ? `<a href='https://en.wikipedia.org/wiki/${encodeURIComponent(wplink)}' target='_blank' title='Wikipedia:en'>${escapeHtml(wplink)}</a>` 
+    : '';
+
   // === ОБНОВЛЕНИЕ ID И PERMANENT LINK ===
   // Обновляем текст ID и текста ссылки в новой строке над Alt name(s)
   if (id130Element) id130Element.textContent = feature.get('id130');
@@ -989,9 +1026,7 @@ searchInput.addEventListener('keydown', function(e) {
 });
 
 // ==================== SELECT ДЛЯ ПОИСКА ====================
-const select = new Select({
-  layers: function () { return; },
-});
+const select = new Select();
 map.addInteraction(select);
 
 // Функция обработки выбора из поиска
