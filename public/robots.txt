@@ -5,4 +5,3 @@ Disallow: /assets/
 Disallow: /cgi-bin/
 Disallow: /icons/
 Sitemap: https://urbesetorbis.com/sitemap.xml
-Sitemap: https://www.urbesetorbis.com/sitemap.xml
