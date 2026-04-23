@@ -23,7 +23,6 @@ import ClipboardJS from 'clipboard';
 let clipboard = null;
 
 // === URL & PERMALINK ===
-
 function parseCityIdFromHash() {
   const hash = window.location.hash;
   const match = hash.match(/#id(\d+)/);
@@ -67,6 +66,44 @@ window.addEventListener('hashchange', () => {
     if (feature) handleSearchSelect(feature);
   }
 });
+
+// === ВИЗУАЛЬНОЕ ФОРМАТИРОВАНИЕ ЗАГОЛОВКОВ (для шрифта CapitalisTypOasis) ===
+
+/**
+ * Конвертирует число 1-3999 в римскую запись для визуального отображения
+ */
+function toRomanVisual(num) {
+  if (num < 1 || num > 3999) return String(num);
+  const romanMap = [
+    [1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'],
+    [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'],
+    [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']
+  ];
+  let result = '';
+  for (const [value, symbol] of romanMap) {
+    while (num >= value) {
+      result += symbol;
+      num -= value;
+    }
+  }
+  return result;
+}
+
+/**
+ * Форматирует название/обозначение для отображения:
+ * - Конвертирует арабские цифры в римские (1-3999)
+ * - Сохраняет буквы, дефисы и структуру исходной строки
+ * - Применяется ТОЛЬКО к визуальному выводу, не меняет данные или URL
+ */
+function formatTitleForDisplay(title) {
+  if (!title) return '';
+  // Заменяем ЛЮБЫЕ последовательности цифр (1-4 знака) на римские
+  // Примеры: "MM18" → "MMXVIII", "K060" → "KLX", "C-16-I" → "C-XVI-I"
+  return title.replace(/(\d{1,4})/g, (match, num) => {
+    const n = parseInt(num, 10);
+    return (n >= 1 && n <= 3999) ? toRomanVisual(n) : match;
+  });
+}
 
 // === ЗАГРУЗКА ЭКРАНА ===
 window.addEventListener('load', function() {
@@ -479,7 +516,6 @@ const ShemakhaStyle = new Style({
 });
 
 // === ИСТОЧНИКИ ДАННЫХ ГОРОДОВ ===
-// ==================== ИСТОЧНИКИ ДАННЫХ ГОРОДОВ ====================
 const RomaSource = new VectorSource({
   url: '/data/cities/1roma.geojson',
   attributions: '© <a href="http://awmc.unc.edu/awmc/map_data/license.txt" target="_blank" rel="noopener">Ancient World Mapping Center</a>: Base Polygons, Borders, Data, Inland Water. © <a href="https://server.arcgisonline.com/arcgis/rest/services" target="_blank" rel="noopener">ArcGIS</a>: Vibrant, World Hillshade. © <a href="https://raw.githubusercontent.com/johaahlf/dare/master/LICENSE" target="_blank" rel="noopener">Digital Atlas of the Roman Empire</a>: Data, Roads. © <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank" rel="noopener">Hanson, J. W. (2016)</a>: Data. © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener">MapTiler</a>: Ocean. © <a href="https://github.com/mapzen/documentation/blob/master/LICENSE" target="_blank" rel="noopener">Mapzen</a>: Global Terrain. © <a href="https://www.openstreetmap.org/copyright/en" target="_blank" rel="noopener">OpenStreetMap contributors</a>. © <a href="https://pleiades.stoa.org/credits" target="_blank" rel="noopener">Pleiades</a>: Data. © <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer" target="_blank" rel="noopener">USGS The National Map</a>: 3D Elevation Program.',
@@ -689,7 +725,7 @@ function showCityDetails(feature) {
   hello.style.visibility = 'hidden';
   node.style.visibility = 'visible';
   
-  titleElement.innerHTML = feature.get('title');
+  titleElement.innerHTML = formatTitleForDisplay(feature.get('title'));
   altElement.innerHTML = feature.get('alt');
   provinceElement.innerHTML = feature.get('province');
   startElement.innerHTML = feature.get('start');
@@ -1022,7 +1058,9 @@ searchInput.addEventListener('keydown', function(e) {
 });
 
 // === SELECT ДЛЯ ПОИСКА ===
-const select = new Select();
+const select = new Select({
+  style: null  // Не применять стиль выделения — оставляем вид города неизменным
+});
 map.addInteraction(select);
 
 // Функция обработки выбора из поиска

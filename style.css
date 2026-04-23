@@ -200,6 +200,7 @@ a:hover {
     font-family: CapitalisTypOasis, serif;
     font-size: 2rem;
     text-transform: uppercase;
+    font-variant-numeric: ordinal;
 }
 
 #pusto {
