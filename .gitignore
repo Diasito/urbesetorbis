@@ -16,6 +16,7 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 instruction.txt
+sftp.json
 
 # Временные файлы
 *.tmp
