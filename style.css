@@ -6,7 +6,7 @@ body {
     padding: 0;
     overflow: hidden;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.9em;
+    font-size: 0.9rem;
     height: 100%;
 }
 
@@ -23,13 +23,14 @@ body {
 .tabdata {
     width: 100%;
     line-height: 1.5;
-    padding: 1vw 1vw 0 1vw;
+    margin-top: 1vw;
+    padding: 2vw 1vw 0 1vw;
     font-size: 100%;
 }
 
 .tablelegend {
     line-height: 1.2vh;
-    margin: 1vw;
+    margin: 0;
     font-size: 100%;
     width: 100%;
 }
@@ -128,8 +129,8 @@ body {
     width: 95%;
     line-height: 1.1;
     border-collapse: collapse;
-    margin: 0 1em;
-    font-size: 90%;
+    margin: 0 1rem;
+    font-size: 0.9rem;
 }
 
 #thtitle {
@@ -140,24 +141,24 @@ body {
 .tdlabel {
     width: 30%;
     text-align: left;
-    padding: 0.25em 0;
+    padding: 0.25rem 0;
 }
 
 .tdvalue {
     width: 70%;
     text-align: left;
-    padding: 0.25em 0;
+    padding: 0.25rem 0;
 }
 
 .tdatlas {
     width: 70%;
     text-align: left;
-    padding: 0.25em 0;
+    padding: 0.25rem 0;
 }
 
 .tdnumber {
     text-align: left;
-    padding: 0.25em 0.5em;
+    padding: 0.25rem 0.5rem;
 }
 
 .anons {
@@ -184,18 +185,18 @@ a:hover {
 }
 
 #nazvanie {
-    margin: 0 0 2em 0;
+    margin: 0 0 1em 0;
 }
 
 #title {
     font-family: CapitalisTypOasis, serif;
-    font-size: 2em;
+    font-size: 2rem;
     text-transform: uppercase;
 }
 
 #pusto {
-	margin: 0 0 0 1em;
-	text-align: center;
+    margin: 0 0 0 1rem;
+    text-align: center;
 }
 
 .divsmall {
@@ -205,7 +206,7 @@ a:hover {
 
 .btn {
     vertical-align: middle;
-    margin-left: 8px;
+    margin-left: 0.5rem;
 }
 
 #minimap {
@@ -216,24 +217,20 @@ a:hover {
 }
 
 .ol-search {
-    top: 0.5em;
-    left: 3em;
+    top: 0.5rem;
+    left: 3rem;
     background: transparent;
     border: none;
     padding: 0;
 }
 
-.ol-touch .ol-search {
-    left: 3.5em;
-}
-
 .ol-search input {
     display: inline-block;
-    width: 250px;
-    padding: 8px 12px;
+    width: 15.625rem;          /* 250 px */
+    padding: 0.5rem 0.75rem;   /* 8 px 12 px */
     border: 1px solid #895E8A;
-    border-radius: 4px;
-    font-size: 14px;
+    border-radius: 0.25rem;    /* 4 px */
+    font-size: 0.875rem;       /* 14 px */
     font-family: Arial, Helvetica, sans-serif;
     background: white;
     color: #333;
@@ -259,11 +256,11 @@ a:hover {
     background: white;
     border: 1px solid #895E8A;
     border-top: none;
-    max-height: 300px;
+    max-height: 18.75rem;      /* 300 px */
     overflow-y: auto;
     z-index: 1000;
     cursor: pointer;
-    max-width: 266px;
+    max-width: 16.625rem;      /* 266 px */
 }
 
 .ol-touch .ol-search ul {
@@ -272,18 +269,14 @@ a:hover {
 }
 
 .ol-search ul li {
-    padding: 8px 12px;
+    padding: 0.5rem 0.75rem;
     color: #333;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-family: Arial, Helvetica, sans-serif;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     border-bottom: 1px solid #eee;
-}
-
-.ol-search ul li:last-child {
-    border-bottom: none;
 }
 
 .ol-search ul li:hover {
@@ -325,7 +318,7 @@ a:hover {
 
 #loading-screen > div {
     text-align: center;
-    max-width: 600px;
+    max-width: 37.5rem;   /* 600 px */
     padding: 2rem;
 }
 
@@ -341,9 +334,9 @@ a:hover {
 
 #loading-progress-bar {
     width: 0%;
-    height: 4px;
+    height: 0.25rem;   /* 4 px */
     background: #895E8A;
-    border-radius: 2px;
+    border-radius: 0.125rem;
     transition: width 0.3s;
 }
 
@@ -353,9 +346,9 @@ a:hover {
 
 #loading-screen > div > div > div:first-child {
     width: 100%;
-    height: 4px;
+    height: 0.25rem;
     background: #ddd;
-    border-radius: 2px;
+    border-radius: 0.125rem;
     overflow: hidden;
 }
 
