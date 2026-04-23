@@ -22,7 +22,7 @@ import ClipboardJS from 'clipboard';
 
 let clipboard = null;
 
-// ==================== URL & PERMALINK HELPERS ====================
+// === URL & PERMALINK ===
 
 function parseCityIdFromHash() {
   const hash = window.location.hash;
@@ -68,7 +68,7 @@ window.addEventListener('hashchange', () => {
   }
 });
 
-// ==================== ЗАГРУЗКА ЭКРАНА ====================
+// === ЗАГРУЗКА ЭКРАНА ===
 window.addEventListener('load', function() {
   const loadingScreen = document.getElementById('loading-screen');
   const progressBar = document.getElementById('loading-progress-bar');
@@ -147,7 +147,7 @@ window.addEventListener('load', function() {
   }, 300);
 });
 
-// ==================== БАЗОВЫЕ ЭЛЕМЕНТЫ КАРТЫ ====================
+// === БАЗОВЫЕ ЭЛЕМЕНТЫ КАРТЫ ===
 const scaleControl = new ScaleLine({
   units: 'metric',
   bar: true,
@@ -165,7 +165,7 @@ const view = new View({
   extent: [-1400000, 2600000, 6100000, 7600000],
 });
 
-// ==================== БАЗОВЫЙ СЛОЙ КАРТЫ ====================
+// === БАЗОВЫЙ СЛОЙ КАРТЫ ===
 const base = new TileLayer({
   preload: 1,
   source: new XYZ({
@@ -177,7 +177,7 @@ const base = new TileLayer({
   opacity: 1,
 });
 
-// ==================== СЛОЙ ПОМЕРИЯ ====================
+// === СЛОЙ ПОМЕРИЯ ===
 const stylePomerium = new Style({
   fill: new Fill({ color: 'red' }),
 });
@@ -192,7 +192,7 @@ const pomerium = new VectorLayer({
   opacity: 0.8,
 });
 
-// ==================== СЛОЙ ДОРОГ ====================
+// === СЛОЙ ДОРОГ ===
 const styleRoads = new Style({
   fill: new Fill(),
   stroke: new Stroke({ color: 'red' }),
@@ -224,14 +224,14 @@ const roads = new VectorLayer({
   declutter: true,
 });
 
-// ==================== СЕТКА КООРДИНАТ ====================
+// === СЕТКА КООРДИНАТ ===
 const graticule = new Graticule({
   strokeStyle: new Stroke({ color: 'rgba(0,0,0,0.9)', width: 0.1 }),
   showLabels: true,
   wrapX: false,
 });
 
-// ==================== НАЗВАНИЯ ПРОВИНЦИЙ ====================
+// === НАЗВАНИЯ ПРОВИНЦИЙ ===
 function provincenames (feature) {
   const zoom = map.getView().getZoom();
   const degree = feature.get('mnozhitel');
@@ -264,7 +264,7 @@ const provimena = new VectorLayer({
   style: provincenames,
 });
 
-// ==================== НАЗВАНИЯ МОРЕЙ ====================
+// === НАЗВАНИЯ МОРЕЙ ===
 function names (feature) {
   const zoom = map.getView().getZoom();
   const degree = feature.get('mnozhitel');
@@ -296,7 +296,7 @@ const mareimena = new VectorLayer({
   style: names,
 });
 
-// ==================== СТИЛИ ГОРОДОВ ====================
+// === СТИЛИ ГОРОДОВ ===
 const RomaStyle = new Style({
   image: new Circle({
     anchor: [0.5, 0.5],
@@ -478,10 +478,11 @@ const ShemakhaStyle = new Style({
   zIndex: 30,
 });
 
+// === ИСТОЧНИКИ ДАННЫХ ГОРОДОВ ===
 // ==================== ИСТОЧНИКИ ДАННЫХ ГОРОДОВ ====================
 const RomaSource = new VectorSource({
   url: '/data/cities/1roma.geojson',
-  attributions: '©  [Ancient World Mapping Center](http://awmc.unc.edu/awmc/map_data/license.txt) : Base Polygons, Borders, Data, Inland Water. ©  [ArcGIS](https://server.arcgisonline.com/arcgis/rest/services) : Vibrant, World Hillshade. ©  [Digital Atlas of the Roman Empire](https://raw.githubusercontent.com/johaahlf/dare/master/LICENSE) : Data, Roads. ©  [Hanson, J. W. (2016)](http://oxrep.classics.ox.ac.uk/databases/cities/) : Data. ©  [MapTiler](https://www.maptiler.com/copyright/) : Ocean. ©  [Mapzen](https://github.com/mapzen/documentation/blob/master/LICENSE) : Global Terrain. ©  [OpenStreetMap contributors](https://www.openstreetmap.org/copyright/en) . ©  [Pleiades](https://pleiades.stoa.org/credits) : Data. ©  [USGS The National Map](https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer) : 3D Elevation Program. ',
+  attributions: '© <a href="http://awmc.unc.edu/awmc/map_data/license.txt" target="_blank" rel="noopener">Ancient World Mapping Center</a>: Base Polygons, Borders, Data, Inland Water. © <a href="https://server.arcgisonline.com/arcgis/rest/services" target="_blank" rel="noopener">ArcGIS</a>: Vibrant, World Hillshade. © <a href="https://raw.githubusercontent.com/johaahlf/dare/master/LICENSE" target="_blank" rel="noopener">Digital Atlas of the Roman Empire</a>: Data, Roads. © <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank" rel="noopener">Hanson, J. W. (2016)</a>: Data. © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener">MapTiler</a>: Ocean. © <a href="https://github.com/mapzen/documentation/blob/master/LICENSE" target="_blank" rel="noopener">Mapzen</a>: Global Terrain. © <a href="https://www.openstreetmap.org/copyright/en" target="_blank" rel="noopener">OpenStreetMap contributors</a>. © <a href="https://pleiades.stoa.org/credits" target="_blank" rel="noopener">Pleiades</a>: Data. © <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer" target="_blank" rel="noopener">USGS The National Map</a>: 3D Elevation Program.',
   format: new GeoJSON(),
 });
 const CordubaSource = new VectorSource({
@@ -492,7 +493,6 @@ const ByzantiumSource = new VectorSource({
   url: '/data/cities/3byzantium.geojson',
   format: new GeoJSON(),
 });
-// ИСПРАВЛЕНИЕ: ne w -> new
 const LondiniumSource = new VectorSource({
   url: '/data/cities/4londinium.geojson',
   format: new GeoJSON(),
@@ -501,7 +501,6 @@ const TheodosiaSource = new VectorSource({
   url: '/data/cities/5theodosia.geojson',
   format: new GeoJSON(),
 });
-// ИСПРАВЛЕНИЕ: /da ta -> /data
 const AntinoopolisSource = new VectorSource({
   url: '/data/cities/6antinoopolis.geojson',
   format: new GeoJSON(),
@@ -510,18 +509,16 @@ const DelosSource = new VectorSource({
   url: '/data/cities/7delos.geojson',
   format: new GeoJSON(),
 });
-// ИСПРАВЛЕНИЕ: PityousSourc e -> PityousSource
 const PityousSource = new VectorSource({
   url: '/data/cities/8pityous.geojson',
   format: new GeoJSON(),
 });
 const ShemakhaSource = new VectorSource({
   url: '/data/cities/9shemakha.geojson',
-  // ИСПРАВЛЕНИЕ: new G eoJSON -> new GeoJSON
   format: new GeoJSON(),
 });
 
-// ==================== СЛОИ ГОРОДОВ ====================
+// === СЛОИ ГОРОДОВ ===
 const Roma = new VectorLayer({
   source: RomaSource,
   style: function (feature) {
@@ -619,7 +616,7 @@ const Shemakha = new VectorLayer({
   maxZoom: 10,
 });
 
-// ==================== СОЗДАНИЕ КАРТЫ ====================
+// === СОЗДАНИЕ КАРТЫ ===
 const map = new Map({
   controls: defaultControls().extend([scaleControl]),
   layers: [
@@ -646,12 +643,11 @@ const map = new Map({
 window.map = map;
 window.homeCenter = sreda;
 
-// ==================== ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ УПРАВЛЕНИЯ ====================
+// === ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ УПРАВЛЕНИЯ ===
 const zoomslider = new ZoomSlider();
 map.addControl(zoomslider);
 
-// ==================== ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ====================
-// ИСПРАВЛЕНИЕ: Убраны лишние пробелы в селекторах (например, "#title " -> "#title")
+// === ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ===
 const titleElement = document.querySelector("#title");
 const altElement = document.querySelector("#alt");
 const provinceElement = document.querySelector("#province");
@@ -681,14 +677,14 @@ const wikidatalinkElement = document.querySelector("#wikidatalink");
 const wikipedialinkElement = document.querySelector("#wikipedialink");
 const id130Element = document.querySelector("#id130-value");
 const permLinkElement = document.querySelector("#perm-link-display");
-
+  
 const hello = document.getElementById('pusto');
 const node = document.getElementById('hopa');
 let minimap = null;
 let markers = null;
 let centerpointSource = null;
 
-// ==================== ФУНКЦИЯ ОТОБРАЖЕНИЯ ИНФОРМАЦИИ О ГОРОДЕ ====================
+// === ФУНКЦИЯ ОТОБРАЖЕНИЯ ИНФОРМАЦИИ О ГОРОДЕ ===
 function showCityDetails(feature) {
   hello.style.visibility = 'hidden';
   node.style.visibility = 'visible';
@@ -724,7 +720,7 @@ function showCityDetails(feature) {
   const coo = toStringHDMS(lonlat);
   cooElement.textContent = coo.split('° ').join('°');
   
-  // === ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ: экранирование HTML ===
+  // === ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ: ЭКРАНИРОВАНИЕ HTML ===
   function escapeHtml(str) {
     if (!str) return '';
     const div = document.createElement('div');
@@ -738,12 +734,12 @@ function showCityDetails(feature) {
     ? `<img src='/icons/flags/${escapeHtml(country)}.png' title='${escapeHtml(country)}' width='17' height='17' style='display: inline-block; margin: 0 5px 0 5px;'>`
     : '';
 
-  // === ВНЕШНИЕ ССЫЛКИ (координаты — доверенные, экранировать не нужно) ===
+  // === ВНЕШНИЕ ССЫЛКИ ===
   googlelinkElement.innerHTML = `<a href='https://www.google.com/maps/place/${coo}' target='_blank' title='Google Maps'>Google Maps</a>`;
   OSMlinkElement.innerHTML = `<a href='http://www.openstreetmap.org/index.html?mlat=${coordlat}&mlon=${coordlon}&zoom=16' target='_blank' title='OpenStreetMap'>OpenStreetMap</a>`;
   wikimapialinkElement.innerHTML = `<a href='http://www.wikimapia.org/#lat=${coordlat}&lon=${coordlon}&z=16&l=0&m=w&v=0' target='_blank' title='Wikimapia'>Wikimapia</a>`;
   
-  // === ССЫЛКИ НА БАЗЫ ДАННЫХ (с экранированием входных значений) ===
+  // === ССЫЛКИ НА БАЗЫ ДАННЫХ ===
   darelinkElement.innerHTML = drlink 
     ? `<a href='http://imperium.ahlfeldt.se/places/${escapeHtml(drlink)}' target='_blank' title='DARE place'>${escapeHtml(drlink)}</a>` 
     : '';
@@ -853,11 +849,11 @@ function showCityDetails(feature) {
   };
 }
 
-// ==================== УЛУЧШЕННАЯ СИСТЕМА ПОИСКА ====================
+// === УЛУЧШЕННАЯ СИСТЕМА ПОИСКА ===
 const searchSource = new VectorSource({ features: [] });
 let lastSearchResults = [];
 
-// Загружаем ВСЕ города в поиск сразу
+// Загружаем все города в поиск сразу
 setTimeout(() => {
   const cityFiles = [
     '/data/cities/1roma.geojson',
@@ -1025,7 +1021,7 @@ searchInput.addEventListener('keydown', function(e) {
   }
 });
 
-// ==================== SELECT ДЛЯ ПОИСКА ====================
+// === SELECT ДЛЯ ПОИСКА ===
 const select = new Select();
 map.addInteraction(select);
 
@@ -1045,7 +1041,7 @@ function handleSearchSelect(feature) {
   resultsContainer.style.display = 'none';
 }
 
-// ==================== ОБРАБОТЧИК КЛИКА ПО КАРТЕ ====================
+// === ОБРАБОТЧИК КЛИКА ПО КАРТЕ ===
 map.on('click', function (evt) {
   let hitt = false;
   const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
@@ -1074,7 +1070,7 @@ map.on('click', function (evt) {
   }
 });
 
-// ==================== ИЗМЕНЕНИЕ КУРСОРА ====================
+// === ИЗМЕНЕНИЕ КУРСОРА ===
 map.on('pointermove', function(e) {
   if (e.dragging) return;
   const pixel = map.getEventPixel(e.originalEvent);
