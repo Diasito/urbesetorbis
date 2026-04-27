@@ -1,1124 +1,470 @@
 import '/style.css';
-import {toStringHDMS} from 'ol/coordinate';
-import {Attribution, defaults as defaultControls, ScaleLine, ZoomSlider} from 'ol/control';
+import { toStringHDMS } from 'ol/coordinate';
+import { defaults as defaultControls, ScaleLine, ZoomSlider } from 'ol/control';
 import Control from 'ol/control/Control';
-import {easeIn, easeOut} from 'ol/easing.js';
-import {fromLonLat, get as getProjection, transform} from 'ol/proj';
-import {getCenter} from 'ol/extent';
-import {Circle, Fill, Icon, Stroke, Style, Text} from 'ol/style';
-import {LineString, Point, Polygon} from 'ol/geom';
-import {Vector as VectorLayer} from 'ol/layer';
+import { easeOut } from 'ol/easing';
+import { fromLonLat, transform } from 'ol/proj';
+import { getCenter } from 'ol/extent';
+import { Circle, Fill, Icon, Stroke, Style, Text } from 'ol/style';
+import { Point } from 'ol/geom';
+import { Vector as VectorLayer } from 'ol/layer';
 import Feature from 'ol/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
 import Graticule from 'ol/layer/Graticule';
 import Map from 'ol/Map';
 import Select from 'ol/interaction/Select';
 import TileLayer from 'ol/layer/Tile';
-import {Vector} from 'ol/source';
-import VectorSource from 'ol/source/Vector';
+import { Vector as VectorSource } from 'ol/source';
 import View from 'ol/View';
 import XYZ from 'ol/source/XYZ';
 import ClipboardJS from 'clipboard';
 
-let clipboard = null;
+// === 1. ГЛОБАЛЬНЫЕ КОНФИГУРАЦИИ И СОСТОЯНИЕ ===
+const CITY_FILES = [
+  '/data/cities/1roma.geojson',
+  '/data/cities/2corduba.geojson',
+  '/data/cities/3byzantium.geojson',
+  '/data/cities/4londinium.geojson',
+  '/data/cities/5theodosia.geojson',
+  '/data/cities/6antinoopolis.geojson',
+  '/data/cities/7delos.geojson',
+  '/data/cities/8pityous.geojson',
+  '/data/cities/9shemakha.geojson'
+];
 
-// === URL & PERMALINK ===
-function parseCityIdFromHash() {
-  const hash = window.location.hash;
-  const match = hash.match(/#id(\d+)/);
-  return match ? parseInt(match[1], 10) : null;
-}
-
-function findFeatureById130(id130) {
-  if (!searchSource || !id130) return null;
-  return searchSource.getFeatures().find(f => f.get('id130') === id130) || null;
-}
-
-function updateHashForCity(feature) {
-  const id130 = feature.get('id130');
-  const title = feature.get('title') || '';
-  const slug = title.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
-  const newHash = `#id${id130}${slug ? '-' + slug : ''}`;
-  if (window.location.hash !== newHash) {
-    window.history.replaceState(null, null, newHash);
-  }
-}
-
-function getPermanentLink(feature) {
-  const id130 = feature.get('id130');
-  const title = feature.get('title') || '';
-  const slug = title.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
-  return `${window.location.origin}${window.location.pathname}#id${id130}${slug ? '-' + slug : ''}`;
-}
-
-function handleInitialHash() {
-  const id130 = parseCityIdFromHash();
-  if (id130) {
-    const feature = findFeatureById130(id130);
-    if (feature) handleSearchSelect(feature);
-  }
-}
-
-window.addEventListener('hashchange', () => {
-  const id130 = parseCityIdFromHash();
-  if (id130) {
-    const feature = findFeatureById130(id130);
-    if (feature) handleSearchSelect(feature);
-  }
-});
-
-// === ВИЗУАЛЬНОЕ ФОРМАТИРОВАНИЕ ЗАГОЛОВКОВ (для шрифта CapitalisTypOasis) ===
-
-/**
- * Конвертирует число 1-3999 в римскую запись для визуального отображения
- */
-function toRomanVisual(num) {
-  if (num < 1 || num > 3999) return String(num);
-  const romanMap = [
-    [1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'],
-    [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'],
-    [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']
-  ];
-  let result = '';
-  for (const [value, symbol] of romanMap) {
-    while (num >= value) {
-      result += symbol;
-      num -= value;
-    }
-  }
-  return result;
-}
-
-/**
- * Форматирует название/обозначение для отображения:
- * - Конвертирует арабские цифры в римские (1-3999)
- * - Сохраняет буквы, дефисы и структуру исходной строки
- * - Применяется ТОЛЬКО к визуальному выводу, не меняет данные или URL
- */
-function formatTitleForDisplay(title) {
-  if (!title) return '';
-  // Заменяем ЛЮБЫЕ последовательности цифр (1-4 знака) на римские
-  // Примеры: "MM18" → "MMXVIII", "K060" → "KLX", "C-16-I" → "C-XVI-I"
-  return title.replace(/(\d{1,4})/g, (match, num) => {
-    const n = parseInt(num, 10);
-    return (n >= 1 && n <= 3999) ? toRomanVisual(n) : match;
-  });
-}
-
-// === ЗАГРУЗКА ЭКРАНА ===
-window.addEventListener('load', function() {
-  const loadingScreen = document.getElementById('loading-screen');
-  const progressBar = document.getElementById('loading-progress-bar');
-  const progressText = document.getElementById('loading-progress-text');
-  if (!loadingScreen) return;
-
-  let loadedTiles = 0;
-  let totalTiles = 0;
-  let isComplete = false;
-
-  const baseSource = base.getSource();
-
-  const tileLoadHandler = function() {
-    loadedTiles++;
-    updateProgress();
-  };
-
-  baseSource.on('tileloadstart', function() {
-    totalTiles++;
-    updateProgress();
-  });
-  baseSource.on('tileloadend', tileLoadHandler);
-  baseSource.on('tileloaderror', tileLoadHandler);
-
-  function updateProgress() {
-    if (totalTiles === 0) return;
-    const minTiles = 10;
-    const effectiveTotal = Math.max(totalTiles, minTiles);
-    const effectiveLoaded = Math.min(loadedTiles, effectiveTotal);
-    const percent = Math.min(100, Math.round((effectiveLoaded / effectiveTotal) * 100));
-
-    if (progressBar) progressBar.style.width = percent + '%';
-    if (progressText) progressText.textContent = `Loading map tiles... ${percent}%`;
-
-    const shouldComplete = (loadedTiles >= totalTiles && totalTiles >= 5) || percent >= 90;
-    if (shouldComplete && !isComplete) {
-      isComplete = true;
-      completeLoading();
-    }
-  }
-
-  function completeLoading() {
-    if (progressBar) progressBar.style.width = '100%';
-    if (progressText) progressText.textContent = 'Ready!';
-    setTimeout(() => {
-      if (loadingScreen) {
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-          baseSource.un('tileloadend', tileLoadHandler);
-          baseSource.un('tileloaderror', tileLoadHandler);
-        }, 500);
-      }
-    }, 800);
-  }
-
-  const fallbackTimeout = setTimeout(() => {
-    if (loadingScreen && loadingScreen.style.display !== 'none' && !isComplete) {
-      console.log('Fallback: forcing completion after timeout');
-      isComplete = true;
-      completeLoading();
-    }
-  }, 7000);
-
-  map.once('rendercomplete', function() {
-    if (!isComplete) {
-      isComplete = true;
-      clearTimeout(fallbackTimeout);
-      completeLoading();
-    }
-  });
-
-  setTimeout(() => {
-    if (progressBar) progressBar.style.width = '10%';
-    if (progressText) progressText.textContent = 'Starting map load...';
-  }, 300);
-});
-
-// === БАЗОВЫЕ ЭЛЕМЕНТЫ КАРТЫ ===
-const scaleControl = new ScaleLine({
-  units: 'metric',
-  bar: true,
-  steps: 4,
-  text: true,
-  minWidth: 140,
-});
-const sreda = fromLonLat([23, 38.5]);
-const view = new View({
-  projection: 'EPSG:3857',
-  center: sreda,
-  zoom: 6,
-  minZoom: 3.9999,
-  maxZoom: 10,
-  extent: [-1400000, 2600000, 6100000, 7600000],
-});
-
-// === БАЗОВЫЙ СЛОЙ КАРТЫ ===
-const base = new TileLayer({
-  preload: 1,
-  source: new XYZ({
-    urls: ["/data/base2/{z}/{x}/{y}.png"],
-    tilePixelRatio: 1.000000
-  }),
-  minZoom: 3,
-  maxZoom: 10,
-  opacity: 1,
-});
-
-// === СЛОЙ ПОМЕРИЯ ===
-const stylePomerium = new Style({
-  fill: new Fill({ color: 'red' }),
-});
-const pomerium = new VectorLayer({
-  source: new VectorSource({
-    format: new GeoJSON(),
-    url: "/data/cultural/pomerium1.geojson",
-  }),
-  style: stylePomerium,
-  minZoom: 6.9999,
-  maxZoom: 10,
-  opacity: 0.8,
-});
-
-// === СЛОЙ ДОРОГ ===
-const styleRoads = new Style({
-  fill: new Fill(),
-  stroke: new Stroke({ color: 'red' }),
-  text: new Text({
-    font: '10px sans-serif',
-    fill: new Fill({ color: 'red' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    placement: 'line',
-    repeat: 1000,
-    textBaseline: 'bottom',
-    maxAngle: Math.PI/10,
-    overflow: 'true',
-  }),
-});
-const roads = new VectorLayer({
-  source: new VectorSource({
-    format: new GeoJSON(),
-    url: "/data/cultural/roads5.geojson",
-  }),
-  style: function (feature) {
-    const width = feature.get('rank');
-    styleRoads.getStroke().setWidth(width / 3);
-    styleRoads.getText().setText(feature.get('name'));
-    return styleRoads;
-  },
-  minZoom: 3.9999,
-  maxZoom: 10,
-  opacity: 0.6,
-  declutter: true,
-});
-
-// === СЕТКА КООРДИНАТ ===
-const graticule = new Graticule({
-  strokeStyle: new Stroke({ color: 'rgba(0,0,0,0.9)', width: 0.1 }),
-  showLabels: true,
-  wrapX: false,
-});
-
-// === НАЗВАНИЯ ПРОВИНЦИЙ ===
-function provincenames (feature) {
-  const zoom = map.getView().getZoom();
-  const degree = feature.get('mnozhitel');
-  const font_size = (zoom**1.65)*degree;
-  const provi = feature.get('title').toUpperCase();
-  return [
-    new Style({
-      text: new Text({
-        font: font_size + 'px serif',
-        textAlign: 'center',
-        justify: 'center',
-        placement: 'line',
-        weight: 'bold',
-        fill: new Fill({ color: [87, 0, 127, 0.6] }),
-        stroke: new Stroke({ color: [255, 255, 255, 0.3], width: 1 }),
-        padding: [1, 1, 1, 1],
-        text: provi,
-      }),
-    }),
-  ];
-}
-const provimena = new VectorLayer({
-  source: new VectorSource({
-    format: new GeoJSON(),
-    url: "/data/cultural/prov_names1.geojson",
-  }),
-  minZoom: 3.9999,
-  maxZoom: 8,
-  opacity: 1,
-  style: provincenames,
-});
-
-// === НАЗВАНИЯ МОРЕЙ ===
-function names (feature) {
-  const zoom = map.getView().getZoom();
-  const degree = feature.get('mnozhitel');
-  const font_size = (zoom**1.65)*degree;
-  const provi = feature.get('title').toUpperCase();
-  return [
-    new Style({
-      text: new Text({
-        font: 'italic ' + font_size + 'px serif',
-        textAlign: 'center',
-        justify: 'center',
-        placement: 'line',
-        fill: new Fill({ color: [50, 101, 211, 0.6] }),
-        stroke: new Stroke({ color: [0, 0, 0, 0.1], width: 1 }),
-        padding: [1, 1, 1, 1],
-        text: provi,
-      }),
-    }),
-  ];
-}
-const mareimena = new VectorLayer({
-  source: new VectorSource({
-    format: new GeoJSON(),
-    url: "/data/cultural/mare_names1.geojson",
-  }),
-  minZoom: 3.9999,
-  maxZoom: 8,
-  opacity: 1,
-  style: names,
-});
-
-// === СТИЛИ ГОРОДОВ ===
-const RomaStyle = new Style({
-  image: new Circle({
-    anchor: [0.5, 0.5],
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 4,
-    stroke: new Stroke({ color: '#000', width: 1 }),
-    fill: new Fill({ color: 'red' })
-  }),
-  text: new Text({
-    font: 'bold 13px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 6,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 100,
-});
-const CordubaStyle = new Style({
-  image: new Circle({
-    anchor: [0.5, 0.5],
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 3.5,
-    fill: new Fill({ color: 'red' }),
-    stroke: new Stroke({ color: '#000', width: 1 }),
-  }),
-  text: new Text({
-    font: 'bold 12px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 4,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 90,
-});
-const ByzantiumStyle = new Style({
-  image: new Circle({
-    anchor: [0.5, 0.5],
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 3.5,
-    stroke: new Stroke({ color: '#000', width: 1 }),
-    fill: new Fill({ color: 'white' })
-  }),
-  text: new Text({
-    font: 'bold 12px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 4,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 90,
-});
-const LondiniumStyle = new Style({
-  image: new Circle({
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 3,
-    stroke: new Stroke({ color: '#000', width: 1 }),
-    fill: new Fill({ color: 'red' })
-  }),
-  text: new Text({
-    font: 'bold 11px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 4,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 80,
-});
-const TheodosiaStyle = new Style({
-  image: new Circle({
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 3,
-    stroke: new Stroke({ color: '#000', width: 1 }),
-    fill: new Fill({ color: 'white' })
-  }),
-  text: new Text({
-    font: 'bold 11px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 4,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 70,
-});
-const AntinoopolisStyle = new Style({
-  image: new Circle({
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 2.5,
-    stroke: new Stroke({ color: '#000', width: 1 }),
-    fill: new Fill({ color: 'white' })
-  }),
-  text: new Text({
-    font: 'bold 10px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 3,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 60,
-});
-const DelosStyle = new Style({
-  image: new Circle({
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 2,
-    stroke: new Stroke({ color: '#000', width: 1 }),
-    fill: new Fill({ color: 'white' }),
-    declutterMode: 'declutter',
-    declutter: true,
-  }),
-  text: new Text({
-    font: 'bold 9px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 3,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 50,
-});
-const PityousStyle = new Style({
-  image: new Circle({
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 1.5,
-    stroke: new Stroke({ color: '#000', width: 1 }),
-    fill: new Fill({ color: 'white' }),
-    declutterMode: 'declutter',
-    declutter: true,
-  }),
-  text: new Text({
-    font: '9px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 3,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 40,
-});
-const ShemakhaStyle = new Style({
-  image: new Circle({
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-    radius: 1,
-    stroke: new Stroke({ color: '#000', width: 0.5 }),
-    fill: new Fill({ color: 'black' }),
-    declutterMode: 'declutter',
-    declutter: true,
-  }),
-  text: new Text({
-    font: 'italic 9px sans-serif',
-    textAlign: 'center',
-    offsetX: 0,
-    offsetY: 3,
-    fill: new Fill({ color: '#000' }),
-    stroke: new Stroke({ color: '#fff', width: 0.1 }),
-    textBaseline: 'top',
-  }),
-  zIndex: 30,
-});
-
-// === ИСТОЧНИКИ ДАННЫХ ГОРОДОВ ===
-const RomaSource = new VectorSource({
-  url: '/data/cities/1roma.geojson',
-  attributions: '© <a href="http://awmc.unc.edu/awmc/map_data/license.txt" target="_blank" rel="noopener">Ancient World Mapping Center</a>: Base Polygons, Borders, Data, Inland Water. © <a href="https://server.arcgisonline.com/arcgis/rest/services" target="_blank" rel="noopener">ArcGIS</a>: Vibrant, World Hillshade. © <a href="https://raw.githubusercontent.com/johaahlf/dare/master/LICENSE" target="_blank" rel="noopener">Digital Atlas of the Roman Empire</a>: Data, Roads. © <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank" rel="noopener">Hanson, J. W. (2016)</a>: Data. © <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener">MapTiler</a>: Ocean. © <a href="https://github.com/mapzen/documentation/blob/master/LICENSE" target="_blank" rel="noopener">Mapzen</a>: Global Terrain. © <a href="https://www.openstreetmap.org/copyright/en" target="_blank" rel="noopener">OpenStreetMap contributors</a>. © <a href="https://pleiades.stoa.org/credits" target="_blank" rel="noopener">Pleiades</a>: Data. © <a href="https://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer" target="_blank" rel="noopener">USGS The National Map</a>: 3D Elevation Program.',
-  format: new GeoJSON(),
-});
-const CordubaSource = new VectorSource({
-  url: '/data/cities/2corduba.geojson',
-  format: new GeoJSON(),
-});
-const ByzantiumSource = new VectorSource({
-  url: '/data/cities/3byzantium.geojson',
-  format: new GeoJSON(),
-});
-const LondiniumSource = new VectorSource({
-  url: '/data/cities/4londinium.geojson',
-  format: new GeoJSON(),
-});
-const TheodosiaSource = new VectorSource({
-  url: '/data/cities/5theodosia.geojson',
-  format: new GeoJSON(),
-});
-const AntinoopolisSource = new VectorSource({
-  url: '/data/cities/6antinoopolis.geojson',
-  format: new GeoJSON(),
-});
-const DelosSource = new VectorSource({
-  url: '/data/cities/7delos.geojson',
-  format: new GeoJSON(),
-});
-const PityousSource = new VectorSource({
-  url: '/data/cities/8pityous.geojson',
-  format: new GeoJSON(),
-});
-const ShemakhaSource = new VectorSource({
-  url: '/data/cities/9shemakha.geojson',
-  format: new GeoJSON(),
-});
-
-// === СЛОИ ГОРОДОВ ===
-const Roma = new VectorLayer({
-  source: RomaSource,
-  style: function (feature) {
-    RomaStyle.getText().setText(feature.get('title').toUpperCase());
-    return RomaStyle;
-  },
-  declutter: true,
-  minZoom: 3.9999,
-  maxZoom: 10,
-});
-const Corduba = new VectorLayer({
-  source: CordubaSource,
-  style: function (feature) {
-    CordubaStyle.getText().setText(feature.get('title'));
-    return CordubaStyle;
-  },
-  declutter: true,
-  minZoom: 3.9999,
-  maxZoom: 10,
-});
-const Byzantium = new VectorLayer({
-  source: ByzantiumSource,
-  style: function (feature) {
-    ByzantiumStyle.getText().setText(feature.get('title'));
-    return ByzantiumStyle;
-  },
-  declutter: true,
-  minZoom: 3.9999,
-  maxZoom: 10,
-});
-const Londinium = new VectorLayer({
-  source: LondiniumSource,
-  style: function (feature) {
-    const label = feature.get('title').split(' ').join('\n');
-    LondiniumStyle.getText().setText(label);
-    return LondiniumStyle;
-  },
-  declutter: true,
-  minZoom: 3.9999,
-  maxZoom: 10,
-});
-const Theodosia = new VectorLayer({
-  source: TheodosiaSource,
-  style: function (feature) {
-    const label = feature.get('title').split(' ').join('\n');
-    TheodosiaStyle.getText().setText(label);
-    return TheodosiaStyle;
-  },
-  declutter: true,
-  minZoom: 3.9999,
-  maxZoom: 10,
-});
-const Antinoopolis = new VectorLayer({
-  source: AntinoopolisSource,
-  style: function (feature) {
-    const label = feature.get('title').split(' ').join('\n');
-    AntinoopolisStyle.getText().setText(label);
-    return AntinoopolisStyle;
-  },
-  declutter: true,
-  minZoom: 4.9999,
-  maxZoom: 10,
-});
-const Delos = new VectorLayer({
-  source: DelosSource,
-  style: function (feature) {
-    const label = feature.get('title').split(' ').join('\n');
-    DelosStyle.getText().setText(label);
-    return DelosStyle;
-  },
-  declutter: true,
-  minZoom: 5.9999,
-  maxZoom: 10,
-});
-const Pityous = new VectorLayer({
-  source: PityousSource,
-  style: function (feature) {
-    const label = feature.get('title').split(' ').join('\n');
-    PityousStyle.getText().setText(label);
-    return PityousStyle;
-  },
-  declutter: true,
-  minZoom: 6.9999,
-  maxZoom: 10,
-});
-const Shemakha = new VectorLayer({
-  source: ShemakhaSource,
-  style: function (feature) {
-    const label = feature.get('title').split(' ').join('\n');
-    ShemakhaStyle.getText().setText(label);
-    return ShemakhaStyle;
-  },
-  declutter: true,
-  minZoom: 7.9999,
-  maxZoom: 10,
-});
-
-// === СОЗДАНИЕ КАРТЫ ===
-const map = new Map({
-  controls: defaultControls().extend([scaleControl]),
-  layers: [
-    base,
-    roads,
-    graticule,
-    mareimena,
-    provimena,
-    Shemakha,
-    Pityous,
-    Delos,
-    Antinoopolis,
-    Theodosia,
-    Londinium,
-    Byzantium,
-    Corduba,
-    Roma,
-    pomerium,
-  ],
-  target: document.getElementById('map'),
-  view: view,
-});
-
-window.map = map;
-window.homeCenter = sreda;
-
-// === ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ УПРАВЛЕНИЯ ===
-const zoomslider = new ZoomSlider();
-map.addControl(zoomslider);
-
-// === ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ===
-const titleElement = document.querySelector("#title");
-const altElement = document.querySelector("#alt");
-const provinceElement = document.querySelector("#province");
-const countryElement = document.querySelector("#country");
-const startElement = document.querySelector("#start");
-const modernElement = document.querySelector("#modern");
-const descriptionElement = document.querySelector("#description");
-const batlasElement = document.querySelector("#batlas");
-const awmcElement = document.querySelector("#awmc");
-const darmcElement = document.querySelector("#darmc");
-const hansonElement = document.querySelector("#hanson");
-const orbisElement = document.querySelector("#orbis");
-const trismegistosElement = document.querySelector("#trismegistos");
-const coordsElement = document.querySelector("#coords");
-const cooElement = document.querySelector("#coords2");
-const flagElement = document.querySelector("#flag");
-const googlelinkElement = document.querySelector("#googlelink");
-const OSMlinkElement = document.querySelector("#OSMlink");
-const wikimapialinkElement = document.querySelector("#wikimapialink");
-const darelinkElement = document.querySelector("#darelink");
-const pecslinkElement = document.querySelector("#pecslink");
-const pleiadeslinkElement = document.querySelector("#pleiadeslink");
-const tpplacelinkElement = document.querySelector("#tpplacelink");
-const topostextlinkElement = document.querySelector("#topostextlink");
-const vicilinkElement = document.querySelector("#vicilink");
-const wikidatalinkElement = document.querySelector("#wikidatalink");
-const wikipedialinkElement = document.querySelector("#wikipedialink");
-const id130Element = document.querySelector("#id130-value");
-const permLinkElement = document.querySelector("#perm-link-display");
-  
-const hello = document.getElementById('pusto');
-const node = document.getElementById('hopa');
+let searchSource = new VectorSource({ features: [] });
+let markersLayer = null;
 let minimap = null;
-let markers = null;
-let centerpointSource = null;
-
-// === ФУНКЦИЯ ОТОБРАЖЕНИЯ ИНФОРМАЦИИ О ГОРОДЕ ===
-function showCityDetails(feature) {
-  hello.style.visibility = 'hidden';
-  node.style.visibility = 'visible';
-  
-  titleElement.innerHTML = formatTitleForDisplay(feature.get('title'));
-  altElement.innerHTML = feature.get('alt');
-  provinceElement.innerHTML = feature.get('province');
-  startElement.innerHTML = feature.get('start');
-  modernElement.innerHTML = feature.get('modern');
-  countryElement.innerHTML = feature.get('country');
-  batlasElement.innerHTML = feature.get('batlas');
-  descriptionElement.innerHTML = feature.get('description');
-  awmcElement.innerHTML = feature.get('awmc');
-  darmcElement.innerHTML = feature.get('darmc');
-  hansonElement.innerHTML = feature.get('hanson');
-  orbisElement.innerHTML = feature.get('orbis');
-  trismegistosElement.innerHTML = feature.get('trismegistos');
-  coordsElement.textContent = feature.get('latlon').split(',').join(', ');
-  
-  const drlink = feature.get('dare');
-  const pelink = feature.get('PECS');
-  const pllink = feature.get('pleiades');
-  const tplink = feature.get('TTPlace');
-  const ttlink = feature.get('topostext');
-  const vclink = feature.get('vici');
-  const wdlink = feature.get('wikidata');
-  const wplink = feature.get('wikipedia:en');
-  
-  const minicenter = getCenter(feature.getGeometry().getExtent());
-  const lonlat = transform(minicenter, 'EPSG:3857', 'EPSG:4326');
-  const coordlon = (lonlat[0]).toFixed(6);
-  const coordlat = (lonlat[1]).toFixed(6);
-  const coo = toStringHDMS(lonlat);
-  cooElement.textContent = coo.split('° ').join('°');
-  
-  // === ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ: ЭКРАНИРОВАНИЕ HTML ===
-  function escapeHtml(str) {
-    if (!str) return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  // === ФЛАГ СТРАНЫ ===
-  const country = countryElement.innerHTML?.trim();
-  flagElement.innerHTML = country 
-    ? `<img src='/icons/flags/${escapeHtml(country)}.png' title='${escapeHtml(country)}' width='17' height='17' style='display: inline-block; margin: 0 5px 0 5px;'>`
-    : '';
-
-  // === ВНЕШНИЕ ССЫЛКИ ===
-  googlelinkElement.innerHTML = `<a href='https://www.google.com/maps/place/${coo}' target='_blank' title='Google Maps'>Google Maps</a>`;
-  OSMlinkElement.innerHTML = `<a href='http://www.openstreetmap.org/index.html?mlat=${coordlat}&mlon=${coordlon}&zoom=16' target='_blank' title='OpenStreetMap'>OpenStreetMap</a>`;
-  wikimapialinkElement.innerHTML = `<a href='http://www.wikimapia.org/#lat=${coordlat}&lon=${coordlon}&z=16&l=0&m=w&v=0' target='_blank' title='Wikimapia'>Wikimapia</a>`;
-  
-  // === ССЫЛКИ НА БАЗЫ ДАННЫХ ===
-  darelinkElement.innerHTML = drlink 
-    ? `<a href='http://imperium.ahlfeldt.se/places/${escapeHtml(drlink)}' target='_blank' title='DARE place'>${escapeHtml(drlink)}</a>` 
-    : '';
-    
-  pecslinkElement.innerHTML = pelink 
-    ? `<a href='http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0006:entry=${escapeHtml(pelink)}' target='_blank' title='Princeton place'>${escapeHtml(pelink)}</a>` 
-    : '';
-    
-  pleiadeslinkElement.innerHTML = pllink 
-    ? `<a href='https://pleiades.stoa.org/places/${escapeHtml(pllink)}' target='_blank' title='Pleiades place'>${escapeHtml(pllink)}</a>` 
-    : '';
-    
-  tpplacelinkElement.innerHTML = tplink 
-    ? `<a href='https://www.cambridge.org/us/talbert/talbertdatabase/TPPlace${escapeHtml(tplink)}.html' target='_blank' title='TPPlace place'>${escapeHtml(tplink)}</a>` 
-    : '';
-    
-  topostextlinkElement.innerHTML = ttlink 
-    ? `<a href='https://topostext.org/place/${escapeHtml(ttlink)}' target='_blank' title='ToposText place'>${escapeHtml(ttlink)}</a>` 
-    : '';
-    
-  vicilinkElement.innerHTML = vclink 
-    ? `<a href='https://vici.org/vici/${escapeHtml(vclink)}' target='_blank' title='Vici place'>${escapeHtml(vclink)}</a>` 
-    : '';
-    
-  wikidatalinkElement.innerHTML = wdlink 
-    ? `<a href='https://www.wikidata.org/wiki/Q${escapeHtml(wdlink)}' target='_blank' title='Wikidata ID'>${escapeHtml(wdlink)}</a>` 
-    : '';
-    
-  wikipedialinkElement.innerHTML = wplink 
-    ? `<a href='https://en.wikipedia.org/wiki/${encodeURIComponent(wplink)}' target='_blank' title='Wikipedia:en'>${escapeHtml(wplink)}</a>` 
-    : '';
-
-  // === ОБНОВЛЕНИЕ ID И PERMANENT LINK ===
-  // Обновляем текст ID и текста ссылки в новой строке над Alt name(s)
-  if (id130Element) id130Element.textContent = feature.get('id130');
-  const permUrl = getPermanentLink(feature);
-  if (permLinkElement) {
-  permLinkElement.href = permUrl;
-  permLinkElement.textContent = permUrl;
-  }
-  
-  // Обновляем хэш в адресной строке
-  updateHashForCity(feature);
-  // ========================================
-  
-  if (markers) {
-    map.removeLayer(markers);
-  }
-  markers = new VectorLayer({
-    source: new VectorSource(),
-    style: new Style({
-      image: new Icon({
-        anchor: [0.5, 0.5],
-        src: '/icons/target.png'
-      })
-    })
-  });
-  map.addLayer(markers);
-  const marker = new Feature(new Point(minicenter));
-  markers.getSource().addFeature(marker);
-  
-  if (!minimap) {
-    centerpointSource = new VectorSource();
-    const pointFeature = new Feature(new Point(minicenter));
-    centerpointSource.addFeature(pointFeature);
-    const centerpoint = new VectorLayer({
-      source: centerpointSource,
-      style: new Style({
-        image: new Icon({
-          anchor: [0.5, 0.5],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'pixels',
-          src: '/icons/target.png',
-        })
-      })
-    });
-    minimap = new Map({
-      target: 'minimap',
-      layers: [
-        new TileLayer({
-          source: new XYZ({
-            attributions: 'Tiles © Google',
-            url: 'https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}'
-          }),
-        }),
-        centerpoint,
-      ],
-      view: new View({
-        projection: 'EPSG:3857',
-        center: minicenter,
-        zoom: 15,
-        minZoom: 13.9999,
-        maxZoom: 18,
-      }),
-    });
-  } else {
-    centerpointSource.clear();
-    const pointFeature = new Feature(new Point(minicenter));
-    centerpointSource.addFeature(pointFeature);
-    minimap.getView().setCenter(minicenter);
-    minimap.getView().setZoom(15);
-  }
-  
-  document.getElementById("workOpen").click();
-  if (!clipboard) {
-    clipboard = new ClipboardJS('.btn');
-  };
-}
-
-// === УЛУЧШЕННАЯ СИСТЕМА ПОИСКА ===
-const searchSource = new VectorSource({ features: [] });
+let minimapSource = null;
+let clipboard = null;
+let cityLayers = [];
 let lastSearchResults = [];
 
-// Загружаем все города в поиск сразу
-setTimeout(() => {
-  const cityFiles = [
-    '/data/cities/1roma.geojson',
-    '/data/cities/2corduba.geojson',
-    '/data/cities/3byzantium.geojson',
-    '/data/cities/4londinium.geojson',
-    '/data/cities/5theodosia.geojson',
-    '/data/cities/6antinoopolis.geojson',
-    '/data/cities/7delos.geojson',
-    '/data/cities/8pityous.geojson',
-    '/data/cities/9shemakha.geojson'
-  ];
-  let loadedCount = 0;
-  
-  cityFiles.forEach(url => {
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const features = new GeoJSON().readFeatures(data, {
-          dataProjection: 'EPSG:4326',
-          featureProjection: map.getView().getProjection()
-        });
-        features.forEach(feature => {
-          feature.set("featureType", "title");
-          searchSource.addFeature(feature);
-        });
-        
-        loadedCount++;
-        // Запускаем проверку хэша после загрузки всех данных
-        if (loadedCount === cityFiles.length) {
-          handleInitialHash();
-        }
-      })
-      .catch(error => {
-        console.error('Error loading city ', error);
-        loadedCount++;
-        if (loadedCount === cityFiles.length) {
-          handleInitialHash();
-        }
-      });
-  });
-}, 100);
-
-// Функция сортировки результатов
-function sortSearchResults(results, searchTerm) {
-  if (!searchTerm || results.length === 0) return results;
-  const termLower = searchTerm.toLowerCase();
-  const resultsCopy = [...results];
-  resultsCopy.sort((a, b) => {
-    const titleA = a.get('title').toLowerCase();
-    const titleB = b.get('title').toLowerCase();
-    const exactMatchA = titleA === termLower;
-    const exactMatchB = titleB === termLower;
-    if (exactMatchA && !exactMatchB) return -1;
-    if (!exactMatchA && exactMatchB) return 1;
-    const startsWithA = titleA.startsWith(termLower);
-    const startsWithB = titleB.startsWith(termLower);
-    if (startsWithA && !startsWithB) return -1;
-    if (!startsWithA && startsWithB) return 1;
-    return titleA.localeCompare(titleB);
-  });
-  return resultsCopy;
+// === 2. БЕЗОПАСНЫЕ УТИЛИТЫ ===
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
 }
 
-// Создание элементов интерфейса поиска
+function safeGet(feature, key, fallback = '') {
+  const val = feature.get(key);
+  return val !== undefined && val !== null ? String(val) : fallback;
+}
+
+function slugify(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
+}
+
+// ✅ FIX 3: Форматирование заголовков для отображения
+function formatTitleForDisplay(title) {
+  if (!title) return '';
+  // Сохраняет оригинальный регистр, но гарантирует безопасную строку
+  return String(title).trim();
+}
+
+// === 3. DOM-ЭЛЕМЕНТЫ (с проверкой на null) ===
+function getEl(id) {
+  const el = document.getElementById(id);
+  if (!el) console.warn(`[DOM] Элемент #${id} не найден.`);
+  return el;
+}
+
+const els = {
+  title: getEl('title'), alt: getEl('alt'), province: getEl('province'),
+  start: getEl('start'), modern: getEl('modern'), country: getEl('country'),
+  batlas: getEl('batlas'), description: getEl('description'),
+  awmc: getEl('awmc'), darmc: getEl('darmc'), hanson: getEl('hanson'),
+  orbis: getEl('orbis'), trismegistos: getEl('trismegistos'),
+  coords: getEl('coords'), coords2: getEl('coords2'),
+  flag: getEl('flag'), googlelink: getEl('googlelink'),
+  OSMlink: getEl('OSMlink'), wikimapialink: getEl('wikimapialink'),
+  darelink: getEl('darelink'), pecslink: getEl('pecslink'),
+  pleiadeslink: getEl('pleiadeslink'), tpplacelink: getEl('tpplacelink'),
+  topostextlink: getEl('topostextlink'), vicilink: getEl('vicilink'),
+  wikidatalink: getEl('wikidatalink'), wikipedialink: getEl('wikipedialink'),
+  id130: getEl('id130-value'), permLink: getEl('perm-link-display'),
+  hello: getEl('pusto'), node: getEl('hopa'), minimapDiv: getEl('minimap'),
+  workOpen: getEl('workOpen')
+};
+
+// === 4. СТИЛИ ГОРОДОВ (✅ FIX 4: Базовые стили теперь НЕ мутируются) ===
+function createCityStyle(config) {
+  return new Style({
+    image: new Circle({
+      anchor: [0.5, 0.5], anchorXUnits: 'fraction', anchorYUnits: 'pixels',
+      radius: config.radius,
+      stroke: new Stroke({ color: config.stroke || '#000', width: config.strokeWidth || 1 }),
+      fill: new Fill({ color: config.fill || 'white' }),
+      ...(config.declutter ? { declutterMode: 'declutter' } : {})
+    }),
+    text: new Text({
+      font: `${config.fontWeight || ''} ${config.fontSize}px sans-serif`.trim(),
+      textAlign: 'center', offsetX: 0, offsetY: config.offsetY || 3,
+      fill: new Fill({ color: '#000' }),
+      stroke: new Stroke({ color: '#fff', width: 0.1 }),
+      textBaseline: 'top',
+      ...(config.declutter ? { declutter: true } : {})
+    }),
+    zIndex: config.zIndex || 50
+  });
+}
+
+const baseStyles = {
+  Roma: createCityStyle({ radius: 4, fill: 'red', fontSize: 13, offsetY: 6, fontWeight: 'bold', zIndex: 100 }),
+  Corduba: createCityStyle({ radius: 3.5, fill: 'red', fontSize: 12, offsetY: 4, fontWeight: 'bold', zIndex: 90 }),
+  Byzantium: createCityStyle({ radius: 3.5, fill: 'white', fontSize: 12, offsetY: 4, fontWeight: 'bold', zIndex: 90 }),
+  Londinium: createCityStyle({ radius: 3, fill: 'red', fontSize: 11, offsetY: 4, fontWeight: 'bold', zIndex: 80 }),
+  Theodosia: createCityStyle({ radius: 3, fill: 'white', fontSize: 11, offsetY: 4, fontWeight: 'bold', zIndex: 70 }),
+  Antinoopolis: createCityStyle({ radius: 2.5, fill: 'white', fontSize: 10, offsetY: 3, fontWeight: 'bold', zIndex: 60 }),
+  Delos: createCityStyle({ radius: 2, fill: 'white', fontSize: 9, offsetY: 3, fontWeight: 'bold', declutter: true, zIndex: 50 }),
+  Pityous: createCityStyle({ radius: 1.5, fill: 'white', fontSize: 9, offsetY: 3, declutter: true, zIndex: 40 }),
+  Shemakha: createCityStyle({ radius: 1, fill: 'black', fontSize: 9, offsetY: 3, strokeWidth: 0.5, declutter: true, zIndex: 30 })
+};
+
+// ✅ FIX 4: Фабрика стилей с клонированием (исключает мутацию)
+const createCityStyleFn = (baseStyle, transformFn) => (feature) => {
+  const style = baseStyle.clone();
+  style.getText().setText(transformFn(safeGet(feature, 'title')));
+  return style;
+};
+
+// === 5. СЛОИ ===
+const base = new TileLayer({ preload: 1, source: new XYZ({ urls: ["/data/base2/{z}/{x}/{y}.png"], tilePixelRatio: 1 }), minZoom: 3, maxZoom: 10, opacity: 1 });
+
+const styleRoadsBase = new Style({ stroke: new Stroke({ color: 'red' }), text: new Text({ font: '10px sans-serif', fill: new Fill({ color: 'red' }), stroke: new Stroke({ color: '#fff', width: 0.1 }), placement: 'line', repeat: 1000, textBaseline: 'bottom', maxAngle: Math.PI/10, overflow: true }) });
+
+const roads = new VectorLayer({
+  source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/roads5.geojson" }),
+  style: (feature) => {
+    const clone = styleRoadsBase.clone();
+    clone.getStroke().setWidth((feature.get('rank') || 1) / 3);
+    clone.getText().setText(safeGet(feature, 'name'));
+    return clone;
+  },
+  minZoom: 3.9999, maxZoom: 10, opacity: 0.6, declutter: true
+});
+
+const pomerium = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/pomerium1.geojson" }), style: new Style({ fill: new Fill({ color: 'rgba(255,0,0,0.3)' }) }), minZoom: 6.9999, maxZoom: 10, opacity: 0.8 });
+
+const graticule = new Graticule({ strokeStyle: new Stroke({ color: 'rgba(0,0,0,0.9)', width: 0.1 }), showLabels: true, wrapX: false });
+
+const makeDynamicLabel = (prop, fontBase, color, strokeColor) => (feature) => {
+  const zoom = map.getView().getZoom();
+  const mnozhitel = feature.get('mnozhitel') || 1;
+  const fontSize = Math.max(8, (zoom ** 1.65) * mnozhitel);
+  return new Style({ text: new Text({ font: `${fontBase} ${fontSize}px serif`, textAlign: 'center', placement: 'line', fontWeight: 'bold', fill: new Fill({ color }), stroke: new Stroke({ color: strokeColor, width: 1 }), padding: [1, 1, 1, 1], text: String(feature.get(prop) || '').toUpperCase() }) });
+};
+
+const provimena = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/prov_names1.geojson" }), minZoom: 3.9999, maxZoom: 8, opacity: 1, style: makeDynamicLabel('title', '', [87, 0, 127, 0.6], [255, 255, 255, 0.3]) });
+const mareimena = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/mare_names1.geojson" }), minZoom: 3.9999, maxZoom: 8, opacity: 1, style: makeDynamicLabel('title', 'italic ', [50, 101, 211, 0.6], [0, 0, 0, 0.1]) });
+
+// ✅ FIX 4: Все слои городов теперь используют клонирование стилей
+const createCityLayer = (sourceUrl, styleFn, minZ, maxZ) => new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: sourceUrl }), style: styleFn, declutter: true, minZoom: minZ, maxZoom: maxZ });
+
+const RomaL = createCityLayer('/data/cities/1roma.geojson', createCityStyleFn(baseStyles.Roma, t => t.toUpperCase()), 3.9999, 10);
+const CordubaL = createCityLayer('/data/cities/2corduba.geojson', createCityStyleFn(baseStyles.Corduba, t => t), 3.9999, 10);
+const ByzantiumL = createCityLayer('/data/cities/3byzantium.geojson', createCityStyleFn(baseStyles.Byzantium, t => t), 3.9999, 10);
+const LondiniumL = createCityLayer('/data/cities/4londinium.geojson', createCityStyleFn(baseStyles.Londinium, t => t.replace(/ /g, '\n')), 3.9999, 10);
+const TheodosiaL = createCityLayer('/data/cities/5theodosia.geojson', createCityStyleFn(baseStyles.Theodosia, t => t.replace(/ /g, '\n')), 3.9999, 10);
+const AntinoopolisL = createCityLayer('/data/cities/6antinoopolis.geojson', createCityStyleFn(baseStyles.Antinoopolis, t => t.replace(/ /g, '\n')), 4.9999, 10);
+const DelosL = createCityLayer('/data/cities/7delos.geojson', createCityStyleFn(baseStyles.Delos, t => t.replace(/ /g, '\n')), 5.9999, 10);
+const PityousL = createCityLayer('/data/cities/8pityous.geojson', createCityStyleFn(baseStyles.Pityous, t => t.replace(/ /g, '\n')), 6.9999, 10);
+const ShemakhaL = createCityLayer('/data/cities/9shemakha.geojson', createCityStyleFn(baseStyles.Shemakha, t => t.replace(/ /g, '\n')), 7.9999, 10);
+
+cityLayers = [RomaL, CordubaL, ByzantiumL, LondiniumL, TheodosiaL, AntinoopolisL, DelosL, PityousL, ShemakhaL];
+
+// === 6. ИНИЦИАЛИЗАЦИЯ КАРТЫ ===
+const sreda = fromLonLat([23, 38.5]);
+const view = new View({ projection: 'EPSG:3857', center: sreda, zoom: 6, minZoom: 3.9999, maxZoom: 10, extent: [-1400000, 2600000, 6100000, 7600000] });
+
+const map = new Map({
+  controls: defaultControls().extend([new ScaleLine({ units: 'metric', bar: true, steps: 4, text: true, minWidth: 140 })]),
+  layers: [base, roads, graticule, mareimena, provimena, ShemakhaL, PityousL, DelosL, AntinoopolisL, TheodosiaL, LondiniumL, ByzantiumL, CordubaL, RomaL, pomerium],
+  target: document.getElementById('map'),
+  view
+});
+window.map = map;
+window.homeCenter = sreda;
+map.addControl(new ZoomSlider());
+
+// === 7. СИСТЕМА ПОИСКА ===
 const searchContainer = document.createElement('div');
 searchContainer.className = 'ol-search ol-control';
-searchContainer.style.top = '0.5em';
-searchContainer.style.left = '3em';
+searchContainer.setAttribute('role', 'search');
 const searchInput = document.createElement('input');
 searchInput.type = 'text';
 searchInput.placeholder = 'Search cities...';
-searchInput.style.cssText = `width: 200px; padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;`;
+searchInput.setAttribute('aria-label', 'Поиск городов');
+searchInput.setAttribute('autocomplete', 'off');
 const resultsContainer = document.createElement('ul');
-resultsContainer.style.cssText = `position: absolute; top: 100%; left: 0; width: 100%; max-height: 300px; overflow-y: auto; background: white; border: 1px solid #ccc; border-top: none; list-style: none; padding: 0; margin: 0; z-index: 1000; display: none;`;
+resultsContainer.setAttribute('role', 'listbox');
+resultsContainer.style.cssText = 'position:absolute;top:100%;left:0;width:100%;max-height:300px;overflow-y:auto;background:white;border:1px solid #895E8A;border-top:none;list-style:none;padding:0;margin:0;z-index:1000;display:none;';
+
 searchContainer.appendChild(searchInput);
 searchContainer.appendChild(resultsContainer);
+map.addControl(new Control({ element: searchContainer }));
 
-// Обработчик ввода в поиск
-searchInput.addEventListener('input', function() {
-  const searchTerm = this.value.trim();
-  resultsContainer.innerHTML = '';
-  if (searchTerm.length < 1) {
-    resultsContainer.style.display = 'none';
-    lastSearchResults = [];
-    return;
+// ✅ FIX 2: Слушатель клика вынесен наружу (добавляется ОДИН РАЗ)
+resultsContainer.addEventListener('click', (e) => {
+  if (e.target.tagName === 'LI') {
+    const idx = Array.from(resultsContainer.children).indexOf(e.target);
+    if (lastSearchResults[idx]) handleSearchSelect(lastSearchResults[idx]);
   }
-  const allFeatures = searchSource.getFeatures();
-  const termLower = searchTerm.toLowerCase();
-  const matchingFeatures = allFeatures.filter(feature => {
-    const title = feature.get('title').toLowerCase();
-    return title.includes(termLower);
+});
+
+// Загрузка данных в поиск
+async function loadCityData() {
+  const promises = CITY_FILES.map(async url => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const features = new GeoJSON().readFeatures(data, { dataProjection: 'EPSG:4326', featureProjection: map.getView().getProjection() });
+      features.forEach(f => { f.set("featureType", "title"); searchSource.addFeature(f); });
+    } catch (err) { console.error(`[Search] Ошибка загрузки ${url}:`, err); }
   });
-  const sortedFeatures = sortSearchResults(matchingFeatures, searchTerm);
-  lastSearchResults = sortedFeatures;
-  
-  if (sortedFeatures.length === 0) {
-    const li = document.createElement('li');
-    li.textContent = 'No cities found';
-    li.style.padding = '8px 10px';
-    li.style.color = '#666';
+
+  await Promise.all(promises);
+  handleInitialHash();
+}
+
+searchInput.addEventListener('input', () => {
+  const term = searchInput.value.trim().toLowerCase();
+  resultsContainer.innerHTML = '';
+  if (term.length < 1) { resultsContainer.style.display = 'none'; lastSearchResults = []; return; }
+
+  const matches = searchSource.getFeatures().filter(f => safeGet(f, 'title').toLowerCase().includes(term));
+  matches.sort((a, b) => {
+    const ta = safeGet(a, 'title').toLowerCase(), tb = safeGet(b, 'title').toLowerCase();
+    if (ta === term) return -1; if (tb === term) return 1;
+    if (ta.startsWith(term) && !tb.startsWith(term)) return -1;
+    if (!ta.startsWith(term) && tb.startsWith(term)) return 1;
+    return ta.localeCompare(tb);
+  });
+
+  lastSearchResults = matches.slice(0, 15);
+  if (lastSearchResults.length === 0) {
+    const li = document.createElement('li'); li.textContent = 'No cities found'; li.style.padding = '8px 10px'; li.style.color = '#666';
     resultsContainer.appendChild(li);
   } else {
-    sortedFeatures.slice(0, 15).forEach(feature => {
+    lastSearchResults.forEach(f => {
       const li = document.createElement('li');
-      li.textContent = feature.get('title');
-      li.style.padding = '8px 10px';
-      li.style.cursor = 'pointer';
-      li.style.borderBottom = '1px solid #eee';
-      li.addEventListener('mouseenter', () => { li.style.backgroundColor = '#f0f0f0'; });
-      li.addEventListener('mouseleave', () => { li.style.backgroundColor = ''; });
-      li.addEventListener('click', () => { handleSearchSelect(feature); });
+      li.setAttribute('role', 'option');
+      li.setAttribute('tabindex', '0');
+      li.textContent = safeGet(f, 'title');
+      li.style.cssText = 'padding:8px 10px;cursor:pointer;border-bottom:1px solid #eee;';
       resultsContainer.appendChild(li);
     });
   }
   resultsContainer.style.display = 'block';
 });
 
-// Закрытие выпадающего списка
-document.addEventListener('click', function(event) {
-  if (!searchContainer.contains(event.target)) {
-    resultsContainer.style.display = 'none';
-  }
+document.addEventListener('click', e => { if (!searchContainer.contains(e.target)) resultsContainer.style.display = 'none'; });
+
+searchInput.addEventListener('keydown', e => {
+  const items = resultsContainer.querySelectorAll('li[role="option"]');
+  if (!items.length) return;
+  const active = document.activeElement;
+  if (e.key === 'ArrowDown') { e.preventDefault(); (active === searchInput ? items[0] : active.nextElementSibling || items[0]).focus(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); (active === searchInput ? items[items.length-1] : active.previousElementSibling || searchInput).focus(); }
+  else if (e.key === 'Enter') { e.preventDefault(); (active.tagName === 'LI' ? active : items[0]).click(); }
 });
 
-// Кастомный контрол поиска
-class CustomSearchControl extends Control {
-  constructor(opt_options) {
-    const options = opt_options || {};
-    const element = searchContainer;
-    super({ element: element, target: options.target });
-  }
+// === 8. URL / PERMALINK / ROUTING ===
+function parseCityIdFromHash() {
+  const match = window.location.hash.match(/#id(\d+)/);
+  return match ? parseInt(match[1], 10) : null;
 }
-const customSearchControl = new CustomSearchControl({ target: undefined });
-map.addControl(customSearchControl);
 
-// Обработка клавиш в поиске
-searchInput.addEventListener('keydown', function(e) {
-  const items = resultsContainer.querySelectorAll('li');
-  if (items.length === 0) return;
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    const current = document.activeElement;
-    if (current === searchInput) { items[0].focus(); }
-    else if (current.tagName === 'LI') {
-      const next = current.nextElementSibling;
-      if (next) next.focus();
-    }
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    const current = document.activeElement;
-    if (current.tagName === 'LI') {
-      const prev = current.previousElementSibling;
-      if (prev) { prev.focus(); }
-      else { searchInput.focus(); }
-    }
-  } else if (e.key === 'Enter') {
-    e.preventDefault();
-    const current = document.activeElement;
-    if (current.tagName === 'LI') { current.click(); }
-    else if (lastSearchResults.length > 0) {
-      const firstResult = lastSearchResults[0];
-      if (firstResult) { handleSearchSelect(firstResult); }
-    }
+function findFeatureById130(id) {
+  if (!id) return null;
+  return searchSource.getFeatures().find(f => f.get('id130') === id) || null;
+}
+
+function updateHashForCity(feature) {
+  const id = feature.get('id130');
+  const slug = slugify(safeGet(feature, 'title'));
+  const newHash = `#id${id}${slug ? '-' + slug : ''}`;
+  if (window.location.hash !== newHash) {
+    window.history.replaceState(null, '', newHash);
   }
+  document.title = `Urbes et Orbis — ${formatTitleForDisplay(safeGet(feature, 'title'))}`;
+}
+
+function getPermanentLink(feature) {
+  const id = feature.get('id130');
+  const slug = slugify(safeGet(feature, 'title'));
+  return `${window.location.origin}${window.location.pathname}#id${id}${slug ? '-' + slug : ''}`;
+}
+
+function handleInitialHash() {
+  const id = parseCityIdFromHash();
+  if (id) { const f = findFeatureById130(id); if (f) handleSearchSelect(f); }
+}
+
+window.addEventListener('hashchange', () => {
+  const id = parseCityIdFromHash();
+  if (id) { const f = findFeatureById130(id); if (f) handleSearchSelect(f); }
 });
 
-// === SELECT ДЛЯ ПОИСКА ===
-const select = new Select({
-  style: null  // Не применять стиль выделения — оставляем вид города неизменным
-});
+// === 9. ОТОБРАЖЕНИЕ ИНФОРМАЦИИ О ГОРОДЕ ===
+function showCityDetails(feature) {
+  if (!feature) return;
+  const setTitle = (el, val) => { if (el) el.textContent = formatTitleForDisplay(val); };
+  const setHTML = (el, val) => { if (el) el.innerHTML = val ? escapeHtml(String(val)) : ''; };
+
+  setTitle(els.title, safeGet(feature, 'title'));
+  setTitle(els.alt, safeGet(feature, 'alt'));
+  setTitle(els.province, safeGet(feature, 'province'));
+  setTitle(els.start, safeGet(feature, 'start'));
+  setTitle(els.modern, safeGet(feature, 'modern'));
+  setHTML(els.country, safeGet(feature, 'country'));
+  setTitle(els.batlas, safeGet(feature, 'batlas'));
+  setHTML(els.description, safeGet(feature, 'description'));
+  setTitle(els.awmc, safeGet(feature, 'awmc'));
+  setTitle(els.darmc, safeGet(feature, 'darmc'));
+  setTitle(els.hanson, safeGet(feature, 'hanson'));
+  setTitle(els.orbis, safeGet(feature, 'orbis'));
+  setTitle(els.trismegistos, safeGet(feature, 'trismegistos'));
+
+  const lonlat = transform(feature.getGeometry().getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326');
+  const decLon = lonlat[0].toFixed(6), decLat = lonlat[1].toFixed(6);
+  const dms = toStringHDMS(lonlat).replace(/° /g, '°');
+  if (els.coords) els.coords.textContent = `${decLat}, ${decLon}`;
+  if (els.coords2) els.coords2.textContent = dms;
+
+  const country = safeGet(feature, 'country');
+  if (els.flag) els.flag.innerHTML = country ? `<img src="/icons/flags/${escapeHtml(country)}.png" title="${escapeHtml(country)}" width="17" height="17" style="display:inline-block;margin:0 5px;">` : '';
+
+  if (els.googlelink) els.googlelink.innerHTML = `<a href="https://www.google.com/maps/place/${decLat},${decLon}" target="_blank" rel="noopener">Google Maps</a>`;
+  if (els.OSMlink) els.OSMlink.innerHTML = `<a href="https://www.openstreetmap.org/index.html?mlat=${decLat}&mlon=${decLon}&zoom=16" target="_blank" rel="noopener">OpenStreetMap</a>`;
+  if (els.wikimapialink) els.wikimapialink.innerHTML = `<a href="https://wikimapia.org/#lat=${decLat}&lon=${decLon}&z=16&l=0&m=w&v=0" target="_blank" rel="noopener">Wikimapia</a>`;
+
+  const linkIf = (el, url, prefix) => { if (el) el.innerHTML = url ? `<a href="${escapeHtml(prefix)}${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(url)}</a>` : ''; };
+  linkIf(els.darelink, safeGet(feature, 'dare'), 'http://imperium.ahlfeldt.se/places/');
+  linkIf(els.pecslink, safeGet(feature, 'PECS'), 'http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0006:entry=');
+  linkIf(els.pleiadeslink, safeGet(feature, 'pleiades'), 'https://pleiades.stoa.org/places/');
+  // ✅ FIX 1: Удалён дублирующий вызов для tpplacelink
+  linkIf(els.tpplacelink, safeGet(feature, 'TTPlace'), 'https://www.cambridge.org/us/talbert/talbertdatabase/TPPlace');
+  linkIf(els.topostextlink, safeGet(feature, 'topostext'), 'https://topostext.org/place/');
+  linkIf(els.vicilink, safeGet(feature, 'vici'), 'https://vici.org/vici/');
+  linkIf(els.wikidatalink, safeGet(feature, 'wikidata'), 'https://www.wikidata.org/wiki/Q');
+  linkIf(els.wikipedialink, safeGet(feature, 'wikipedia:en'), 'https://en.wikipedia.org/wiki/');
+
+  if (els.id130) els.id130.textContent = feature.get('id130') || '';
+  const permUrl = getPermanentLink(feature);
+  if (els.permLink) { els.permLink.href = permUrl; els.permLink.textContent = permUrl; }
+
+  updateHashForCity(feature);
+
+  if (markersLayer) map.removeLayer(markersLayer);
+  markersLayer = new VectorLayer({
+    source: new VectorSource(),
+    style: new Style({ image: new Icon({ anchor: [0.5, 0.5], src: '/icons/target.png' }) })
+  });
+  map.addLayer(markersLayer);
+  markersLayer.getSource().addFeature(new Feature(new Point(feature.getGeometry().getFirstCoordinate())));
+
+if (!els.minimapDiv) return;
+const center = feature.getGeometry().getFirstCoordinate();
+if (!minimap) {
+  minimapSource = new VectorSource();
+  const targetFeature = new Feature(new Point(center));
+  minimapSource.addFeature(targetFeature);
+
+  minimap = new Map({
+    target: 'minimap',
+    layers: [
+      new TileLayer({ source: new XYZ({ attributions: 'Tiles © Google', url: 'https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}' }) }),
+      new VectorLayer({ source: minimapSource, style: new Style({ image: new Icon({ anchor: [0.5, 0.5], src: '/icons/target.png' }) }) })
+    ],
+    view: new View({ projection: 'EPSG:3857', center, zoom: 15, minZoom: 13.9999, maxZoom: 18 })
+  });
+
+  // ✅ FIX: Ждём 1 кадр браузера, чтобы панель получила реальные размеры,
+  // затем принудительно пересчитываем карту и рендерим все слои
+  requestAnimationFrame(() => {
+    minimap.updateSize();
+    minimap.render();
+  });
+} else {
+  minimapSource.clear();
+  minimapSource.addFeature(new Feature(new Point(center)));
+  minimap.getView().setCenter(center);
+  minimap.getView().setZoom(15);
+}
+
+  els.hello.style.visibility = 'hidden';
+  els.node.style.visibility = 'visible';
+  if (els.workOpen) els.workOpen.click();
+  if (!clipboard) clipboard = new ClipboardJS('.btn');
+}
+
+// === 10. ОБРАБОТЧИКИ СОБЫТИЙ ===
+const select = new Select();
 map.addInteraction(select);
 
-// Функция обработки выбора из поиска
 function handleSearchSelect(feature) {
   select.getFeatures().clear();
   select.getFeatures().push(feature);
-  const center = feature.getGeometry().getFirstCoordinate();
-  map.getView().animate({
-    center: center,
-    zoom: 10,
-    duration: 2000,
-    easing: easeOut,
-  });
+  map.getView().animate({ center: feature.getGeometry().getFirstCoordinate(), zoom: 10, duration: 2000, easing: easeOut });
   showCityDetails(feature);
-  searchInput.value = feature.get('title');
+  searchInput.value = formatTitleForDisplay(safeGet(feature, 'title'));
   resultsContainer.style.display = 'none';
 }
 
-// === ОБРАБОТЧИК КЛИКА ПО КАРТЕ ===
-map.on('click', function (evt) {
-  let hitt = false;
-  const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-    if (layer === Roma || layer === Corduba || layer === Byzantium ||
-        layer === Londinium || layer === Theodosia || layer === Antinoopolis ||
-        layer === Delos || layer === Pityous || layer === Shemakha) {
-      hitt = true;
-      return feature;
-    }
-  }, { hitTolerance: 3 });
-  
-  if (hitt) {
-    showCityDetails(feature);
-    document.getElementById("workOpen").click();
-  } else {
-    hello.style.visibility = 'visible';
-    node.style.visibility = 'hidden';
-    if (markers) {
-      map.removeLayer(markers);
-      markers = null;
-    }
-    if (centerpointSource) {
-      centerpointSource.clear();
-    }
+map.on('click', evt => {
+  const hitFeature = map.forEachFeatureAtPixel(evt.pixel, (f, l) => cityLayers.includes(l) ? f : null, { hitTolerance: 3 });
+  if (hitFeature) { showCityDetails(hitFeature); if (els.workOpen) els.workOpen.click(); }
+  else {
+    els.hello.style.visibility = 'visible';
+    els.node.style.visibility = 'hidden';
+    if (markersLayer) { map.removeLayer(markersLayer); markersLayer = null; }
+    if (minimapSource) minimapSource.clear();
     select.getFeatures().clear();
   }
 });
 
-// === ИЗМЕНЕНИЕ КУРСОРА ===
-map.on('pointermove', function(e) {
+map.on('pointermove', e => {
   if (e.dragging) return;
-  const pixel = map.getEventPixel(e.originalEvent);
-  let hit = false;
-  map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-    if (layer === Roma || layer === Corduba || layer === Byzantium ||
-        layer === Londinium || layer === Theodosia || layer === Antinoopolis ||
-        layer === Delos || layer === Pityous || layer === Shemakha) {
-      hit = true;
-    }
-  }, { hitTolerance: 3 });
-  map.getTarget().style.cursor = hit ? 'pointer' : '';
+  const hit = map.forEachFeatureAtPixel(e.pixel, (f, l) => cityLayers.includes(l), { hitTolerance: 3 });
+  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });
+
+// === 11. ЭКРАН ЗАГРУЗКИ ===
+window.addEventListener('load', () => {
+  const screen = document.getElementById('loading-screen');
+  if (!screen) return;
+  const bar = document.getElementById('loading-progress-bar');
+  const text = document.getElementById('loading-progress-text');
+  let loaded = 0, total = 0, done = false;
+
+  const update = () => {
+    const pct = Math.min(100, Math.round((Math.min(loaded, Math.max(total, 10)) / Math.max(total, 10)) * 100));
+    if (bar) bar.style.width = `${pct}%`;
+    if (text) text.textContent = `Loading map tiles... ${pct}%`;
+    if ((loaded >= total && total >= 5) || pct >= 90) finish();
+  };
+
+  const finish = () => {
+    if (done) return; done = true;
+    if (bar) bar.style.width = '100%';
+    if (text) text.textContent = 'Ready!';
+    setTimeout(() => { screen.style.opacity = '0'; setTimeout(() => screen.style.display = 'none', 500); }, 800);
+  };
+
+  const src = base.getSource();
+  const onTile = () => { loaded++; update(); };
+  src.on('tileloadstart', () => { total++; update(); });
+  src.on('tileloadend', onTile);
+  src.on('tileloaderror', onTile);
+
+  map.once('rendercomplete', finish);
+  setTimeout(() => { if (!done) { done = true; finish(); } }, 8000);
+  setTimeout(() => { if (bar) bar.style.width = '10%'; if (text) text.textContent = 'Starting map load...'; }, 300);
+});
+
+// Запуск загрузки данных
+loadCityData();
