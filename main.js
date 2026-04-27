@@ -57,7 +57,7 @@ function slugify(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '');
 }
 
-// ✅ FIX 3: Форматирование заголовков для отображения
+// Форматирование заголовков для отображения
 function formatTitleForDisplay(title) {
   if (!title) return '';
   // Сохраняет оригинальный регистр, но гарантирует безопасную строку
@@ -89,7 +89,7 @@ const els = {
   workOpen: getEl('workOpen')
 };
 
-// === 4. СТИЛИ ГОРОДОВ (✅ FIX 4: Базовые стили теперь НЕ мутируются) ===
+// === 4. СТИЛИ ГОРОДОВ (Базовые стили теперь не мутируются) ===
 function createCityStyle(config) {
   return new Style({
     image: new Circle({
@@ -123,7 +123,7 @@ const baseStyles = {
   Shemakha: createCityStyle({ radius: 1, fill: 'black', fontSize: 9, offsetY: 3, strokeWidth: 0.5, declutter: true, zIndex: 30 })
 };
 
-// ✅ FIX 4: Фабрика стилей с клонированием (исключает мутацию)
+// Фабрика стилей с клонированием (исключает мутацию)
 const createCityStyleFn = (baseStyle, transformFn) => (feature) => {
   const style = baseStyle.clone();
   style.getText().setText(transformFn(safeGet(feature, 'title')));
@@ -133,17 +133,46 @@ const createCityStyleFn = (baseStyle, transformFn) => (feature) => {
 // === 5. СЛОИ ===
 const base = new TileLayer({ preload: 1, source: new XYZ({ urls: ["/data/base2/{z}/{x}/{y}.png"], tilePixelRatio: 1 }), minZoom: 3, maxZoom: 10, opacity: 1 });
 
-const styleRoadsBase = new Style({ stroke: new Stroke({ color: 'red' }), text: new Text({ font: '10px sans-serif', fill: new Fill({ color: 'red' }), stroke: new Stroke({ color: '#fff', width: 0.1 }), placement: 'line', repeat: 1000, textBaseline: 'bottom', maxAngle: Math.PI/10, overflow: true }) });
+// === СЛОЙ ДОРОГ ===
+const styleRoadsBase = new Style({
+  stroke: new Stroke({ color: 'red' }),
+  text: new Text({
+    font: '10px sans-serif',
+    fill: new Fill({ color: 'red' }),
+    stroke: new Stroke({ color: '#fff', width: 0.1 }),
+    placement: 'line',
+    repeat: 1000,
+    textBaseline: 'bottom',
+    maxAngle: Math.PI / 10,
+    overflow: true
+  })
+});
 
 const roads = new VectorLayer({
-  source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/roads5.geojson" }),
-  style: (feature) => {
-    const clone = styleRoadsBase.clone();
-    clone.getStroke().setWidth((feature.get('rank') || 1) / 3);
-    clone.getText().setText(safeGet(feature, 'name'));
-    return clone;
-  },
-  minZoom: 3.9999, maxZoom: 10, opacity: 0.6, declutter: true
+  source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/roads10.geojson" }),
+style: (feature, resolution) => {
+  const zoom = map.getView().getZoom();
+  const val = Number(feature.get('value')) || 1;
+  
+  if (val === 1 && zoom < 5.5) return null; // Скрываем второстепенные при зуме < 5.5
+
+  const clone = styleRoadsBase.clone();
+  const acc = Number(feature.get('acc')) || 1;
+  const name = safeGet(feature, 'name');
+
+  clone.getStroke().setWidth(val === 2 ? 1.2 : 0.6); // Уменьшил толщину (подстрой 1.2/0.6 под свой вкус)
+  
+  let dash = undefined;
+  if (acc === 2) dash = [6, 4];
+  else if (acc === 3) dash = [1, 3];
+  clone.getStroke().setLineDash(dash);
+  clone.getText().setText(name);
+  return clone;
+},
+  minZoom: 3.9999,
+  maxZoom: 10,
+  opacity: 0.6,
+  declutter: true
 });
 
 const pomerium = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/pomerium1.geojson" }), style: new Style({ fill: new Fill({ color: 'rgba(255,0,0,0.3)' }) }), minZoom: 6.9999, maxZoom: 10, opacity: 0.8 });
@@ -160,7 +189,7 @@ const makeDynamicLabel = (prop, fontBase, color, strokeColor) => (feature) => {
 const provimena = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/prov_names1.geojson" }), minZoom: 3.9999, maxZoom: 8, opacity: 1, style: makeDynamicLabel('title', '', [87, 0, 127, 0.6], [255, 255, 255, 0.3]) });
 const mareimena = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/mare_names1.geojson" }), minZoom: 3.9999, maxZoom: 8, opacity: 1, style: makeDynamicLabel('title', 'italic ', [50, 101, 211, 0.6], [0, 0, 0, 0.1]) });
 
-// ✅ FIX 4: Все слои городов теперь используют клонирование стилей
+// Все слои городов теперь используют клонирование стилей
 const createCityLayer = (sourceUrl, styleFn, minZ, maxZ) => new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: sourceUrl }), style: styleFn, declutter: true, minZoom: minZ, maxZoom: maxZ });
 
 const RomaL = createCityLayer('/data/cities/1roma.geojson', createCityStyleFn(baseStyles.Roma, t => t.toUpperCase()), 3.9999, 10);
@@ -206,7 +235,7 @@ searchContainer.appendChild(searchInput);
 searchContainer.appendChild(resultsContainer);
 map.addControl(new Control({ element: searchContainer }));
 
-// ✅ FIX 2: Слушатель клика вынесен наружу (добавляется ОДИН РАЗ)
+// Слушатель клика вынесен наружу (добавляется один раз)
 resultsContainer.addEventListener('click', (e) => {
   if (e.target.tagName === 'LI') {
     const idx = Array.from(resultsContainer.children).indexOf(e.target);
@@ -346,7 +375,6 @@ function showCityDetails(feature) {
   linkIf(els.darelink, safeGet(feature, 'dare'), 'http://imperium.ahlfeldt.se/places/');
   linkIf(els.pecslink, safeGet(feature, 'PECS'), 'http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0006:entry=');
   linkIf(els.pleiadeslink, safeGet(feature, 'pleiades'), 'https://pleiades.stoa.org/places/');
-  // ✅ FIX 1: Удалён дублирующий вызов для tpplacelink
   linkIf(els.tpplacelink, safeGet(feature, 'TTPlace'), 'https://www.cambridge.org/us/talbert/talbertdatabase/TPPlace');
   linkIf(els.topostextlink, safeGet(feature, 'topostext'), 'https://topostext.org/place/');
   linkIf(els.vicilink, safeGet(feature, 'vici'), 'https://vici.org/vici/');
@@ -383,7 +411,7 @@ if (!minimap) {
     view: new View({ projection: 'EPSG:3857', center, zoom: 15, minZoom: 13.9999, maxZoom: 18 })
   });
 
-  // ✅ FIX: Ждём 1 кадр браузера, чтобы панель получила реальные размеры,
+  // Ждём 1 кадр браузера, чтобы панель получила реальные размеры,
   // затем принудительно пересчитываем карту и рендерим все слои
   requestAnimationFrame(() => {
     minimap.updateSize();
