@@ -150,24 +150,24 @@ const styleRoadsBase = new Style({
 
 const roads = new VectorLayer({
   source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/roads10.geojson" }),
-style: (feature, resolution) => {
-  const zoom = map.getView().getZoom();
-  const val = Number(feature.get('value')) || 1;
-  
-  if (val === 1 && zoom < 5.5) return null; // Скрываем второстепенные при зуме < 5.5
+  style: (feature, resolution) => {
+    const zoom = map.getView().getZoom();
+    const val = Number(feature.get('value')) || 1;
 
-  const clone = styleRoadsBase.clone();
-  const acc = Number(feature.get('acc')) || 1;
-  const name = safeGet(feature, 'name');
+    if (val === 1 && zoom < 5.5) return null; // Скрываем второстепенные при зуме < 5.5
 
-  clone.getStroke().setWidth(val === 2 ? 1.2 : 0.6); // Уменьшаем толщину для всех дорог
-  let dash = undefined;
-  if (acc === 2) dash = [6, 4];
-  else if (acc === 3) dash = [1, 3];
-  clone.getStroke().setLineDash(dash);
-  clone.getText().setText(name);
-  return clone;
-},
+    const clone = styleRoadsBase.clone();
+    const acc = Number(feature.get('acc')) || 1;
+    const name = safeGet(feature, 'name');
+
+    clone.getStroke().setWidth(val === 2 ? 1 : 0.5); // Уменьшаем толщину для всех дорог
+    let dash = null;
+    if (acc === 2) dash = [6, 4];
+    else if (acc === 3) dash = [1, 3];
+    clone.getStroke().setLineDash(dash);
+    clone.getText().setText(zoom >= 8 ? name : undefined);
+    return clone;
+  },
   minZoom: 3.9999,
   maxZoom: 10,
   opacity: 0.6,
