@@ -160,8 +160,7 @@ style: (feature, resolution) => {
   const acc = Number(feature.get('acc')) || 1;
   const name = safeGet(feature, 'name');
 
-  clone.getStroke().setWidth(val === 2 ? 1.2 : 0.6); // Уменьшил толщину (подстрой 1.2/0.6 под свой вкус)
-  
+  clone.getStroke().setWidth(val === 2 ? 1.2 : 0.6); // Уменьшаем толщину для всех дорог
   let dash = undefined;
   if (acc === 2) dash = [6, 4];
   else if (acc === 3) dash = [1, 3];
@@ -189,7 +188,7 @@ const makeDynamicLabel = (prop, fontBase, color, strokeColor) => (feature) => {
 const provimena = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/prov_names1.geojson" }), minZoom: 3.9999, maxZoom: 8, opacity: 1, style: makeDynamicLabel('title', '', [87, 0, 127, 0.6], [255, 255, 255, 0.3]) });
 const mareimena = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/mare_names1.geojson" }), minZoom: 3.9999, maxZoom: 8, opacity: 1, style: makeDynamicLabel('title', 'italic ', [50, 101, 211, 0.6], [0, 0, 0, 0.1]) });
 
-// Все слои городов теперь используют клонирование стилей
+// Все слои городов используют клонирование стилей
 const createCityLayer = (sourceUrl, styleFn, minZ, maxZ) => new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: sourceUrl }), style: styleFn, declutter: true, minZoom: minZ, maxZoom: maxZ });
 
 const RomaL = createCityLayer('/data/cities/1roma.geojson', createCityStyleFn(baseStyles.Roma, t => t.toUpperCase()), 3.9999, 10);
