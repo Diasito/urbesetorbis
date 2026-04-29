@@ -131,7 +131,20 @@ const createCityStyleFn = (baseStyle, transformFn) => (feature) => {
 };
 
 // === 5. СЛОИ ===
-const base = new TileLayer({ preload: 1, source: new XYZ({ urls: ["/data/base2/{z}/{x}/{y}.png"], tilePixelRatio: 1 }), minZoom: 3, maxZoom: 10, opacity: 1 });
+const base = new TileLayer({ preload: 1, source: new XYZ({ urls: ["/data/base4/{z}/{x}/{y}.png"], tilePixelRatio: 1 }), minZoom: 3, maxZoom: 10, opacity: 0.7 });
+
+/// === HILLSHADE СЛОЙ (ESRI World Hillshade) ===
+const hillshade = new TileLayer({
+  source: new XYZ({
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}',
+    attributions: '© Esri',
+    maxZoom: 16
+  }),
+  minZoom: 0,
+  maxZoom: 10,
+  opacity: 1,
+  preload: 1
+});
 
 // === СЛОЙ ДОРОГ ===
 const styleRoadsBase = new Style({
@@ -209,7 +222,7 @@ const view = new View({ projection: 'EPSG:3857', center: sreda, zoom: 6, minZoom
 
 const map = new Map({
   controls: defaultControls().extend([new ScaleLine({ units: 'metric', bar: true, steps: 4, text: true, minWidth: 140 })]),
-  layers: [base, roads, graticule, mareimena, provimena, ShemakhaL, PityousL, DelosL, AntinoopolisL, TheodosiaL, LondiniumL, ByzantiumL, CordubaL, RomaL, pomerium],
+  layers: [hillshade, base, roads, graticule, mareimena, provimena, ShemakhaL, PityousL, DelosL, AntinoopolisL, TheodosiaL, LondiniumL, ByzantiumL, CordubaL, RomaL, pomerium],
   target: document.getElementById('map'),
   view
 });
