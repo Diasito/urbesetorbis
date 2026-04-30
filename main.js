@@ -100,7 +100,7 @@ function createCityStyle(config) {
       ...(config.declutter ? { declutterMode: 'declutter' } : {})
     }),
     text: new Text({
-      font: `${config.fontWeight || ''} ${config.fontSize}px sans-serif`.trim(),
+      font: `${config.fontStyle || ''} ${config.fontWeight || ''} ${config.fontSize}px Roboto, "Noto Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif`.trim(),
       textAlign: 'center', offsetX: 0, offsetY: config.offsetY || 3,
       fill: new Fill({ color: '#000' }),
       stroke: new Stroke({ color: '#fff', width: 0.1 }),
@@ -120,7 +120,7 @@ const baseStyles = {
   Antinoopolis: createCityStyle({ radius: 2.5, fill: 'white', fontSize: 10, offsetY: 3, fontWeight: 'bold', zIndex: 60 }),
   Delos: createCityStyle({ radius: 2, fill: 'white', fontSize: 9, offsetY: 3, fontWeight: 'bold', declutter: true, zIndex: 50 }),
   Pityous: createCityStyle({ radius: 1.5, fill: 'white', fontSize: 9, offsetY: 3, declutter: true, zIndex: 40 }),
-  Shemakha: createCityStyle({ radius: 1, fill: 'black', fontSize: 9, offsetY: 3, strokeWidth: 0.5, declutter: true, zIndex: 30 })
+  Shemakha: createCityStyle({ radius: 1, fill: 'black', fontSize: 9, offsetY: 3, strokeWidth: 0.5, fontStyle: 'italic', declutter: true, zIndex: 30 })
 };
 
 // Фабрика стилей с клонированием (исключает мутацию)
@@ -137,7 +137,7 @@ const base = new TileLayer({ preload: 1, source: new XYZ({ urls: ["/data/base7/{
 const styleRoadsBase = new Style({
   stroke: new Stroke({ color: 'red' }),
   text: new Text({
-    font: '10px sans-serif',
+    font: '10px "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif',
     fill: new Fill({ color: 'red' }),
     stroke: new Stroke({ color: '#fff', width: 0.1 }),
     placement: 'line',
@@ -182,10 +182,21 @@ const makeDynamicLabel = (prop, fontBase, color, strokeColor) => (feature) => {
   const zoom = map.getView().getZoom();
   const mnozhitel = feature.get('mnozhitel') || 1;
   const fontSize = Math.max(8, (zoom ** 1.65) * mnozhitel);
-  return new Style({ text: new Text({ font: `${fontBase} ${fontSize}px serif`, textAlign: 'center', placement: 'line', fontWeight: 'bold', fill: new Fill({ color }), stroke: new Stroke({ color: strokeColor, width: 1 }), padding: [1, 1, 1, 1], text: String(feature.get(prop) || '').toUpperCase() }) });
+  return new Style({ 
+    text: new Text({ 
+      font: `${fontBase} ${fontSize}px serif`, 
+      textAlign: 'center',
+      placement: 'line',
+      fill: new Fill({ color }), 
+      stroke: new Stroke({ color: strokeColor, width: 1 }), 
+      padding: [1, 1, 1, 1], 
+      text: String(feature.get(prop) || '').toUpperCase() 
+    }) 
+  });
 };
 
 const provimena = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/prov_names1.geojson" }), minZoom: 3.9999, maxZoom: 8, opacity: 1, style: makeDynamicLabel('title', '', [87, 0, 127, 0.6], [255, 255, 255, 0.3]) });
+
 const mareimena = new VectorLayer({ source: new VectorSource({ format: new GeoJSON(), url: "/data/cultural/mare_names1.geojson" }), minZoom: 3.9999, maxZoom: 8, opacity: 1, style: makeDynamicLabel('title', 'italic ', [50, 101, 211, 0.6], [0, 0, 0, 0.1]) });
 
 // Все слои городов используют клонирование стилей
