@@ -5,9 +5,11 @@ node_modules/
 dist/
 test-build/
 
-# Тайлы карты (тысячи файлов!)
-public/data/base2/
-public/data/base4/
+# QGIS-слои
+qgis_layers/
+
+# Десятки тысяч тайлов базовой карты
+public/data/base7/
 
 # Логи
 *.log
@@ -22,7 +24,7 @@ instruction.txt
 *.tmp
 *.temp
 
-# IDE файлы (если используете)
+# IDE файлы
 .vscode/
 .idea/
 
