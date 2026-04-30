@@ -334,3 +334,41 @@ a:hover {
     font-size: 0.9rem;
     color: #666;
 }
+
+/* === 13. АТРИБУЦИИ: корректное отображение без перекрытия шкалы === */
+.ol-attribution {
+  bottom: 1em;
+  right: 1em;
+  z-index: 1001;
+}
+.ol-attribution:not(.ol-collapsed) {
+  max-width: 380px;
+  max-height: 150px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.ol-attribution ul {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+.ol-attribution li {
+  display: block;
+  margin-bottom: 3px;
+  word-break: break-word;
+}
+.ol-attribution li:last-child {
+  margin-bottom: 0;
+}
+.ol-attribution a {
+  color: #895E8A;
+  text-decoration: none;
+}
+.ol-attribution a:hover {
+  text-decoration: underline;
+}

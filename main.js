@@ -1,6 +1,6 @@
 import '/style.css';
 import { toStringHDMS } from 'ol/coordinate';
-import { defaults as defaultControls, ScaleLine, ZoomSlider } from 'ol/control';
+import { defaults as defaultControls, ScaleLine, ZoomSlider, Attribution } from 'ol/control';
 import Control from 'ol/control/Control';
 import { easeOut } from 'ol/easing';
 import { fromLonLat, transform } from 'ol/proj';
@@ -216,6 +216,23 @@ const map = new Map({
 window.map = map;
 window.homeCenter = sreda;
 map.addControl(new ZoomSlider());
+
+// === КОНТРОЛ АТРИБУЦИЙ (кнопка ⓘ в правом нижнем углу) ===
+const attributionControl = new Attribution({
+  collapsible: true,        // Скрывается в кнопку "i" по умолчанию
+  collapsed: true,          // Начальное состояние — свёрнуто
+  tipLabel: 'Sources & Licenses', // Подсказка при наведении
+  attributions: [
+  '<a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener">MapTiler</a>: Land and Ocean Bases,',
+  '<a href="https://developers.arcgis.com/documentation/esri-and-data-attribution/" target="_blank" rel="noopener">Powered by Esri</a>: Hillshade,',
+  '<a href="https://github.com/AWMC/geodata/blob/master/LICENSE.txt" target="_blank" rel="noopener">Ancient World Mapping Center</a>: Basemap Polygons, Borders, Inland Water (BSD-2),',
+  '<a href="https://pleiades.stoa.org/credits" target="_blank" rel="noopener">Pleiades</a>: Settlement Data (CC BY 3.0),',
+  '<a href="https://github.com/johaahlf/dare/blob/master/LICENSE" target="_blank" rel="noopener">Digital Atlas of the Roman Empire by Johan Åhlfeldt</a>: Cities,',
+  '<a href="https://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank" rel="noopener">Hanson, J. W. (2016). Cities Database (OXREP databases). Version 1.0</a>: Urban Ranks,',
+  '<a href="https://itiner-e.org/about" target="_blank" rel="noopener">Itiner-e: the digital atlas of ancient roads</a>: Roads (CC BY 4.0).'
+]
+});
+map.addControl(attributionControl);
 
 // === 7. СИСТЕМА ПОИСКА ===
 const searchContainer = document.createElement('div');
