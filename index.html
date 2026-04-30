@@ -2,759 +2,761 @@
 <html lang="en">
 
 <head>
-    <title>Urbes et Orbis — The Roman Empire under Emperor Hadrian</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urbes et Orbis — The Roman Empire under Emperor Hadrian</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="keywords"
-        content="roman empire map, hadrian, ancient rome, interactive map, barrington atlas, pleiades, digital humanities, roman settlements, roman cities, historical gis" />
-    <meta name="description"
-        content="An interactive digital map and catalog of the Roman Empire under Emperor Hadrian. Explore 7,891 settlements with cross-references to major scholarly databases." />
+  <meta name="keywords"
+    content="roman empire map, hadrian, ancient rome, interactive map, barrington atlas, pleiades, digital humanities, roman settlements, roman cities, historical gis" />
+  <meta name="description"
+    content="An interactive digital map and catalog of the Roman Empire under Emperor Hadrian. Explore 7,891 settlements with cross-references to major scholarly databases." />
 
-    <meta property="og:title" content="Urbes et Orbis — The Roman Empire under Emperor Hadrian" />
-    <meta property="og:description"
-        content="Interactive digital map and catalog of Roman settlements with scholarly cross-references." />
-    <meta property="og:image" content="https://urbesetorbis.com/misc/logo.png" />
-    <meta property="og:url" content="https://urbesetorbis.com/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="Urbes et Orbis — The Roman Empire under Emperor Hadrian" />
+  <meta property="og:description"
+    content="Interactive digital map and catalog of Roman settlements with scholarly cross-references." />
+  <meta property="og:image" content="https://urbesetorbis.com/misc/logo.png" />
+  <meta property="og:url" content="https://urbesetorbis.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Urbes et Orbis — The Roman Empire under Emperor Hadrian" />
-    <meta name="twitter:description"
-        content="Interactive map and catalog of Roman settlements with scholarly cross-references." />
-    <meta name="twitter:image" content="https://urbesetorbis.com/misc/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Urbes et Orbis — The Roman Empire under Emperor Hadrian" />
+  <meta name="twitter:description"
+    content="Interactive map and catalog of Roman settlements with scholarly cross-references." />
+  <meta name="twitter:image" content="https://urbesetorbis.com/misc/logo.png" />
 
-    <link rel="canonical" href="https://urbesetorbis.com/" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="canonical" href="https://urbesetorbis.com/" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 
-    <style>
-        @font-face {
-            font-family: "CapitalisTypOasis";
-            src: url("/CapitalisTypOasis.woff2") format("woff2");
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-            unicode-range: U+0000-002F, U+003A-10FFFF;
-        }
+  <style>
+    @font-face {
+      font-family: "CapitalisTypOasis";
+      src: url("/CapitalisTypOasis.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0000-002F, U+003A-10FFFF;
+    }
 
-        @font-face {
-            font-family: "CapitalisTypOasis";
-            src:
-                local("Times New Roman"), local("Georgia"),
-                local("Palatino Linotype"), local("Palatino"), serif;
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-            unicode-range: U+0030-0039;
-        }
+    @font-face {
+      font-family: "CapitalisTypOasis";
+      src:
+        local("Times New Roman"), local("Georgia"),
+        local("Palatino Linotype"), local("Palatino"), serif;
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0030-0039;
+    }
 
-        .sidebar {
-            height: 100%;
-            width: 30%;
-            position: fixed;
-            z-index: 9999;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #fff;
-            border-left: 1px solid #555;
-            overflow-x: hidden;
-        }
+    .sidebar {
+      height: 100%;
+      width: 30%;
+      position: fixed;
+      z-index: 9999;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #fff;
+      border-left: 1px solid #555;
+      overflow-x: hidden;
+    }
 
-        .tablink {
-            background-color: #555;
-            color: white;
-            float: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 0.4vw 0 0.4vw 0;
-            font-family: CapitalisTypOasis, serif;
-            font-size: 1vw;
-            width: 20%;
-        }
+    .tablink {
+      background-color: #555;
+      color: white;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 0.4vw 0 0.4vw 0;
+      font-family: CapitalisTypOasis, serif;
+      font-size: 1vw;
+      width: 20%;
+    }
 
-        .tablink:hover {
-            background-color: #777;
-        }
+    .tablink:hover {
+      background-color: #777;
+    }
 
-        .tabcontent {
-            color: black;
-            display: none;
-            padding: 0;
-            height: 100%;
-        }
+    .tabcontent {
+      color: black;
+      display: none;
+      padding: 0;
+      height: 100%;
+    }
 
-        h1 {
-            display: block;
-            text-align: center;
-            font-family: CapitalisTypOasis, serif;
-            font-size: 3.5rem;
-            margin: 0;
-        }
+    h1 {
+      display: block;
+      text-align: center;
+      font-family: CapitalisTypOasis, serif;
+      font-size: 3.5rem;
+      margin: 0;
+    }
 
-        h2 {
-            display: block;
-            text-align: center;
-            font-family: CapitalisTypOasis, serif;
-            font-size: 2rem;
-            margin: 0 0 1rem 0;
-        }
+    h2 {
+      display: block;
+      text-align: center;
+      font-family: CapitalisTypOasis, serif;
+      font-size: 2rem;
+      margin: 0 0 1rem 0;
+    }
 
-        h3 {
-            display: block;
-            text-align: center;
-            font-family: CapitalisTypOasis, serif;
-            font-size: 1.2rem;
-            margin: 0 0 3rem 0;
-        }
+    h3 {
+      display: block;
+      text-align: center;
+      font-family: CapitalisTypOasis, serif;
+      font-size: 1.2rem;
+      margin: 0 0 3rem 0;
+    }
 
-        #legend .tablelegend {
-            width: 100%;
-            border-collapse: separate !important;
-            border-spacing: 0 !important;
-            table-layout: fixed;
-            margin-bottom: 0.5em;
-            line-height: 1.2;
-        }
+    #legend .tablelegend {
+      width: 100%;
+      border-collapse: separate !important;
+      border-spacing: 0 !important;
+      table-layout: fixed;
+      margin-bottom: 0.5em;
+      line-height: 1.2;
+    }
 
-        #legend col.icon {
-            width: 3%;
-        }
+    #legend col.icon {
+      width: 3%;
+    }
 
-        #legend col.name {
-            width: 15%;
-        }
+    #legend col.name {
+      width: 15%;
+    }
 
-        #legend col.desc {
-            width: 82%;
-        }
+    #legend col.desc {
+      width: 82%;
+    }
 
-        #legend .trlegend {
-            vertical-align: middle;
-        }
+    #legend .trlegend {
+      vertical-align: middle;
+    }
 
-        #legend .tdlegend-icon {
-            padding: 4px 0.2em 4px 0;
-            text-align: left;
-            vertical-align: middle;
-        }
+    #legend .tdlegend-icon {
+      padding: 4px 0.2em 4px 0;
+      text-align: left;
+      vertical-align: middle;
+    }
 
-        #legend .tdlegend-name {
-            padding: 4px 0;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
+    #legend .tdlegend-name {
+      padding: 4px 0;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
 
-        #legend .tdlegend-desc {
-            padding: 4px 0 4px 1em;
-            vertical-align: middle;
-            position: relative;
-        }
+    #legend .tdlegend-desc {
+      padding: 4px 0 4px 1em;
+      vertical-align: middle;
+      position: relative;
+    }
 
-        /* === ТИРЕ: ИДЕАЛЬНАЯ ВЕРТИКАЛЬ === */
-        #legend .legend {
-            display: inline;
-            font-family: Arial, Helvetica, sans-serif;
-            padding-left: 0 !important;
-            margin: 0;
-        }
+    /* === ТИРЕ: ИДЕАЛЬНАЯ ВЕРТИКАЛЬ === */
+    #legend .legend {
+      display: inline;
+      font-family: Arial, Helvetica, sans-serif;
+      padding-left: 0 !important;
+      margin: 0;
+    }
 
-        #legend .legend::before {
-            content: "—";
-            display: inline-block;
-            width: 1.2em;
-            text-align: right;
-            margin-right: 0.3em;
-            vertical-align: middle;
-            position: relative;
-            top: -1px;
-        }
+    #legend .legend::before {
+      content: "—";
+      display: inline-block;
+      width: 1.2em;
+      text-align: right;
+      margin-right: 0.3em;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
 
-        /* === СКОБКИ: ЗАВИТКИ ВЛЕВО, ПОЛНОСТЬЮ ВИДИМЫ === */
-        #legend .tdlegend-desc.bracket {
-            position: relative;
-            padding-left: 1em !important;
-        }
+    /* === СКОБКИ: ЗАВИТКИ ВЛЕВО, ПОЛНОСТЬЮ ВИДИМЫ === */
+    #legend .tdlegend-desc.bracket {
+      position: relative;
+      padding-left: 1em !important;
+    }
 
-        #legend .tdlegend-desc.bracket::before {
-            content: "";
-            position: absolute;
-            left: 0.4em;
-            top: -1px;
-            bottom: -1px;
-            width: 8px;
-            height: calc(100% + 2px);
-            border-right: 2px solid #895e8a;
-            border-top-right-radius: 7px;
-            border-bottom-right-radius: 7px;
-            border-left: none;
-            pointer-events: none;
-            z-index: 10;
-            box-sizing: border-box;
-        }
+    #legend .tdlegend-desc.bracket::before {
+      content: "";
+      position: absolute;
+      left: 0.4em;
+      top: -1px;
+      bottom: -1px;
+      width: 8px;
+      height: calc(100% + 2px);
+      border-right: 2px solid #895e8a;
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+      border-left: none;
+      pointer-events: none;
+      z-index: 10;
+      box-sizing: border-box;
+    }
 
-        /* === ДОРОГИ === */
-        #legend .roads-legend .tdlegend-icon {
-            text-align: center;
-            width: 60px;
-            padding: 4px 0;
-            vertical-align: middle;
-        }
+    /* === ДОРОГИ === */
+    #legend .roads-legend .tdlegend-icon {
+      text-align: center;
+      width: 60px;
+      padding: 4px 0;
+      vertical-align: middle;
+    }
 
-        #legend .roads-legend .tdlegend-icon svg {
-            display: inline-block;
-            vertical-align: middle;
-            position: relative;
-            top: -1px;
-        }
+    #legend .roads-legend .tdlegend-icon svg {
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
 
-        #legend .roads-legend .tdlegend-name {
-            width: 0;
-            padding: 0;
-        }
+    #legend .roads-legend .tdlegend-name {
+      width: 0;
+      padding: 0;
+    }
 
-        #legend .roads-legend .tdlegend-desc {
-            vertical-align: middle;
-        }
-    </style>
+    #legend .roads-legend .tdlegend-desc {
+      vertical-align: middle;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- ИНДИКАТОР ЗАГРУЗКИ -->
-    <div id="loading-screen">
-        <div>
-            <h1>URBES ET ORBIS</h1>
-            <h2>The Roman Empire under Emperor Hadrian</h2>
-            <div id="loading-progress-bar-container">
-                <div id="loading-progress-bar"></div>
-            </div>
-            <div id="loading-progress-text">Initializing map engine...</div>
-            <p>Loading 7891 settlements and historical map base...</p>
-        </div>
+  <!-- ИНДИКАТОР ЗАГРУЗКИ -->
+  <div id="loading-screen">
+    <div>
+      <h1>URBES ET ORBIS</h1>
+      <h2>The Roman Empire under Emperor Hadrian</h2>
+      <div id="loading-progress-bar-container">
+        <div id="loading-progress-bar"></div>
+      </div>
+      <div id="loading-progress-text">Initializing map engine...</div>
+      <p>Loading 7891 settlements and historical map base...</p>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="sidebar">
+    <button type="button" class="tablink" onclick="openPage('home', this, '#895E8A')" id="defaultOpen">
+      HOME
+    </button>
+    <button type="button" class="tablink" onclick="openPage('legend', this, '#6CA198')">
+      LEGEND
+    </button>
+    <button type="button" class="tablink" onclick="openPage('places', this, '#C9904F')" id="workOpen">
+      PLACES
+    </button>
+    <button type="button" class="tablink" onclick="openPage('data', this, '#6287A1')">
+      DATA
+    </button>
+    <button type="button" class="tablink" onclick="openPage('about', this, '#C7645A')">
+      ABOUT
+    </button>
+
+    <div id="home" class="tabcontent" itemscope itemtype="https://schema.org/DataCatalog">
+      <div class="tabhome">
+        <h1 itemprop="name">URBES ET ORBIS</h1>
+        <p>
+          <img class="imghadrian" src="/icons/hadrian200.png" width="195" height="200" alt="Hadrian on a coin" />
+        </p>
+        <h2 itemprop="abstract">
+          The Roman Empire<br />under Emperor Hadrian
+        </h2>
+        <h3 itemprop="description">
+          A digital catalog of Roman settlements with cross-references
+        </h3>
+        <p class="anons">
+          This map depicts the Roman Empire in the year 883 ab Urbe condita
+          (AD 130). There are <strong>7,891</strong> settlements represented
+          here both within the borders of the empire and beyond. All
+          settlements shown on the map are linked to two definitive reference
+          works on ancient geography:
+          <a href="https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html" target="_blank">the
+            Barrington Atlas</a>
+          and
+          <a href="https://pleiades.stoa.org/" target="_blank">the Pleiades project</a>.
+        </p>
+        <p class="anons">
+          <strong>Click on any city to get more detailed information about
+            it.</strong>
+          Use the search field at the top left to find specific settlements.
+        </p>
+        <p class="anons">
+          Download the complete datasets from the <strong>DATA</strong> tab.
+          Visit the <strong>ABOUT</strong> tab to learn about the sources and
+          methodology behind this project.
+        </p>
+      </div>
     </div>
 
-    <div id="map"></div>
+    <div id="legend" class="tabcontent">
+      <div class="tabhome">
+        <!-- БЛОК 1: Rank 1 + Скобка (Ranks 2–3) -->
+        <table class="tablelegend">
+          <colgroup>
+            <col class="icon" />
+            <col class="name" />
+            <col class="desc" />
+          </colgroup>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank1.png" width="11" height="11" alt="rank1" />
+            </td>
+            <td class="tdlegend-name"><span class="rank1">ROMA</span></td>
+            <td class="tdlegend-desc">
+              <span class="legend">Rome and the four principal provincial capitals</span>
+            </td>
+          </tr>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank2.png" width="10" height="10" alt="rank2" />
+            </td>
+            <td class="tdlegend-name"><span class="rank2">Corduba</span></td>
+            <td class="tdlegend-desc bracket first" rowspan="2">
+              <span class="legend">other provincial and client kingdom capitals</span>
+            </td>
+          </tr>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank4.png" width="9" height="9" alt="rank4" />
+            </td>
+            <td class="tdlegend-name">
+              <span class="rank4">Ctesiphon</span>
+            </td>
+          </tr>
+        </table>
 
-    <div class="sidebar">
-        <button type="button" class="tablink" onclick="openPage('home', this, '#895E8A')" id="defaultOpen">
-            HOME
-        </button>
-        <button type="button" class="tablink" onclick="openPage('legend', this, '#6CA198')">
-            LEGEND
-        </button>
-        <button type="button" class="tablink" onclick="openPage('places', this, '#C9904F')" id="workOpen">
-            PLACES
-        </button>
-        <button type="button" class="tablink" onclick="openPage('data', this, '#6287A1')">
-            DATA
-        </button>
-        <button type="button" class="tablink" onclick="openPage('about', this, '#C7645A')">
-            ABOUT
-        </button>
+        <!-- БЛОК 2: Скобка (Ranks 4–7) + Отступ -->
+        <table class="tablelegend" style="margin-top: 1em">
+          <colgroup>
+            <col class="icon" />
+            <col class="name" />
+            <col class="desc" />
+          </colgroup>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank3.png" width="10" height="10" alt="rank3" />
+            </td>
+            <td class="tdlegend-name">
+              <span class="rank3">Byzantium</span>
+            </td>
+            <td class="tdlegend-desc bracket first" rowspan="4">
+              <span class="legend">cities categorized by
+                <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank">Hanson's</a>
+                urban ranks: 1, 2, 3, 4-5</span>
+            </td>
+          </tr>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank5.png" width="9" height="9" alt="rank5" />
+            </td>
+            <td class="tdlegend-name"><span class="rank5">Mantinea</span></td>
+          </tr>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank6.png" width="8" height="8" alt="rank6" />
+            </td>
+            <td class="tdlegend-name">
+              <span class="rank6">Antinoopolis</span>
+            </td>
+          </tr>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank7.png" width="7" height="7" alt="rank7" />
+            </td>
+            <td class="tdlegend-name"><span class="rank7">Delos</span></td>
+          </tr>
+        </table>
 
-        <div id="home" class="tabcontent" itemscope itemtype="https://schema.org/DataCatalog">
-            <div class="tabhome">
-                <h1 itemprop="name">URBES ET ORBIS</h1>
-                <p>
-                    <img class="imghadrian" src="/icons/hadrian200.png" width="195" height="200"
-                        alt="Hadrian on a coin" />
-                </p>
-                <h2 itemprop="abstract">
-                    The Roman Empire<br />under Emperor Hadrian
-                </h2>
-                <h3 itemprop="description">
-                    A digital catalog of Roman settlements with cross-references
-                </h3>
-                <p class="anons">
-                    This map depicts the Roman Empire in the year 883 ab Urbe condita
-                    (AD 130). There are <strong>7,891</strong> settlements represented
-                    here both within the borders of the empire and beyond. All
-                    settlements shown on the map are linked to two definitive reference
-                    works on ancient geography:
-                    <a href="https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html"
-                        target="_blank">the Barrington Atlas</a>
-                    and
-                    <a href="https://pleiades.stoa.org/" target="_blank">the Pleiades project</a>.
-                </p>
-                <p class="anons">
-                    <strong>Click on any city to get more detailed information about
-                        it.</strong>
-                    Use the search field at the top left to find specific settlements.
-                </p>
-                <p class="anons">
-                    Download the complete datasets from the <strong>DATA</strong> tab.
-                    Visit the <strong>ABOUT</strong> tab to learn about the sources and
-                    methodology behind this project.
-                </p>
-            </div>
-        </div>
+        <!-- БЛОК 3: Rank 8 & 9 (Отдельно) + Отступ -->
+        <table class="tablelegend" style="margin-top: 1em">
+          <colgroup>
+            <col class="icon" />
+            <col class="name" />
+            <col class="desc" />
+          </colgroup>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank8.png" width="6" height="6" alt="rank8" />
+            </td>
+            <td class="tdlegend-name"><span class="rank8">Pityous</span></td>
+            <td class="tdlegend-desc">
+              <span class="legend">minor settlements and villages</span>
+            </td>
+          </tr>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <img src="/icons/rank9.png" width="5" height="5" alt="rank9" />
+            </td>
+            <td class="tdlegend-name">
+              <span class="rank9">Wheathampstead</span>
+            </td>
+            <td class="tdlegend-desc">
+              <span class="legend">sites whose ancient names remain unidentified.</span>
+            </td>
+          </tr>
+        </table>
 
-        <div id="legend" class="tabcontent">
-            <div class="tabhome">
-                <!-- БЛОК 1: Rank 1 + Скобка (Ranks 2–3) -->
-                <table class="tablelegend">
-                    <colgroup>
-                        <col class="icon" />
-                        <col class="name" />
-                        <col class="desc" />
-                    </colgroup>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank1.png" width="11" height="11" alt="rank1" />
-                        </td>
-                        <td class="tdlegend-name"><span class="rank1">ROMA</span></td>
-                        <td class="tdlegend-desc">
-                            <span class="legend">Rome and the four principal provincial capitals</span>
-                        </td>
-                    </tr>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank2.png" width="10" height="10" alt="rank2" />
-                        </td>
-                        <td class="tdlegend-name"><span class="rank2">Corduba</span></td>
-                        <td class="tdlegend-desc bracket first" rowspan="2">
-                            <span class="legend">other provincial and client kingdom capitals</span>
-                        </td>
-                    </tr>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank4.png" width="9" height="9" alt="rank4" />
-                        </td>
-                        <td class="tdlegend-name">
-                            <span class="rank4">Ctesiphon</span>
-                        </td>
-                    </tr>
-                </table>
+        <!-- БЛОК 4: Дороги + Отступ -->
+        <table class="tablelegend roads-legend" style="margin-top: 1em">
+          <colgroup>
+            <col class="icon" />
+            <col class="name" />
+            <col class="desc" />
+          </colgroup>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
+                <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" />
+              </svg>
+            </td>
+            <td class="tdlegend-name"></td>
+            <td class="tdlegend-desc">
+              <span class="legend">certain roads by
+                <a href="https://itiner-e.org/" target="_blank">itiner-e.org</a>
+              </span>
+            </td>
+          </tr>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
+                <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" stroke-dasharray="6,4" />
+              </svg>
+            </td>
+            <td class="tdlegend-name"></td>
+            <td class="tdlegend-desc">
+              <span class="legend">conjectured roads</span>
+            </td>
+          </tr>
+          <tr class="trlegend">
+            <td class="tdlegend-icon">
+              <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
+                <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" stroke-dasharray="1,3" />
+              </svg>
+            </td>
+            <td class="tdlegend-name"></td>
+            <td class="tdlegend-desc">
+              <span class="legend">hypothetical roads</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
 
-                <!-- БЛОК 2: Скобка (Ranks 4–7) + Отступ -->
-                <table class="tablelegend" style="margin-top: 1em">
-                    <colgroup>
-                        <col class="icon" />
-                        <col class="name" />
-                        <col class="desc" />
-                    </colgroup>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank3.png" width="10" height="10" alt="rank3" />
-                        </td>
-                        <td class="tdlegend-name">
-                            <span class="rank3">Byzantium</span>
-                        </td>
-                        <td class="tdlegend-desc bracket first" rowspan="4">
-                            <span class="legend">cities categorized by
-                                <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank">Hanson's</a>
-                                urban ranks: 1, 2, 3, 4-5</span>
-                        </td>
-                    </tr>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank5.png" width="9" height="9" alt="rank5" />
-                        </td>
-                        <td class="tdlegend-name"><span class="rank5">Mantinea</span></td>
-                    </tr>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank6.png" width="8" height="8" alt="rank6" />
-                        </td>
-                        <td class="tdlegend-name">
-                            <span class="rank6">Antinoopolis</span>
-                        </td>
-                    </tr>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank7.png" width="7" height="7" alt="rank7" />
-                        </td>
-                        <td class="tdlegend-name"><span class="rank7">Delos</span></td>
-                    </tr>
-                </table>
-
-                <!-- БЛОК 3: Rank 8 & 9 (Отдельно) + Отступ -->
-                <table class="tablelegend" style="margin-top: 1em">
-                    <colgroup>
-                        <col class="icon" />
-                        <col class="name" />
-                        <col class="desc" />
-                    </colgroup>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank8.png" width="6" height="6" alt="rank8" />
-                        </td>
-                        <td class="tdlegend-name"><span class="rank8">Pityous</span></td>
-                        <td class="tdlegend-desc">
-                            <span class="legend">minor settlements and villages</span>
-                        </td>
-                    </tr>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <img src="/icons/rank9.png" width="5" height="5" alt="rank9" />
-                        </td>
-                        <td class="tdlegend-name">
-                            <span class="rank9">Wheathampstead</span>
-                        </td>
-                        <td class="tdlegend-desc">
-                            <span class="legend">sites whose ancient names remain unidentified.</span>
-                        </td>
-                    </tr>
-                </table>
-
-                <!-- БЛОК 4: Дороги + Отступ -->
-                <table class="tablelegend roads-legend" style="margin-top: 1em">
-                    <colgroup>
-                        <col class="icon" />
-                        <col class="name" />
-                        <col class="desc" />
-                    </colgroup>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
-                                <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" />
-                            </svg>
-                        </td>
-                        <td class="tdlegend-name"></td>
-                        <td class="tdlegend-desc">
-                            <span class="legend">certain roads by
-                                <a href="https://itiner-e.org/" target="_blank">itiner-e.org</a>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
-                                <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5"
-                                    stroke-dasharray="6,4" />
-                            </svg>
-                        </td>
-                        <td class="tdlegend-name"></td>
-                        <td class="tdlegend-desc">
-                            <span class="legend">conjectured roads</span>
-                        </td>
-                    </tr>
-                    <tr class="trlegend">
-                        <td class="tdlegend-icon">
-                            <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
-                                <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5"
-                                    stroke-dasharray="1,3" />
-                            </svg>
-                        </td>
-                        <td class="tdlegend-name"></td>
-                        <td class="tdlegend-desc">
-                            <span class="legend">hypothetical roads</span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div id="places" class="tabcontent">
-            <div id="pusto">
-                Click on any city to get more detailed information about it.
-            </div>
-            <div id="hopa">
-                <table class="tableplaces">
-                    <tr>
-                        <th colspan="2" id="thtitle">
-                            <div id="nazvanie"><span id="title"></span></div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="tdvalue" style="padding: 0">
-                            <strong>ID:</strong> <span id="id130-value"></span>
-                            <span style="margin: 0 10px; color: #ccc">|</span>
-                            <strong>Link:</strong>
-                            <a id="perm-link-display" href="#" target="_blank" rel="noopener noreferrer" style="
+    <div id="places" class="tabcontent">
+      <div id="pusto">
+        Click on any city to get more detailed information about it.
+      </div>
+      <div id="hopa">
+        <table class="tableplaces">
+          <tr>
+            <th colspan="2" id="thtitle">
+              <div id="nazvanie"><span id="title"></span></div>
+            </th>
+          </tr>
+          <tr>
+            <td colspan="2" class="tdvalue" style="padding: 0">
+              <strong>ID:</strong> <span id="id130-value"></span>
+              <span style="margin: 0 10px; color: #ccc">|</span>
+              <strong>Link:</strong>
+              <a id="perm-link-display" href="#" target="_blank" rel="noopener noreferrer" style="
                     word-break: break-all;
                     color: #0645ad;
                     text-decoration: underline;
                     cursor: pointer;
                   "></a>
-                            <button type="button" class="btn" data-clipboard-target="#perm-link-display" style="
+              <button type="button" class="btn" data-clipboard-target="#perm-link-display" style="
                     display: inline-block;
                     vertical-align: baseline;
                     margin-left: 5px;
                   ">
-                                <img src="/icons/clipboard.png" width="16" height="16" alt="Copy" style="
+                <img src="/icons/clipboard.png" width="16" height="16" alt="Copy" style="
                       display: inline-block;
                       vertical-align: baseline;
                       position: relative;
                       top: 2px;
                     " />
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdlabel">Alt name(s):</td>
-                        <td class="tdvalue"><span id="alt"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdlabel">Roman province:</td>
-                        <td class="tdvalue"><span id="province"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdlabel">Start date:</td>
-                        <td class="tdvalue"><span id="start"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdlabel">Modern place:</td>
-                        <td class="tdvalue">
-                            <span id="modern"></span>
-                            <span id="flag"></span>
-                            <span id="country"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdlabel">Description (Pleiades):</td>
-                        <td class="tdvalue"><span id="description"></span></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <div id="minimap" class="map"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="tdlabel">
-                            <div class="divsmall">
-                                Open this place in:<span style="margin: 0 10px"></span><span
-                                    id="googlelink"></span><span style="margin: 0 10px; color: #ccc">|</span><span
-                                    id="OSMlink"></span><span style="margin: 0 10px; color: #ccc">|</span><span
-                                    id="wikimapialink"></span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="tdlabel">
-                            <div class="divsmall">
-                                <div style="display: inline-block; vertical-align: middle">
-                                    <div>Decimal: <span id="coords"></span></div>
-                                    <div>DMS: <span id="coords2"></span></div>
-                                </div>
-                                <button type="button" class="btn" data-clipboard-target="#coords" style="
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td class="tdlabel">Alt name(s):</td>
+            <td class="tdvalue"><span id="alt"></span></td>
+          </tr>
+          <tr>
+            <td class="tdlabel">Roman province:</td>
+            <td class="tdvalue"><span id="province"></span></td>
+          </tr>
+          <tr>
+            <td class="tdlabel">Start date:</td>
+            <td class="tdvalue"><span id="start"></span></td>
+          </tr>
+          <tr>
+            <td class="tdlabel">Modern place:</td>
+            <td class="tdvalue">
+              <span id="modern"></span>
+              <span id="flag"></span>
+              <span id="country"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="tdlabel">Description (Pleiades):</td>
+            <td class="tdvalue"><span id="description"></span></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div id="minimap" class="map"></div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="tdlabel">
+              <div class="divsmall">
+                Open this place in:<span style="margin: 0 10px"></span><span id="googlelink"></span><span
+                  style="margin: 0 10px; color: #ccc">|</span><span id="OSMlink"></span><span
+                  style="margin: 0 10px; color: #ccc">|</span><span id="wikimapialink"></span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="tdlabel">
+              <div class="divsmall">
+                <div style="display: inline-block; vertical-align: middle">
+                  <div>Decimal: <span id="coords"></span></div>
+                  <div>DMS: <span id="coords2"></span></div>
+                </div>
+                <button type="button" class="btn" data-clipboard-target="#coords" style="
                       display: inline-block;
                       vertical-align: middle;
                       margin-left: 10px;
                     ">
-                                    <img src="/icons/clipboard.png" width="16" height="15" alt="Copy" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                <table class="tableplaces">
-                    <tr>
-                        <td class="tdatlas">Barrington Atlas:</td>
-                        <td class="tdnumber"><span id="batlas"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">
-                            Ancient World Mapping Center (UNC-Chapel Hill):
-                        </td>
-                        <td class="tdnumber"><span id="awmc"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">
-                            Digital Atlas of Roman and Medieval Civilizations (Harvard):
-                        </td>
-                        <td class="tdnumber"><span id="darmc"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">
-                            Digital Atlas of the Roman Empire (University of Gothenburg):
-                        </td>
-                        <td class="tdnumber"><span id="darelink"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">Orbis (Stanford):</td>
-                        <td class="tdnumber"><span id="orbis"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">Pleiades:</td>
-                        <td class="tdnumber"><span id="pleiadeslink"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">
-                            The Princeton Encyclopedia of Classical Sites:
-                        </td>
-                        <td class="tdnumber"><span id="pecslink"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">Tabula Peutingeriana (Cambridge):</td>
-                        <td class="tdnumber"><span id="tpplacelink"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">ToposText:</td>
-                        <td class="tdnumber"><span id="topostextlink"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">Trismegistos:</td>
-                        <td class="tdnumber"><span id="trismegistos"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">
-                            Urban Geography of the Roman World (Hanson 2016, Oxford):
-                        </td>
-                        <td class="tdnumber"><span id="hanson"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">Vici.org:</td>
-                        <td class="tdnumber"><span id="vicilink"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">Wikidata:</td>
-                        <td class="tdnumber"><span id="wikidatalink"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tdatlas">Wikipedia:en:</td>
-                        <td class="tdnumber"><span id="wikipedialink"></span></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div id="data" class="tabcontent">
-            <div class="tabdata">
-                <p>
-                    Download the complete datasets used in this project in open formats:
-                </p>
-                <ul style="list-style-type: none; padding-left: 0">
-                    <li style="margin-bottom: 1em">
-                        <a href="/downloads/301023_AD130.csv" download="301023_AD130.csv">
-                            <strong>Complete settlements dataset (CSV)</strong><br />
-                            <small>All 7,891 cities and settlements with attributes (version
-                                30.10.2023)</small>
-                        </a>
-                    </li>
-                    <li style="margin-bottom: 1em">
-                        <a href="/downloads/oceanbase.geojson" download="oceanbase.geojson">
-                            <strong>Ocean basemap (GeoJSON)</strong><br />
-                            <small>Coastlines and maritime features (version 30.10.2023)</small>
-                        </a>
-                    </li>
-                    <li style="margin-bottom: 1em">
-                        <a href="/downloads/empire.geojson" download="empire.geojson">
-                            <strong>Provincial boundaries (GeoJSON)</strong><br />
-                            <small>All Roman provinces with administrative borders (version
-                                30.10.2023)</small>
-                        </a>
-                    </li>
-                </ul>
-                <p style="margin-top: 2em; font-size: 0.9em; color: #666">
-                    All data is released under the
-                    <a rel="license" href="/license.txt">2-Clause BSD License</a>.
-                    Attribution is required for reuse.
-                </p>
-            </div>
-        </div>
-
-        <div id="about" class="tabcontent">
-            <div class="tababout">
-                <p class="anons">
-                    This project has two primary objectives. First, to present an
-                    interactive map of the Roman Empire as it existed at the end of AD
-                    130—coinciding with the foundation of Antinoopolis—using modern web
-                    technologies. Second, to create a unified reference point that
-                    connects disparate scholarly databases of ancient Roman settlements
-                    by aggregating their identifiers and cross-references in a single,
-                    accessible location.
-                </p>
-
-                <p class="anons">
-                    The project is built with OpenLayers v8 and utilizes multiple
-                    GeoJSON layers. The base map, including coastlines and provincial
-                    boundaries, is derived primarily from
-                    <a href="https://awmc.unc.edu/" target="_blank">the Ancient World Mapping Center</a>. Numerous
-                    geometric errors in the original data were corrected,
-                    and several provincial borders were adjusted to align with relevant
-                    geographic features. Every settlement is linked to
-                    <a href="https://pleiades.stoa.org/" target="_blank">the Pleiades gazetteer</a>
-                    and, with few exceptions, to both
-                    <a href="https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html"
-                        target="_blank">the Barrington Atlas</a>
-                    and
-                    <a href="http://imperium.ahlfeldt.se/" target="_blank">the Digital Atlas of the Roman Empire</a>.
-                </p>
-
-                <p class="anons">
-                    Data on urban ranks is derived from
-                    <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank">Hanson, J. W. (2016).
-                        Cities Database (OXREP databases). Version
-                        1.0.</a>
-                    Used with academic attribution. Please consult the original source
-                    for terms of reuse.
-                </p>
-
-                <p class="anons" style="color: red">
-                    <strong>If any copyright has been inadvertently infringed or attribution
-                        improperly given, please accept my apologies for the oversight and
-                        contact me to rectify the matter.</strong>
-                </p>
-
-                <p class="anons">
-                    This is a non-commercial project developed as a personal endeavor.
-                    While it does not claim to be a scholarly work, every effort has
-                    been made to ensure accuracy. I welcome constructive criticism and
-                    suggestions regarding both the content and the technical
-                    implementation. Feedback may be sent to
-                    <a href="mailto:admin@urbesetorbis.com">admin@urbesetorbis.com</a>.
-                </p>
-
-                <p class="anons" style="text-align: end">
-                    Version 1.0. © 2023–2026 Diasito.
-                </p>
-                <p class="anons" style="text-align: end">
-                    Code, data, and cartographic materials are licensed under the
-                    <a rel="license" href="/license.txt">2-Clause BSD License</a>.
-                </p>
-            </div>
-        </div>
-
-        <script>
-            let isPageFullyLoaded = false;
-            window.addEventListener("load", () => {
-                isPageFullyLoaded = true;
-            });
-
-            function openPage(pageName, elmnt, color) {
-                const tabcontent = document.getElementsByClassName("tabcontent");
-                for (let i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "none";
-                }
-
-                const tablinks = document.getElementsByClassName("tablink");
-                for (let i = 0; i < tablinks.length; i++) {
-                    tablinks[i].style.backgroundColor = "";
-                }
-
-                document.getElementById(pageName).style.display = "block";
-                elmnt.style.backgroundColor = color;
-
-                if (pageName === "home") {
-                    // 1. Очищаем хэш из URL (только после полной загрузки)
-                    if (window.location.hash.match(/^#id\d+/) && isPageFullyLoaded) {
-                        window.history.replaceState(
-                            null,
-                            "",
-                            window.location.pathname + window.location.search,
-                        );
-                    }
-                    // 2. Плавный полёт карты к исходному состоянию
-                    if (window.map && window.homeCenter) {
-                        window.map.getView().animate({
-                            center: window.homeCenter,
-                            zoom: 6,
-                            duration: 1000, // длительность полёта в мс (можно менять)
-                        });
-                    }
-                }
-            }
-
-            document.getElementById("defaultOpen").click();
-        </script>
-
-        <script type="module" src="/main.js"></script>
+                  <img src="/icons/clipboard.png" width="16" height="15" alt="Copy" />
+                </button>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <table class="tableplaces">
+          <tr>
+            <td class="tdatlas">Barrington Atlas:</td>
+            <td class="tdnumber"><span id="batlas"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">
+              Ancient World Mapping Center (UNC-Chapel Hill):
+            </td>
+            <td class="tdnumber"><span id="awmc"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">
+              Digital Atlas of Roman and Medieval Civilizations (Harvard):
+            </td>
+            <td class="tdnumber"><span id="darmc"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">
+              Digital Atlas of the Roman Empire (University of Gothenburg):
+            </td>
+            <td class="tdnumber"><span id="darelink"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">Orbis (Stanford):</td>
+            <td class="tdnumber"><span id="orbis"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">Pleiades:</td>
+            <td class="tdnumber"><span id="pleiadeslink"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">
+              The Princeton Encyclopedia of Classical Sites:
+            </td>
+            <td class="tdnumber"><span id="pecslink"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">Tabula Peutingeriana (Cambridge):</td>
+            <td class="tdnumber"><span id="tpplacelink"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">ToposText:</td>
+            <td class="tdnumber"><span id="topostextlink"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">Trismegistos:</td>
+            <td class="tdnumber"><span id="trismegistos"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">
+              Urban Geography of the Roman World (Hanson 2016, Oxford):
+            </td>
+            <td class="tdnumber"><span id="hanson"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">Vici.org:</td>
+            <td class="tdnumber"><span id="vicilink"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">Wikidata:</td>
+            <td class="tdnumber"><span id="wikidatalink"></span></td>
+          </tr>
+          <tr>
+            <td class="tdatlas">Wikipedia:en:</td>
+            <td class="tdnumber"><span id="wikipedialink"></span></td>
+          </tr>
+        </table>
+      </div>
     </div>
+
+    <div id="data" class="tabcontent">
+      <div class="tabdata">
+        <p>
+          Download the complete datasets used in this project in open formats:
+        </p>
+        <ul style="list-style-type: none; padding-left: 0">
+          <li style="margin-bottom: 1em">
+            <a href="/downloads/301023_AD130.csv" download="301023_AD130.csv">
+              <strong>Complete settlements dataset (CSV)</strong><br />
+              <small>All 7,891 cities and settlements with attributes (version
+                30.10.2023)</small>
+            </a>
+          </li>
+          <li style="margin-bottom: 1em">
+            <a href="/downloads/oceanbase.geojson" download="oceanbase.geojson">
+              <strong>Ocean basemap (GeoJSON)</strong><br />
+              <small>Coastlines and maritime features (version 30.10.2023)</small>
+            </a>
+          </li>
+          <li style="margin-bottom: 1em">
+            <a href="/downloads/empire.geojson" download="empire.geojson">
+              <strong>Provincial boundaries (GeoJSON)</strong><br />
+              <small>All Roman provinces with administrative borders (version
+                30.10.2023)</small>
+            </a>
+          </li>
+        </ul>
+        <p style="margin-top: 2em; font-size: 0.9em; color: #666">
+          All data is released under the
+          <a rel="license" href="/license.txt">2-Clause BSD License</a>.
+          Attribution is required for reuse.
+        </p>
+      </div>
+    </div>
+
+    <div id="about" class="tabcontent">
+      <div class="tababout">
+        <p class="anons">
+          This project has two primary objectives. First, to present an
+          interactive map of the Roman Empire as it existed at the end of AD
+          130—coinciding with the foundation of Antinoopolis—using modern web
+          technologies. Second, to create a unified reference point that
+          connects disparate scholarly databases of ancient Roman settlements
+          by aggregating their identifiers and cross-references in a single,
+          accessible location.
+        </p>
+
+        <p class="anons">
+          The project is built with OpenLayers v8 and utilizes multiple
+          GeoJSON layers. The base map, including coastlines and provincial
+          boundaries, is derived primarily from
+          <a href="https://awmc.unc.edu/" target="_blank">the Ancient World Mapping Center</a>. Numerous
+          geometric errors in the original data were corrected,
+          and several provincial borders were adjusted to align with relevant
+          geographic features. Every settlement is linked to
+          <a href="https://pleiades.stoa.org/" target="_blank">the Pleiades gazetteer</a>
+          and, with few exceptions, to both
+          <a href="https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html" target="_blank">the
+            Barrington Atlas</a>
+          and
+          <a href="http://imperium.ahlfeldt.se/" target="_blank">the Digital Atlas of the Roman Empire</a>.
+        </p>
+
+        <p class="anons">
+          The road network depicted on the map is based on data from <a href="https://itiner-e.org/"
+            target="_blank">Itiner-e: the digital atlas of ancient roads</a>. It classifies routes by their level of
+          archaeological and historical certainty (certain, conjectured, and hypothetical).
+        </p>
+        <p class="anons">
+          Data on urban ranks is derived from
+          <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank">Hanson, J. W. (2016).
+            Cities Database (OXREP databases). Version
+            1.0.</a>
+          Used with academic attribution. Please consult the original source
+          for terms of reuse.
+        </p>
+
+        <p class="anons" style="color: red">
+          <strong>If any copyright has been inadvertently infringed or attribution
+            improperly given, please accept my apologies for the oversight and
+            contact me to rectify the matter.</strong>
+        </p>
+
+
+        <p class="anons">
+          This is a non-commercial project developed as a personal endeavor.
+          While it does not claim to be a scholarly work, every effort has
+          been made to ensure accuracy. I welcome constructive criticism and
+          suggestions regarding both the content and the technical
+          implementation. Feedback may be sent to
+          <a href="mailto:diasito&#64;tuta&#46;io">my email</a>.
+        </p>
+
+        <p class="anons" style="text-align: end">
+          Version 1.0. © 2023–2026 Diasito.
+        </p>
+        <p class="anons" style="text-align: end">
+          Code, data, and cartographic materials are licensed under the
+          <a rel="license" href="/license.txt">2-Clause BSD License</a>.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      let isPageFullyLoaded = false;
+      window.addEventListener("load", () => {
+        isPageFullyLoaded = true;
+      });
+
+      function openPage(pageName, elmnt, color) {
+        const tabcontent = document.getElementsByClassName("tabcontent");
+        for (let i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+
+        const tablinks = document.getElementsByClassName("tablink");
+        for (let i = 0; i < tablinks.length; i++) {
+          tablinks[i].style.backgroundColor = "";
+        }
+
+        document.getElementById(pageName).style.display = "block";
+        elmnt.style.backgroundColor = color;
+
+        if (pageName === "home") {
+          // 1. Очищаем хэш из URL (только после полной загрузки)
+          if (window.location.hash.match(/^#id\d+/) && isPageFullyLoaded) {
+            window.history.replaceState(
+              null,
+              "",
+              window.location.pathname + window.location.search,
+            );
+          }
+          // 2. Плавный полёт карты к исходному состоянию
+          if (window.map && window.homeCenter) {
+            window.map.getView().animate({
+              center: window.homeCenter,
+              zoom: 6,
+              duration: 1000, // длительность полёта в мс (можно менять)
+            });
+          }
+        }
+      }
+
+      document.getElementById("defaultOpen").click();
+    </script>
+
+    <script type="module" src="/main.js"></script>
+  </div>
 </body>
 
 </html>
