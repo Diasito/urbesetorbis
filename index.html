@@ -135,175 +135,142 @@
 <div id="legend" class="tabcontent">
     <div class="tabhome">
     <style>
-/* === ЛЕГЕНДА: ТАБЛИЦА === */
-.tablelegend {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    margin-bottom: 0.5em;
-}
-.tablelegend col.icon { width: 3%; }
-.tablelegend col.name { width: 15%; }
-.tablelegend col.desc { width: 82%; }
-
-.trlegend { vertical-align: middle; }
-
-.tdlegend-icon {
-    padding: 4px 0.3em 4px 0;
-    text-align: left;
-    vertical-align: middle;
-}
-.tdlegend-name {
-    padding: 4px 0 4px 0;
-    vertical-align: middle;
-    white-space: nowrap;
-}
-
-.tdlegend-desc {
-    padding: 4px 0 4px 0.5em;
-    vertical-align: middle;
-    position: relative;
-}
-
-.tdlegend-desc .legend::before {
-    content: "—";
-    display: inline-block;
-    width: 1.2em;
-    text-align: right;
-    margin-right: 0.3em;
-    vertical-align: middle;
-}
-
-#legend .legend {
-    display: inline;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.9rem;
-    line-height: 1.2;
-}
-
-/* === ГРУППИРОВКА: «скобка» === */
-.tdlegend-desc.grouped { border-left: 2px solid #895E8A;}
-.tdlegend-desc.grouped.first { border-top-left-radius: 4px; }
-.tdlegend-desc.grouped.last { border-bottom-left-radius: 4px; }
-.tdlegend-desc.grouped:not(.first) { border-top: none; }
-.tdlegend-desc.grouped:not(.first) .legend { visibility: hidden; }
-
-/* === ДОРОГИ: выравнивание иконок и текста === */
-.roads-legend .tdlegend-icon {
-    text-align: center;
-    width: 60px;
-    padding: 4px 0;
-    vertical-align: middle;
-}
-.roads-legend .tdlegend-icon svg {
-    display: inline-block;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
-}
-.roads-legend .tdlegend-name { width: 0; padding: 0; }
-.roads-legend .tdlegend-desc {
-    vertical-align: middle;
-}
-.roads-legend .legend {
-    vertical-align: middle;
-}
+        /* === ПЕРЕОПРЕДЕЛЕНИЕ ГЛОБАЛЬНЫХ СТИЛЕЙ ТОЛЬКО ДЛЯ ЛЕГЕНДЫ === */
+        #legend .tablelegend {
+            width: 100%;
+            border-collapse: separate !important; /* 🔑 Сохраняет border-radius скобок */
+            border-spacing: 0 !important;
+            table-layout: fixed;
+            margin-bottom: 0.5em;
+            line-height: 1.2;
+        }
+        #legend col.icon { width: 3%; }
+        #legend col.name { width: 15%; }
+        #legend col.desc { width: 82%; }
+        
+        #legend .trlegend { vertical-align: middle; }
+        
+        #legend .tdlegend-icon { padding: 4px 0.2em 4px 0; text-align: left; vertical-align: middle; }
+        #legend .tdlegend-name { padding: 4px 0; vertical-align: middle; white-space: nowrap; }
+        #legend .tdlegend-desc {
+            padding: 4px 0 4px 0.5em; /* 🔑 Единый левый отступ для ВСЕХ ячеек */
+            vertical-align: middle;
+            position: relative;
+        }
+        
+        /* === ТИРЕ: ИДЕАЛЬНАЯ ВЕРТИКАЛЬ === */
+        #legend .legend {
+            display: inline;
+            font-family: Arial, Helvetica, sans-serif;
+            padding-left: 0 !important; /* 🔑 Перебиваем style.css */
+            margin: 0;
+        }
+        #legend .legend::before {
+            content: "—";
+            display: inline-block;
+            width: 1.2em;
+            text-align: right;
+            margin-right: 0.3em;
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+        }
+        
+        /* === СКОБКИ: ТОЛЬКО ЛЕВАЯ ЛИНИЯ === */
+        #legend .tdlegend-desc.bracket {
+            border-top: none !important;
+            border-bottom: none !important;
+            border-left: 2px solid #895E8A;
+            padding-left: 1em !important;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+        #legend .tdlegend-desc.bracket.first { border-top-right-radius: 6px; }
+        #legend .tdlegend-desc.bracket.last { border-bottom-right-radius: 6px; }
+        
+        /* === ДОРОГИ === */
+        #legend .roads-legend .tdlegend-icon { text-align: center; width: 60px; padding: 4px 0; vertical-align: middle; }
+        #legend .roads-legend .tdlegend-icon svg { display: inline-block; vertical-align: middle; position: relative; top: -1px; }
+        #legend .roads-legend .tdlegend-name { width: 0; padding: 0; }
+        #legend .roads-legend .tdlegend-desc { vertical-align: middle; }
     </style>
     
-    <!-- === ГОРОДА: ОДНА ТАБЛИЦА === -->
+    <!-- БЛОК 1: Rank 1 + Скобка (Ranks 2–3) -->
     <table class="tablelegend">
-        <colgroup>
-            <col class="icon">
-            <col class="name">
-            <col class="desc">
-        </colgroup>
-        
-        <!-- Rank 1: отдельно -->
+        <colgroup><col class="icon"><col class="name"><col class="desc"></colgroup>
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank1.png" width="11" height="11" alt="rank1"></td>
             <td class="tdlegend-name"><span class="rank1">ROMA</span></td>
             <td class="tdlegend-desc"><span class="legend">Rome and the four principal provincial capitals</span></td>
         </tr>
-        
-        <!-- Ranks 2 & 4: группа из 2 -->
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank2.png" width="10" height="10" alt="rank2"></td>
             <td class="tdlegend-name"><span class="rank2">Corduba</span></td>
-            <td class="tdlegend-desc grouped first"><span class="legend">other provincial and client kingdom capitals</span></td>
+            <td class="tdlegend-desc bracket first" rowspan="2"><span class="legend">other provincial and client kingdom capitals</span></td>
         </tr>
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank4.png" width="9" height="9" alt="rank4"></td>
             <td class="tdlegend-name"><span class="rank4">Ctesiphon</span></td>
-            <td class="tdlegend-desc grouped last"><span class="legend"></span></td>
         </tr>
-        
-        <!-- Ranks 3,5,6,7: группа из 4 -->
+    </table>
+    
+    <!-- БЛОК 2: Скобка (Ranks 4–7) + Отступ -->
+    <table class="tablelegend" style="margin-top: 1em;">
+        <colgroup><col class="icon"><col class="name"><col class="desc"></colgroup>
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank3.png" width="10" height="10" alt="rank3"></td>
             <td class="tdlegend-name"><span class="rank3">Byzantium</span></td>
-            <td class="tdlegend-desc grouped first"><span class="legend">cities categorized by <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank">Hanson's</a> urban ranks: 1, 2, 3, 4-5</span></td>
+            <td class="tdlegend-desc bracket first" rowspan="4"><span class="legend">cities categorized by <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank">Hanson's</a> urban ranks: 1, 2, 3, 4-5</span></td>
         </tr>
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank5.png" width="9" height="9" alt="rank5"></td>
             <td class="tdlegend-name"><span class="rank5">Mantinea</span></td>
-            <td class="tdlegend-desc grouped"><span class="legend"></span></td>
         </tr>
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank6.png" width="8" height="8" alt="rank6"></td>
             <td class="tdlegend-name"><span class="rank6">Antinoopolis</span></td>
-            <td class="tdlegend-desc grouped"><span class="legend"></span></td>
         </tr>
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank7.png" width="7" height="7" alt="rank7"></td>
             <td class="tdlegend-name"><span class="rank7">Delos</span></td>
-            <td class="tdlegend-desc grouped last"><span class="legend"></span></td>
         </tr>
-        
-        <!-- Rank 8: отдельно -->
+    </table>
+    
+    <!-- БЛОК 3: Rank 8 & 9 (Отдельно) + Отступ -->
+    <table class="tablelegend" style="margin-top: 1em;">
+        <colgroup><col class="icon"><col class="name"><col class="desc"></colgroup>
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank8.png" width="6" height="6" alt="rank8"></td>
             <td class="tdlegend-name"><span class="rank8">Pityous</span></td>
             <td class="tdlegend-desc"><span class="legend">minor settlements and villages</span></td>
         </tr>
-        
-        <!-- Rank 9: отдельно -->
         <tr class="trlegend">
             <td class="tdlegend-icon"><img src="/icons/rank9.png" width="5" height="5" alt="rank9"></td>
             <td class="tdlegend-name"><span class="rank9">Wheathampstead</span></td>
-            <td class="tdlegend-desc"><span class="legend">sites whose ancient names remain unidentified</span></td>
+            <td class="tdlegend-desc"><span class="legend">sites whose ancient names remain unidentified.</span></td>
         </tr>
     </table>
     
-    <!-- === ДОРОГИ: отдельная таблица, но с той же сеткой === -->
+    <!-- БЛОК 4: Дороги + Отступ -->
     <table class="tablelegend roads-legend" style="margin-top: 1em;">
-        <colgroup>
-            <col class="icon">
-            <col class="name">
-            <col class="desc">
-        </colgroup>
+        <colgroup><col class="icon"><col class="name"><col class="desc"></colgroup>
         <tr class="trlegend">
             <td class="tdlegend-icon">
-                <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
-                    <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5"/>
-                </svg>
+                <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true"><line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5"/></svg>
             </td>
             <td class="tdlegend-name"></td>
-            <td class="tdlegend-desc"><span class="legend">certain road by <a href="https://itiner-e.org/" target="_blank">itiner-e.org</span></td>
+            <td class="tdlegend-desc"><span class="legend">certain road by <a href="https://itiner-e.org/" target="_blank">itiner-e.org</a> </span></td>
         </tr>
         <tr class="trlegend">
             <td class="tdlegend-icon">
-                <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
-                    <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" stroke-dasharray="6,4"/>
-                </svg>
+                <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true"><line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" stroke-dasharray="6,4"/></svg>
             </td>
             <td class="tdlegend-name"></td>
             <td class="tdlegend-desc"><span class="legend">conjectured road</span></td>
         </tr>
         <tr class="trlegend">
             <td class="tdlegend-icon">
-                <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true">
-                    <line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" stroke-dasharray="2,3"/>
-                </svg>
+                <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true"><line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" stroke-dasharray="1,3"/></svg>
             </td>
             <td class="tdlegend-name"></td>
             <td class="tdlegend-desc"><span class="legend">hypothetical road</span></td>

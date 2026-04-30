@@ -10,6 +10,7 @@ qgis_layers/
 
 # Десятки тысяч тайлов базовой карты
 public/data/base7/
+public/downloads/
 
 # Логи
 *.log
