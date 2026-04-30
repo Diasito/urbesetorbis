@@ -2,337 +2,336 @@
 
 html,
 body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.9rem;
-    height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.9rem;
+  height: 100%;
 }
 
 #map {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 70%;
-    height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 70%;
+  height: 100%;
 }
 
 .tabhome,
 .tababout,
 .tabdata {
-    width: 100%;
-    line-height: 1.5;
-    margin-top: 1vw;
-    padding: 2vw 1vw 0 1vw;
-    font-size: 100%;
+  width: 100%;
+  line-height: 1.5;
+  margin-top: 1vw;
+  padding: 2vw 1vw 0 1vw;
+  font-size: 100%;
 }
 
 .legend {
-    line-height: 1.2;
-    font-family: Arial, Helvetica, sans-serif;
-    padding-left: 0.5em;
-    display: inline-block;
+  line-height: 1.2;
+  font-family: Arial, Helvetica, sans-serif;
+  padding-left: 0.5em;
+  display: inline-block;
 }
 
 .rank1 {
-    line-height: 20px;
-    height: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 13px;
+  line-height: 20px;
+  height: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 13px;
 }
 
 .rank2,
 .rank3 {
-    line-height: 20px;
-    height: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 12px;
+  line-height: 20px;
+  height: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
 }
 
 .rank4,
 .rank5 {
-    line-height: 20px;
-    height: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 11px;
+  line-height: 20px;
+  height: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 11px;
 }
 
 .rank6 {
-    line-height: 20px;
-    height: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 10px;
+  line-height: 20px;
+  height: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 10px;
 }
 
 .rank7 {
-    line-height: 20px;
-    height: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 9px;
+  line-height: 20px;
+  height: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 9px;
 }
 
 .rank8 {
-    line-height: 20px;
-    height: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 9px;
-    display: inline-block;
-    vertical-align: middle;
+  line-height: 20px;
+  height: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .rank9 {
-    line-height: 20px;
-    height: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-style: italic;
-    font-size: 9px;
+  line-height: 20px;
+  height: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: italic;
+  font-size: 9px;
 }
 
 .imghadrian {
-    display: block;
-    margin: auto;
-    width: 40%;
-    height: auto;
+  display: block;
+  margin: auto;
+  width: 40%;
+  height: auto;
 }
 
 .tableplaces {
-    width: 95%;
-    line-height: 1;
-    border-collapse: collapse;
-    margin: 0 auto;
-    font-size: 0.8rem;
+  width: 95%;
+  line-height: 1;
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-size: 0.8rem;
 }
 
 #thtitle {
-    text-align: center;
+  text-align: center;
 }
 
-
 .tdlabel {
-    width: 30%;
-    text-align: left;
-    padding: 0.25rem 0;
+  width: 30%;
+  text-align: left;
+  padding: 0.25rem 0;
 }
 
 .tdvalue {
-    width: 70%;
-    text-align: left;
-    padding: 0.25rem 0;
+  width: 70%;
+  text-align: left;
+  padding: 0.25rem 0;
 }
 
 .tdatlas {
-    width: 70%;
-    text-align: left;
-    padding: 0.25rem 0;
+  width: 70%;
+  text-align: left;
+  padding: 0.25rem 0;
 }
 
 .tdnumber {
-    text-align: left;
-    padding: 0.25rem 0.5rem;
+  text-align: left;
+  padding: 0.25rem 0.5rem;
 }
 
 .anons {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 a:link {
-    color: blue;
-    text-decoration: underline;
+  color: blue;
+  text-decoration: underline;
 }
 
 a:visited {
-    color: purple;
-    text-decoration: underline;
+  color: purple;
+  text-decoration: underline;
 }
 
 a:active {
-    color: blue;
-    text-decoration: underline;
+  color: blue;
+  text-decoration: underline;
 }
 
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 #nazvanie {
-    margin: 0 0 1em 0;
+  margin: 0 0 1em 0;
 }
 
 #title {
-    font-family: 'CapitalisTypOasis', serif;
-    font-size: 2rem;
-    text-transform: uppercase;
-    font-variant-numeric: ordinal;
+  font-family: "CapitalisTypOasis", serif;
+  font-size: 2rem;
+  text-transform: uppercase;
+  font-variant-numeric: ordinal;
 }
 
 #pusto {
-    margin: 0 0 0 1rem;
-    text-align: center;
+  margin: 0 0 0 1rem;
+  text-align: center;
 }
 
 .divsmall {
-    padding: 0;
-    line-height: 1.4;
+  padding: 0;
+  line-height: 1.4;
 }
 
 .btn {
-    vertical-align: middle;
-    margin-left: 0.5rem;
+  vertical-align: middle;
+  margin-left: 0.5rem;
 }
 
 #minimap {
-    position: relative;
-	padding: 1em 0 0 0;
-    width: 100%;
-    height: 15vw;
+  position: relative;
+  padding: 1em 0 0 0;
+  width: 100%;
+  height: 15vw;
 }
 
 .ol-search {
-    top: 0.5rem;
-    left: 3rem;
-    background: transparent;
-    border: none;
-    padding: 0;
+  top: 0.5rem;
+  left: 3rem;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .ol-search input {
-    display: inline-block;
-    width: 15.625rem;          /* 250 px */
-    padding: 0.5rem 0.75rem;   /* 8 px 12 px */
-    border: 1px solid #895E8A;
-    border-radius: 0.25rem;    /* 4 px */
-    font-size: 0.875rem;       /* 14 px */
-    font-family: Arial, Helvetica, sans-serif;
-    background: white;
-    color: #333;
-    height: auto;
-    margin: 0;
-    box-sizing: border-box;
+  display: inline-block;
+  width: 15.625rem; /* 250 px */
+  padding: 0.5rem 0.75rem; /* 8 px 12 px */
+  border: 1px solid #895e8a;
+  border-radius: 0.25rem; /* 4 px */
+  font-size: 0.875rem; /* 14 px */
+  font-family: Arial, Helvetica, sans-serif;
+  background: white;
+  color: #333;
+  height: auto;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .ol-search input:focus {
-    outline: none;
-    border-color: #6CA198;
+  outline: none;
+  border-color: #6ca198;
 }
 
 .ol-touch .ol-search input {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .ol-search ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: block;
-    background: white;
-    border: 1px solid #895E8A;
-    border-top: none;
-    max-height: 18.75rem;      /* 300 px */
-    overflow-y: auto;
-    z-index: 1000;
-    cursor: pointer;
-    max-width: 16.625rem;      /* 266 px */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  background: white;
+  border: 1px solid #895e8a;
+  border-top: none;
+  max-height: 18.75rem; /* 300 px */
+  overflow-y: auto;
+  z-index: 1000;
+  cursor: pointer;
+  max-width: 16.625rem; /* 266 px */
 }
 
 .ol-touch .ol-search ul {
-    font-size: 16px;
-    max-width: 280px;
+  font-size: 16px;
+  max-width: 280px;
 }
 
 .ol-search ul li {
-    padding: 0.5rem 0.75rem;
-    color: #333;
-    font-size: 0.875rem;
-    font-family: Arial, Helvetica, sans-serif;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-bottom: 1px solid #eee;
+  padding: 0.5rem 0.75rem;
+  color: #333;
+  font-size: 0.875rem;
+  font-family: Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #eee;
 }
 
 .ol-search ul li:hover {
-    background-color: #6d4a6e;
-    color: white;
+  background-color: #6d4a6e;
+  color: white;
 }
 
 .ol-search ul li:focus {
-    background-color: #5a3d5b;
-    color: white;
-    outline: none;
+  background-color: #5a3d5b;
+  color: white;
+  outline: none;
 }
 
 .ol-search ul li:only-child {
-    color: #666;
-    font-style: italic;
-    cursor: default;
+  color: #666;
+  font-style: italic;
+  cursor: default;
 }
 
 .ol-search ul li:only-child:hover {
-    background-color: transparent;
-    color: #666;
+  background-color: transparent;
+  color: #666;
 }
 
 #loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #f5f5f5;
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, Helvetica, sans-serif;
-    transition: opacity 0.5s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #f5f5f5;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, Helvetica, sans-serif;
+  transition: opacity 0.5s ease;
 }
 
 #loading-screen > div {
-    text-align: center;
-    max-width: 37.5rem;   /* 600 px */
-    padding: 2rem;
+  text-align: center;
+  max-width: 37.5rem; /* 600 px */
+  padding: 2rem;
 }
 
 #loading-screen h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 #loading-screen h2 {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 #loading-progress-bar {
-    width: 0%;
-    height: 0.25rem;   /* 4 px */
-    background: #895E8A;
-    border-radius: 0.125rem;
-    transition: width 0.3s;
+  width: 0%;
+  height: 0.25rem; /* 4 px */
+  background: #895e8a;
+  border-radius: 0.125rem;
+  transition: width 0.3s;
 }
 
 #loading-screen > div > div {
-    margin: 2rem 0;
+  margin: 2rem 0;
 }
 
 #loading-screen > div > div > div:first-child {
-    width: 100%;
-    height: 0.25rem;
-    background: #ddd;
-    border-radius: 0.125rem;
-    overflow: hidden;
+  width: 100%;
+  height: 0.25rem;
+  background: #ddd;
+  border-radius: 0.125rem;
+  overflow: hidden;
 }
 
 #loading-progress-text {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: #666;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
 }
 
 .ol-attribution {
@@ -366,7 +365,7 @@ a:hover {
   margin-bottom: 0;
 }
 .ol-attribution a {
-  color: #895E8A;
+  color: #895e8a;
   text-decoration: none;
 }
 .ol-attribution a:hover {
