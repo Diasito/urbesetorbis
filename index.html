@@ -138,7 +138,7 @@
         /* === ПЕРЕОПРЕДЕЛЕНИЕ ГЛОБАЛЬНЫХ СТИЛЕЙ ТОЛЬКО ДЛЯ ЛЕГЕНДЫ === */
         #legend .tablelegend {
             width: 100%;
-            border-collapse: separate !important; /* 🔑 Сохраняет border-radius скобок */
+            border-collapse: separate !important;
             border-spacing: 0 !important;
             table-layout: fixed;
             margin-bottom: 0.5em;
@@ -153,7 +153,7 @@
         #legend .tdlegend-icon { padding: 4px 0.2em 4px 0; text-align: left; vertical-align: middle; }
         #legend .tdlegend-name { padding: 4px 0; vertical-align: middle; white-space: nowrap; }
         #legend .tdlegend-desc {
-            padding: 4px 0 4px 0.5em; /* 🔑 Единый левый отступ для ВСЕХ ячеек */
+            padding: 4px 0 4px 1em;
             vertical-align: middle;
             position: relative;
         }
@@ -162,7 +162,7 @@
         #legend .legend {
             display: inline;
             font-family: Arial, Helvetica, sans-serif;
-            padding-left: 0 !important; /* 🔑 Перебиваем style.css */
+            padding-left: 0 !important;
             margin: 0;
         }
         #legend .legend::before {
@@ -176,17 +176,29 @@
             top: -1px;
         }
         
-        /* === СКОБКИ: ТОЛЬКО ЛЕВАЯ ЛИНИЯ === */
-        #legend .tdlegend-desc.bracket {
-            border-top: none !important;
-            border-bottom: none !important;
-            border-left: 2px solid #895E8A;
-            padding-left: 1em !important;
-            vertical-align: middle;
-            box-sizing: border-box;
-        }
-        #legend .tdlegend-desc.bracket.first { border-top-right-radius: 6px; }
-        #legend .tdlegend-desc.bracket.last { border-bottom-right-radius: 6px; }
+/* === СКОБКИ: ЗАВИТКИ ВЛЕВО, ПОЛНОСТЬЮ ВИДИМЫ === */
+#legend .tdlegend-desc.bracket {
+    position: relative;
+    padding-left: 1em !important;
+}
+
+#legend .tdlegend-desc.bracket::before {
+    content: "";
+    position: absolute;
+    left: 0.4em;
+    top: -1px;
+    bottom: -1px;
+    width: 8px;
+    height: calc(100% + 2px);
+    border-right: 2px solid #895E8A;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-left: none;
+    pointer-events: none;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
         
         /* === ДОРОГИ === */
         #legend .roads-legend .tdlegend-icon { text-align: center; width: 60px; padding: 4px 0; vertical-align: middle; }
@@ -259,21 +271,21 @@
                 <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true"><line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5"/></svg>
             </td>
             <td class="tdlegend-name"></td>
-            <td class="tdlegend-desc"><span class="legend">certain road by <a href="https://itiner-e.org/" target="_blank">itiner-e.org</a> </span></td>
+            <td class="tdlegend-desc"><span class="legend">certain roads by <a href="https://itiner-e.org/" target="_blank">itiner-e.org</a> </span></td>
         </tr>
         <tr class="trlegend">
             <td class="tdlegend-icon">
                 <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true"><line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" stroke-dasharray="6,4"/></svg>
             </td>
             <td class="tdlegend-name"></td>
-            <td class="tdlegend-desc"><span class="legend">conjectured road</span></td>
+            <td class="tdlegend-desc"><span class="legend">conjectured roads</span></td>
         </tr>
         <tr class="trlegend">
             <td class="tdlegend-icon">
                 <svg width="60" height="4" viewBox="0 0 60 4" aria-hidden="true"><line x1="0" y1="2" x2="60" y2="2" stroke="red" stroke-width="1.5" stroke-dasharray="1,3"/></svg>
             </td>
             <td class="tdlegend-name"></td>
-            <td class="tdlegend-desc"><span class="legend">hypothetical road</span></td>
+            <td class="tdlegend-desc"><span class="legend">hypothetical roads</span></td>
         </tr>
     </table>
     </div>
