@@ -811,7 +811,7 @@ function showCityDetails(feature) {
 }
 
 // === 10. ОБРАБОТЧИКИ СОБЫТИЙ ===
-const select = new Select();
+const select = new Select({ style: null });
 map.addInteraction(select);
 
 function handleSearchSelect(feature) {
