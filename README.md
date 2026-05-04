@@ -61,6 +61,6 @@ This project is an ongoing effort. The following limitations and areas for futur
 
 - [X] Road Network Geometry: The road layer contains geometric inaccuracies and stylistic inconsistencies inherited from legacy data sources. Future work will focus on correcting these artifacts.
 
-***Version 2.0. © 2023–2022 Diasito.***
+***Version 2.0. © 2023–2026 Diasito.***
 
 Code, data, and cartographic materials are licensed under the 2-Clause BSD License.
