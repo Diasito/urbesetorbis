@@ -677,6 +677,7 @@ function showCityDetails(feature) {
   const decLon = lonlat[0].toFixed(6),
     decLat = lonlat[1].toFixed(6);
   const dms = toStringHDMS(lonlat).replace(/° /g, "°");
+  window._cityMerc = feature.getGeometry().getFirstCoordinate();
   if (els.coords) els.coords.textContent = `${decLat}, ${decLon}`;
   if (els.coords2) els.coords2.textContent = dms;
 
@@ -823,6 +824,7 @@ function handleSearchSelect(feature) {
     duration: 2000,
     easing: easeOut,
   });
+  window._fromSearch = true;
   showCityDetails(feature);
   searchInput.value = formatTitleForDisplay(safeGet(feature, "title"));
   resultsContainer.style.display = "none";
@@ -846,6 +848,14 @@ map.on("click", (evt) => {
     }
     if (minimapSource) minimapSource.clear();
     select.getFeatures().clear();
+    // Mobile: close Home if open on empty map click
+    if (window.innerWidth <= 767) {
+      const homeEl = document.getElementById("home");
+      if (homeEl && homeEl.style.display === "block") {
+        const btn = document.getElementById("defaultOpen");
+        openPage("home", btn, "#895E8A", {isTrusted: true});
+      }
+    }
   }
 });
 
@@ -888,7 +898,15 @@ window.addEventListener("load", () => {
     if (text) text.textContent = "Ready!";
     setTimeout(() => {
       screen.style.opacity = "0";
-      setTimeout(() => (screen.style.display = "none"), 500);
+      setTimeout(() => {
+        screen.style.display = "none";
+        // Mobile: auto-open Home after loading
+        if (window.innerWidth <= 767) {
+          window._forceMobileHome = true;
+          const btn = document.getElementById("defaultOpen");
+          if (btn) btn.click();
+        }
+      }, 500);
     }, 800);
   };
 
