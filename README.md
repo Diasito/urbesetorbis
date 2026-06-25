@@ -2,65 +2,87 @@
 
 ## The Roman Empire under Emperor Hadrian
 
-### A digital catalog of Roman settlements with cross-references
+### A digital catalog of 7,891 Roman settlements with cross-references to 12+ scholarly databases
 
-This map depicts the Roman Empire in the year 883 ab Urbe condita (AD 130). There are 7,891 settlements represented here both within the borders of the empire and beyond.
-
-<https://urbesetorbis.com/>
+[![Site](https://img.shields.io/badge/urbesetorbis.com-895E8A?style=for-the-badge&logo=google-chrome)](https://urbesetorbis.com/)
+[![OpenLayers v8](https://img.shields.io/badge/OpenLayers-8.x-1F6B75?style=flat&logo=openstreetmap)](https://openlayers.org/)
+[![License](https://img.shields.io/badge/license-BSD--2--Clause-blue?style=flat)](LICENSE)
+[![Settlements](https://img.shields.io/badge/settlements-7,891-C9904F?style=flat)](https://urbesetorbis.com/)
+[![Data sources](https://img.shields.io/badge/databases-12+linked-6287A1?style=flat)](https://urbesetorbis.com/)
 
 ![Urbes et Orbis screen](./public/misc/urbesetorbisscreen2.jpg)
 
-The project is built with OpenLayers v8 and utilizes multiple GeoJSON layers. The base map, including coastlines and provincial boundaries, is derived primarily from [the Ancient World Mapping Center](https://awmc.unc.edu/). Numerous geometric errors in the original data were corrected, and several provincial borders were adjusted to align with relevant geographic features. Every settlement is linked to [the Pleiades gazetteer](https://pleiades.stoa.org/) and, with few exceptions, to both [the Barrington Atlas](https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html) and [the Digital Atlas of the Roman Empire](http://imperium.ahlfeldt.se/).
+## About
 
-This project has two primary objectives. First, to present an interactive map of the Roman Empire as it existed at the end of AD 130—coinciding with the foundation of Antinoopolis—using modern web technologies. Second, to create a unified reference point that connects disparate scholarly databases of ancient Roman settlements by aggregating their identifiers and cross-references in a single, accessible location. This facilitates interdisciplinary research and provides direct pathways for further exploration. The following table details the key resources linked within the application:
+**Urbes et Orbis** is an interactive map of the Roman Empire as it stood in AD 130 (year 883 ab Urbe condita) — the year of Antinoopolis's foundation. Built with OpenLayers v8, it visualises **7,891 settlements** across the Empire and beyond, each cross-referenced with the major scholarly databases of classical geography.
 
-**Ancient World Mapping Center (UNC-Chapel Hill)**  
-<https://awmc.unc.edu/>
+The project serves two purposes:
 
-**Digital Atlas of Roman and Medieval Civilizations (Harvard)**  
-<https://darmc.harvard.edu/>
+- A **research gateway** that aggregates identifiers from Pleiades, the Barrington Atlas, the Digital Atlas of the Roman Empire, and 9+ other sources in a single interface.
+- A **digital cartography showcase** demonstrating how modern web GIS can present ancient geography with speed and interactivity.
 
-**Digital Atlas of the Roman Empire (University of Gothenburg)**  
-<http://imperium.ahlfeldt.se/>
+> This is a non-commercial, personal project. Every effort has been made to ensure accuracy, but it does not claim to be a scholarly publication.
 
-**Orbis (Stanford)**  
-<https://orbis.stanford.edu/>
+## Features
 
-**Pleiades**  
-<https://pleiades.stoa.org/>
+- **Interactive map** — pan, zoom, and explore the Roman world at its greatest extent under Hadrian.
+- **Smart search** — find any of 7,891 settlements by name with fuzzy matching and instant navigation.
+- **Rich place details** — each settlement shows: ancient/modern names, Roman province, chronological range, coordinates (decimal & DMS), and descriptions from Pleiades.
+- **Cross-reference hub** — every settlement is linked to:
+  - Pleiades · Barrington Atlas · Digital Atlas of the Roman Empire
+  - ToposText · Trismegistos · Vici.org · Wikidata · Wikipedia
+  - Harvard's DARMC · Stanford's ORBIS · Oxford's Hanson database
+  - Princeton Encyclopedia of Classical Sites · Tabula Peutingeriana
+- **Permalinks** — each settlement gets a stable URL (`#id130-slug`) for sharing and reference.
+- **Satellite minimap** — a Google Satellite inset shows the modern terrain for any selected location.
+- **Data downloads** — the full settlement dataset (CSV), ocean basemap (GeoJSON), and provincial boundaries (GeoJSON) are available for offline use.
+- **Road network** — overlaid Roman roads classified by certainty (certain / conjectured / hypothetical) from the Itiner-e project.
 
-**The Princeton Encyclopedia of Classical Sites**  
-<https://www.perseus.tufts.edu/hopper/>
+## Data Sources
 
-**Tabula Peutingeriana (Cambridge)**  
-<https://www.cambridge.org/us/talbert/talbertdatabase/prm.html>
+| Source | Content | Notes |
+| --- | --- | --- |
+| [Ancient World Mapping Center (UNC)](https://awmc.unc.edu/) | Coastlines, provincial boundaries, inland water | BSD-2 |
+| [Pleiades](https://pleiades.stoa.org/) | Settlement gazetteer & descriptions | CC-BY 3.0 |
+| [Digital Atlas of the Roman Empire](http://imperium.ahlfeldt.se/) | Settlement locations | consult original |
+| [Barrington Atlas](https://web.archive.org/web/20100530180105/http://www.unc.edu/awmc/batlas.html) | Map directory references | consult original |
+| [Hanson (Oxford) Cities Database](http://oxrep.classics.ox.ac.uk/databases/cities/) | Urban rank classification | academic attribution required |
+| [Itiner-e](https://itiner-e.org/) | Roman road network | CC-BY 4.0 |
+| [ToposText](https://topostext.org/) | Place references | consult original |
+| [Trismegistos](https://www.trismegistos.org/geo/) | Place references | consult original |
+| [Vici.org](https://vici.org/) | Place references | consult original |
+| [DARMC (Harvard)](https://darmc.harvard.edu/) | Settlement & period references | consult original |
+| [ORBIS (Stanford)](https://orbis.stanford.edu/) | Transport network references | consult original |
+| Map tiles | Land & Ocean base by [MapTiler](https://www.maptiler.com/copyright/), hillshade by Esri | see providers for terms |
 
-**ToposText**  
-<https://topostext.org/the-places>
+## Known Limitations
 
-**Trismegistos**  
-<https://www.trismegistos.org/geo/>
+- **Mobile responsiveness** — the sidebar and map controls are not yet fully optimised for small screens.
+- **Road geometry** — the road layer contains some geometric inaccuracies inherited from source data; a correction pass is planned.
+- **Base map tiles** — the current tile set is from an older generation; a migration to a modern source is in progress.
 
-**Urban Geography of the Roman World (Hanson 2016, Oxford)**  
-<https://ora.ox.ac.uk/objects/uuid:f7f02498-4ae1-4ff0-81f6-aad909f041b1>
+## Tech Stack
 
-**Vici.org**  
-<https://vici.org>
+| Layer | Technology |
+| --- | --- |
+| Map engine | [OpenLayers](https://openlayers.org/) v8 |
+| Build tool | [Vite](https://vitejs.dev/) |
+| Data format | GeoJSON |
+| Clipboard | [ClipboardJS](https://clipboardjs.com/) |
+| Styling | Vanilla CSS + Bootstrap 5.3 |
 
-***If any copyright has been inadvertently infringed or attribution improperly given, please accept my apologies for the oversight and contact me to rectify the matter.***
+## License
 
-This is a non-commercial project developed as a personal endeavor. While it does not claim to be a scholarly work, every effort has been made to ensure accuracy. I welcome constructive criticism and suggestions regarding both the content and the technical implementation. Feedback may be sent to <admin@urbesetorbis.com>.
+The original code, cartographic layers, and compiled datasets in this repository are released under the **2-Clause BSD License**. See [LICENSE](LICENSE) for details.
 
-### Known Issues & Limitations
+**External data sources retain their own licenses.** See the [Data Sources](#data-sources) table above and the map's attribution control for detailed attribution. If any copyright has been inadvertently infringed, please contact me to rectify the matter.
 
-This project is an ongoing effort. The following limitations and areas for future improvement are currently known:
+## Contact
 
-- [ ] Mobile Responsiveness: The user interface is not yet fully optimized for small screens and mobile devices. The sidebar and map controls may not provide an ideal experience on smartphones.
+- **Site:** [urbesetorbis.com](https://urbesetorbis.com/)
+- **Email:** <admin@urbesetorbis.com>
+- **GitHub:** [Diasito/urbesetorbis](https://github.com/Diasito/urbesetorbis)
 
-- [X] Cartographic Base Layer: The current map tile set is inherited from older projects. A planned update aims to migrate to a more modern and accurate source.
+If you find this project useful for research, teaching, or inspiration — please consider starring the repository. Contributions, corrections, and suggestions are warmly welcome.
 
-- [X] Road Network Geometry: The road layer contains geometric inaccuracies and stylistic inconsistencies inherited from legacy data sources. Future work will focus on correcting these artifacts.
-
-***Version 2.0. © 2023–2026 Diasito.***
-
-Code, data, and cartographic materials are licensed under the 2-Clause BSD License.
+**Version 2.0** · © 2023–2026 Diasito
