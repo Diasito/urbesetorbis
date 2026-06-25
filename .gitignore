@@ -7,10 +7,10 @@ test-build/
 
 # QGIS-слои
 qgis_layers/
+*.qmd
 
 # Десятки тысяч тайлов базовой карты
 public/data/base7/
-public/downloads/
 
 # Логи
 *.log
@@ -20,6 +20,8 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 Instruction.md
+AGENTS.md
+opencode.json
 
 # Временные файлы
 *.tmp
