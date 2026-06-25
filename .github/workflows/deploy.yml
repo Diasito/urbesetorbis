@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - .github/workflows/deploy.yml
       - index.html
       - main.js
       - style.css
@@ -37,7 +38,8 @@ jobs:
       - name: Upload public static files
         run: |
           for f in public/manifest.webmanifest public/sitemap.xml public/robots.txt public/license.txt; do
-            curl --silent --show-error \
+            curl --silent --show-error --fail \
+              --ssl-reqd \
               --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" \
               --ftp-create-dirs \
               -T "$f" \
