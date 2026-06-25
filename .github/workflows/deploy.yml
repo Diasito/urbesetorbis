@@ -37,7 +37,7 @@ jobs:
 
       - name: Upload public static files
         run: |
-          for f in public/manifest.webmanifest public/sitemap.xml public/robots.txt public/license.txt; do
+          for f in public/manifest.webmanifest public/sitemap.xml public/robots.txt public/license.txt public/yandex_289c47e51ff153d2.html; do
             curl --silent --show-error --fail \
               --ssl-reqd \
               --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" \
