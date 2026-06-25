@@ -33,3 +33,13 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: dist/
           server-dir: ${{ secrets.FTP_TARGET_DIR }}/
+
+      - name: Upload public static files
+        run: |
+          for f in public/manifest.webmanifest public/sitemap.xml public/robots.txt public/license.txt; do
+            curl --silent --show-error \
+              --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" \
+              --ftp-create-dirs \
+              -T "$f" \
+              "ftp://${{ secrets.FTP_HOST }}/${{ secrets.FTP_TARGET_DIR }}/$(basename $f)"
+          done

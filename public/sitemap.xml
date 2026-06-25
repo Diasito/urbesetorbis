@@ -2,26 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://urbesetorbis.com/</loc>
-    <lastmod>2023-10-17T01:02:43+03:00</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <priority>1.0</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
     <loc>https://urbesetorbis.com/downloads/301023_AD130.csv</loc>
-    <lastmod>2023-10-16T00:23:40+03:00</lastmod>
+    <lastmod>2026-05-01</lastmod>
     <priority>0.6</priority>
-    <changefreq>daily</changefreq>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://urbesetorbis.com/downloads/oceanbase.geojson</loc>
-    <lastmod>2023-10-16T00:23:43+03:00</lastmod>
+    <lastmod>2026-05-01</lastmod>
     <priority>0.6</priority>
-    <changefreq>daily</changefreq>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://urbesetorbis.com/downloads/empire.geojson</loc>
-    <lastmod>2023-10-16T00:23:41+03:00</lastmod>
+    <lastmod>2026-05-01</lastmod>
     <priority>0.6</priority>
-    <changefreq>daily</changefreq>
+    <changefreq>monthly</changefreq>
   </url>
 </urlset>
