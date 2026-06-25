@@ -1,2 +1,25 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# GeoJSON — текстовый формат, diff как JSON
+*.geojson text diff=json
+
+# CSV
+*.csv text
+
+# Web-форматы
+*.js text
+*.css text
+*.html text
+*.json text
+*.svg text
+*.xml text
+
+# Шрифты — бинарные
+*.woff2 binary
+
+# Изображения — бинарные
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary

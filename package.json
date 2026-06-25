@@ -1,6 +1,24 @@
 {
   "name": "urbesetorbis",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "Interactive map of the Roman Empire under Hadrian (AD 130) — 7,891 settlements cross-referenced with 12+ scholarly databases",
+  "keywords": [
+    "roman-empire",
+    "hadrian",
+    "interactive-map",
+    "digital-humanities",
+    "ancient-geography",
+    "openlayers",
+    "historical-cartography",
+    "pleiades",
+    "barrington-atlas"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Diasito/urbesetorbis.git"
+  },
+  "author": "Diasito",
+  "license": "BSD-2-Clause",
   "type": "module",
   "scripts": {
     "start": "vite",
