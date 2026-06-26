@@ -35,3 +35,6 @@ opencode.json
 
 # Песочница
 sandbox/
+
+# Скрипты и инструменты
+tools/
