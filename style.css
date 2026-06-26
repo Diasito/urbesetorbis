@@ -452,8 +452,13 @@ a:hover {
     box-sizing: border-box;
   }
 
-  #legend .tdlegend-desc.bracket {
-    padding-left: 1.3em !important;
+  #legend col.icon { width: 3%; }
+  #legend col.name { width: 24%; }
+  #legend col.bracket { width: 1%; }
+  #legend col.desc { width: 72%; }
+
+  #legend .tdlegend-name {
+    padding-right: 1.3em;
   }
 
 }
@@ -560,6 +565,10 @@ a:hover {
     font-size: 90%;
   }
 
+  #hopa {
+    margin-top: -2em;
+  }
+
   .tabhome h1 {
     font-size: 1.6rem;
     margin-bottom: 0.2rem;
@@ -612,16 +621,14 @@ a:hover {
 
   /* Legend: wider name column, smaller fonts */
   #legend col.icon { width: 4%; }
-  #legend col.name { width: 22%; }
-  #legend col.desc { width: 74%; }
+  #legend col.name { width: 29%; }
+  #legend col.bracket { width: 1%; }
+  #legend col.desc { width: 66%; }
 
   #legend .tdlegend-name {
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  #legend .tdlegend-desc.bracket {
-    padding-left: 1.3em !important;
+    padding-right: 0.5em;
   }
 
   #legend .rank1 { font-size: 11px; }

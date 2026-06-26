@@ -138,13 +138,13 @@
     }
 
     #legend .tdlegend-icon {
-      padding: 4px 0.2em 4px 0;
+      padding: 4px 0;
       text-align: left;
       vertical-align: middle;
     }
 
     #legend .tdlegend-name {
-      padding: 4px 0;
+      padding: 4px 1.3em 4px 0.4em;
       vertical-align: middle;
       white-space: nowrap;
     }
@@ -152,7 +152,34 @@
     #legend .tdlegend-desc {
       padding: 4px 0 4px 1em;
       vertical-align: middle;
+    }
+
+    /* === СКОБКИ: ВЫДЕЛЕННЫЙ СТОЛБЕЦ === */
+    #legend .tdlegend-bracket {
+      width: 8px;
+      min-width: 8px;
+      padding: 0;
+    }
+
+    #legend .tdlegend-bracket.brace {
       position: relative;
+    }
+
+    #legend .tdlegend-bracket.brace::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -1px;
+      bottom: -1px;
+      width: 8px;
+      height: calc(100% + 2px);
+      border-right: 2px solid #895e8a;
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+      border-left: none;
+      pointer-events: none;
+      z-index: 10;
+      box-sizing: border-box;
     }
 
     /* === ТИРЕ: ИДЕАЛЬНАЯ ВЕРТИКАЛЬ === */
@@ -172,29 +199,6 @@
       vertical-align: middle;
       position: relative;
       top: -1px;
-    }
-
-    /* === СКОБКИ: ЗАВИТКИ ВЛЕВО, ПОЛНОСТЬЮ ВИДИМЫ === */
-    #legend .tdlegend-desc.bracket {
-      position: relative;
-      padding-left: 1em !important;
-    }
-
-    #legend .tdlegend-desc.bracket::before {
-      content: "";
-      position: absolute;
-      left: 0.4em;
-      top: -1px;
-      bottom: -1px;
-      width: 8px;
-      height: calc(100% + 2px);
-      border-right: 2px solid #895e8a;
-      border-top-right-radius: 7px;
-      border-bottom-right-radius: 7px;
-      border-left: none;
-      pointer-events: none;
-      z-index: 10;
-      box-sizing: border-box;
     }
 
     /* === ДОРОГИ === */
@@ -323,6 +327,7 @@
           <colgroup>
             <col class="icon" />
             <col class="name" />
+            <col class="bracket" />
             <col class="desc" />
           </colgroup>
           <tr class="trlegend">
@@ -330,6 +335,7 @@
               <img src="/icons/rank1.png" width="11" height="11" alt="rank1" />
             </td>
             <td class="tdlegend-name"><span class="rank1">ROMA</span></td>
+            <td class="tdlegend-bracket"></td>
             <td class="tdlegend-desc">
               <span class="legend">Rome and the four principal provincial capitals</span>
             </td>
@@ -339,7 +345,8 @@
               <img src="/icons/rank2.png" width="10" height="10" alt="rank2" />
             </td>
             <td class="tdlegend-name"><span class="rank2">Corduba</span></td>
-            <td class="tdlegend-desc bracket first" rowspan="2">
+            <td class="tdlegend-bracket brace" rowspan="2"></td>
+            <td class="tdlegend-desc" rowspan="2">
               <span class="legend">other provincial and client kingdom capitals</span>
             </td>
           </tr>
@@ -358,6 +365,7 @@
           <colgroup>
             <col class="icon" />
             <col class="name" />
+            <col class="bracket" />
             <col class="desc" />
           </colgroup>
           <tr class="trlegend">
@@ -367,7 +375,8 @@
             <td class="tdlegend-name">
               <span class="rank3">Byzantium</span>
             </td>
-            <td class="tdlegend-desc bracket first" rowspan="4">
+            <td class="tdlegend-bracket brace" rowspan="4"></td>
+            <td class="tdlegend-desc" rowspan="4">
               <span class="legend">cities categorized by
                 <a href="http://oxrep.classics.ox.ac.uk/databases/cities/" target="_blank">Hanson's</a>
                 urban ranks: 1, 2, 3, 4-5</span>
@@ -400,6 +409,7 @@
           <colgroup>
             <col class="icon" />
             <col class="name" />
+            <col class="bracket" />
             <col class="desc" />
           </colgroup>
           <tr class="trlegend">
@@ -407,6 +417,7 @@
               <img src="/icons/rank8.png" width="6" height="6" alt="rank8" />
             </td>
             <td class="tdlegend-name"><span class="rank8">Pityous</span></td>
+            <td class="tdlegend-bracket"></td>
             <td class="tdlegend-desc">
               <span class="legend">minor settlements and villages</span>
             </td>
@@ -416,8 +427,9 @@
               <img src="/icons/rank9.png" width="5" height="5" alt="rank9" />
             </td>
             <td class="tdlegend-name">
-              <span class="rank9">Wheathampstead</span>
+              <span class="rank9">Aversa</span>
             </td>
+            <td class="tdlegend-bracket"></td>
             <td class="tdlegend-desc">
               <span class="legend">sites whose ancient names remain unidentified.</span>
             </td>
@@ -429,6 +441,7 @@
           <colgroup>
             <col class="icon" />
             <col class="name" />
+            <col class="bracket" />
             <col class="desc" />
           </colgroup>
           <tr class="trlegend">
@@ -438,6 +451,7 @@
               </svg>
             </td>
             <td class="tdlegend-name"></td>
+            <td class="tdlegend-bracket"></td>
             <td class="tdlegend-desc">
               <span class="legend">certain roads by
                 <a href="https://itiner-e.org/" target="_blank">itiner-e.org</a>
@@ -451,6 +465,7 @@
               </svg>
             </td>
             <td class="tdlegend-name"></td>
+            <td class="tdlegend-bracket"></td>
             <td class="tdlegend-desc">
               <span class="legend">conjectured roads</span>
             </td>
@@ -462,6 +477,7 @@
               </svg>
             </td>
             <td class="tdlegend-name"></td>
+            <td class="tdlegend-bracket"></td>
             <td class="tdlegend-desc">
               <span class="legend">hypothetical roads</span>
             </td>
