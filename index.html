@@ -744,8 +744,11 @@
       });
 
       function openPage(pageName, elmnt, color, evt) {
+        const mobileW = window.innerWidth <= 767;
+        const landscapeMobile = window.innerWidth > 767 && window.innerWidth <= 1024 && window.innerHeight <= 767;
+        const inMobileView = mobileW || landscapeMobile;
         // Mobile: same-tab toggle — collapse instead of re-opening (user click only)
-        if (window.innerWidth <= 767 && evt && evt.isTrusted === true) {
+        if (inMobileView && evt && evt.isTrusted === true) {
           const target = document.getElementById(pageName);
           if (target.style.display === 'block') {
             const sidebar = document.querySelector('.sidebar');
@@ -769,41 +772,36 @@
         }
 
     // Mobile Home: skip content unless forced on first load
-    if (!(window.innerWidth <= 767 && pageName === 'home' && !window._forceMobileHome)) {
+    if (!(inMobileView && pageName === 'home' && !window._forceMobileHome)) {
       document.getElementById(pageName).style.display = "block";
       elmnt.style.backgroundColor = color;
     }
 
     // Mobile: expand/collapse panel
-    if (window.innerWidth <= 767) {
+    if (inMobileView) {
       const sidebar = document.querySelector('.sidebar');
       const MAX_H = window.innerHeight * 0.9;
-      const TAB_BAR = 48;
+      const TAB_BAR = 48;       const isLandscape = window.innerWidth > 767 && window.innerWidth <= 1024 && window.innerHeight <= 767;
 
       if (pageName === 'places') {
         const titleEl = document.getElementById('title');
         if (titleEl && titleEl.textContent.trim().length > 0) {
-          // City selected — expand fully first, then measure cutoff
+          // City selected
           sidebar.classList.add('sidebar--expanded');
-          sidebar.style.setProperty('height', '70vh', 'important');
-          void sidebar.offsetHeight; // force reflow
-          const tables = document.querySelectorAll('#hopa table.tableplaces');
-          if (tables.length >= 2) {
-            const cutoff = tables[1].offsetTop;
-            sidebar.style.setProperty('height', Math.min(cutoff + 20, MAX_H) + 'px', 'important');
-            // Mobile: fly to city — center it in the visible map area
+          if (isLandscape) {
+            // Landscape: fly with horizontal offset
             if (window._cityMerc && window.map) {
               const size = window.map.getSize();
-              const sidebarH = parseFloat(sidebar.style.getPropertyValue('height'));
-              if (size && sidebarH > 0) {
+              const sidebarW = window.innerWidth * 0.4;
+              if (size && sidebarW > 0) {
                 const res = window.map.getView().getResolution();
                 if (window._fromSearch) {
                   window._fromSearch = false;
                   window.map.getView().cancelAnimations();
                   window.map.getView().animate({
                     center: [
-                      window._cityMerc[0],
-                      window._cityMerc[1] - (sidebarH / 2) * window.map.getView().getResolutionForZoom(10),
+                      window._cityMerc[0] + (sidebarW / 2) * window.map.getView().getResolutionForZoom(10),
+                      window._cityMerc[1],
                     ],
                     zoom: 10,
                     duration: 2000,
@@ -811,11 +809,48 @@
                 } else {
                   window.map.getView().animate({
                     center: [
-                      window._cityMerc[0],
-                      window._cityMerc[1] - (sidebarH / 2) * res,
+                      window._cityMerc[0] + (sidebarW / 2) * res,
+                      window._cityMerc[1],
                     ],
                     duration: 400,
                   });
+                }
+              }
+            }
+          } else {
+            // Portrait: expand fully first, then measure cutoff
+            sidebar.style.setProperty('height', '70vh', 'important');
+            void sidebar.offsetHeight; // force reflow
+            const tables = document.querySelectorAll('#hopa table.tableplaces');
+            if (tables.length >= 2) {
+              const cutoff = tables[1].offsetTop;
+              sidebar.style.setProperty('height', Math.min(cutoff + 20, MAX_H) + 'px', 'important');
+              // Mobile: fly to city — center it in the visible map area
+              if (window._cityMerc && window.map) {
+                const size = window.map.getSize();
+                const sidebarH = parseFloat(sidebar.style.getPropertyValue('height'));
+                if (size && sidebarH > 0) {
+                  const res = window.map.getView().getResolution();
+                  if (window._fromSearch) {
+                    window._fromSearch = false;
+                    window.map.getView().cancelAnimations();
+                    window.map.getView().animate({
+                      center: [
+                        window._cityMerc[0],
+                        window._cityMerc[1] - (sidebarH / 2) * window.map.getView().getResolutionForZoom(10),
+                      ],
+                      zoom: 10,
+                      duration: 2000,
+                    });
+                  } else {
+                    window.map.getView().animate({
+                      center: [
+                        window._cityMerc[0],
+                        window._cityMerc[1] - (sidebarH / 2) * res,
+                      ],
+                      duration: 400,
+                    });
+                  }
                 }
               }
             }
@@ -823,37 +858,50 @@
         } else {
           // Places without city — fit to "Click on any city..." message
           sidebar.classList.add('sidebar--expanded');
-          sidebar.style.setProperty('height', '70vh', 'important');
-          void sidebar.offsetHeight;
-          const pusto = document.getElementById('pusto');
-          if (pusto) {
-            const cutoff = pusto.offsetTop + pusto.offsetHeight;
-            sidebar.style.setProperty('height', Math.min(cutoff + TAB_BAR + 20, MAX_H) + 'px', 'important');
+          if (!isLandscape) {
+            sidebar.style.setProperty('height', '70vh', 'important');
+            void sidebar.offsetHeight;
+            const pusto = document.getElementById('pusto');
+            if (pusto) {
+              const cutoff = pusto.offsetTop + pusto.offsetHeight;
+              sidebar.style.setProperty('height', Math.min(cutoff + TAB_BAR + 20, MAX_H) + 'px', 'important');
+            }
           }
         }
       } else if (pageName === 'home') {
         if (window._forceMobileHome) {
           window._forceMobileHome = false;
           sidebar.classList.add('sidebar--expanded');
-          sidebar.style.setProperty('height', 'auto', 'important');
-          void sidebar.offsetHeight;
-          const cutoff = sidebar.scrollHeight;
-          sidebar.style.setProperty('height', Math.min(cutoff, MAX_H) + 'px', 'important');
+          if (!isLandscape) {
+            sidebar.style.setProperty('height', 'auto', 'important');
+            void sidebar.offsetHeight;
+            const cutoff = sidebar.scrollHeight;
+            sidebar.style.setProperty('height', Math.min(cutoff, MAX_H) + 'px', 'important');
+          }
         } else {
-          // Collapse without animation
+          // Collapse without animation, fly map home
           sidebar.style.transition = 'none';
           sidebar.classList.remove('sidebar--expanded');
           sidebar.style.removeProperty('height');
           void sidebar.offsetHeight;
           sidebar.style.transition = '';
+          if (window.map && window.homeCenter) {
+            window.map.getView().animate({
+              center: window.homeCenter,
+              zoom: window.homeZoom || 6,
+              duration: 1000,
+            });
+          }
         }
       } else {
-        // Legend, Data, About — measure natural height
+        // Legend, Data, About
         sidebar.classList.add('sidebar--expanded');
-        sidebar.style.setProperty('height', 'auto', 'important');
-        void sidebar.offsetHeight;
-        const cutoff = sidebar.scrollHeight;
-        sidebar.style.setProperty('height', Math.min(cutoff, MAX_H) + 'px', 'important');
+        if (!isLandscape) {
+          sidebar.style.setProperty('height', 'auto', 'important');
+          void sidebar.offsetHeight;
+          const cutoff = sidebar.scrollHeight;
+          sidebar.style.setProperty('height', Math.min(cutoff, MAX_H) + 'px', 'important');
+        }
       }
     }
 
@@ -867,10 +915,10 @@
             );
           }
           // 2. Плавный полёт карты к исходному состоянию (только десктоп)
-          if (window.innerWidth > 767 && window.map && window.homeCenter) {
+          if (!inMobileView && window.map && window.homeCenter) {
             window.map.getView().animate({
               center: window.homeCenter,
-              zoom: 6,
+              zoom: window.homeZoom || 6,
               duration: 1000, // длительность полёта в мс (можно менять)
             });
           }
@@ -881,7 +929,8 @@
 
       // Mobile: collapse sidebar when tapping empty map area
       document.getElementById('map').addEventListener('click', function() {
-        if (window.innerWidth > 767) return;
+        const notMobile = window.innerWidth > 767 && !(window.innerWidth <= 1024 && window.innerHeight <= 767);
+        if (notMobile) return;
         setTimeout(function() {
           if (document.getElementById('hopa').style.visibility === 'hidden') {
             const sb = document.querySelector('.sidebar');

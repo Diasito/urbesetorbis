@@ -117,6 +117,8 @@ const els = {
 
 // === 4. СТИЛИ ГОРОДОВ (Базовые стили теперь не мутируются) ===
 function createCityStyle(config) {
+  const mobileScale = window.innerWidth <= 767 ? 4 / 3 : 1;
+  const fontSize = Math.round(config.fontSize * mobileScale);
   return new Style({
     image: new Circle({
       anchor: [0.5, 0.5],
@@ -131,7 +133,7 @@ function createCityStyle(config) {
       ...(config.declutter ? { declutterMode: "declutter" } : {}),
     }),
     text: new Text({
-      font: `${config.fontStyle || ""} ${config.fontWeight || ""} ${config.fontSize}px Roboto, "Noto Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif`.trim(),
+      font: `${config.fontStyle || ""} ${config.fontWeight || ""} ${fontSize}px Roboto, "Noto Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif`.trim(),
       textAlign: "center",
       offsetX: 0,
       offsetY: config.offsetY || 3,
@@ -232,7 +234,7 @@ const createCityStyleFn = (baseStyle, transformFn) => (feature) => {
 // === 5. СЛОИ ===
 const base = new TileLayer({
   preload: 1,
-  source: new XYZ({ urls: ["/data/base7/{z}/{x}/{y}.png"], tilePixelRatio: 1 }),
+  source: new XYZ({ urls: ["/data/base7/{z}/{x}/{y}.png"], tilePixelRatio: 1, maxZoom: 10 }),
   minZoom: 3,
   maxZoom: 10,
   opacity: 1,
@@ -421,11 +423,14 @@ cityLayers = [
 ];
 
 // === 6. ИНИЦИАЛИЗАЦИЯ КАРТЫ ===
-const sreda = fromLonLat([23, 38.5]);
+const isMobile = window.innerWidth <= 767 || (window.innerWidth <= 1024 && window.innerHeight <= 767);
+const landscapeM = isMobile && window.innerWidth > 767;
+const sreda = fromLonLat(landscapeM ? [21, 39] : isMobile ? [10, 41] : [23, 38.5]);
+const homeZoom = isMobile ? 5.5 : 6;
 const view = new View({
   projection: "EPSG:3857",
   center: sreda,
-  zoom: 6,
+  zoom: homeZoom,
   minZoom: 3.9999,
   maxZoom: 10,
   extent: [-1400000, 2600000, 6100000, 7600000],
@@ -463,6 +468,7 @@ const map = new Map({
 });
 window.map = map;
 window.homeCenter = sreda;
+window.homeZoom = homeZoom;
 map.addControl(new ZoomSlider());
 
 // === КОНТРОЛ АТРИБУЦИЙ (кнопка ⓘ в правом нижнем углу) ===
@@ -901,7 +907,7 @@ window.addEventListener("load", () => {
       setTimeout(() => {
         screen.style.display = "none";
         // Mobile: auto-open Home after loading
-        if (window.innerWidth <= 767) {
+        if (window.innerWidth <= 767 || (window.innerWidth <= 1024 && window.innerHeight <= 767)) {
           window._forceMobileHome = true;
           const btn = document.getElementById("defaultOpen");
           if (btn) btn.click();
