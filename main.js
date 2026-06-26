@@ -236,7 +236,7 @@ const base = new TileLayer({
   preload: 1,
   source: new XYZ({ urls: ["/data/base7/{z}/{x}/{y}.png"], tilePixelRatio: 1, maxZoom: 10 }),
   minZoom: 3,
-  maxZoom: 10,
+  maxZoom: 18,
   opacity: 1,
 });
 
@@ -434,7 +434,11 @@ const view = new View({
   minZoom: 3.9999,
   maxZoom: 10,
   extent: [-1400000, 2600000, 6100000, 7600000],
-  constrainResolution: isMobile,
+  constrainResolution: true,
+});
+view.on("change:resolution", function () {
+  const z = view.getZoom();
+  if (z > 10) view.setZoom(10);
 });
 
 const map = new Map({
