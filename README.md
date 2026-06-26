@@ -85,4 +85,4 @@ The original code, cartographic layers, and compiled datasets in this repository
 
 If you find this project useful for research, teaching, or inspiration — please consider starring the repository. Contributions, corrections, and suggestions are warmly welcome.
 
-**Version 2.0** · © 2023–2026 Diasito
+**Version 2.1** · © 2023–2026 Diasito

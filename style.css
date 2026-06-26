@@ -404,6 +404,10 @@ a:hover {
     font-size: 90%;
   }
 
+  #hopa {
+    margin-top: -1em;
+  }
+
   #minimap {
     height: 50vw;
     margin: 0 0.5em;

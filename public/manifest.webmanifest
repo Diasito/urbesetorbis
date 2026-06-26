@@ -3,7 +3,7 @@
  "name": "Urbes et Orbis",
  "short_name": "urbesetorbis",
  "description": "The Roman Empire under Emperor Hadrian",
- "version": "2.0.0",
+  "version": "2.1.0",
  "start_url": "./index.html?home=true",
  "icons": [
   {
