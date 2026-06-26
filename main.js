@@ -424,7 +424,7 @@ cityLayers = [
 
 // === 6. ИНИЦИАЛИЗАЦИЯ КАРТЫ ===
 const isMobile = window.innerWidth <= 767 || (window.innerWidth <= 1024 && window.innerHeight <= 767);
-const landscapeM = isMobile && window.innerWidth > 767;
+const landscapeM = isMobile && window.innerWidth > window.innerHeight;
 const sreda = fromLonLat(landscapeM ? [21, 39] : isMobile ? [10, 41] : [23, 38.5]);
 const homeZoom = isMobile ? 5.5 : 6;
 const view = new View({
@@ -434,6 +434,7 @@ const view = new View({
   minZoom: 3.9999,
   maxZoom: 10,
   extent: [-1400000, 2600000, 6100000, 7600000],
+  constrainResolution: isMobile,
 });
 
 const map = new Map({
@@ -473,9 +474,10 @@ map.addControl(new ZoomSlider());
 
 // === КОНТРОЛ АТРИБУЦИЙ (кнопка ⓘ в правом нижнем углу) ===
 const attributionControl = new Attribution({
-  collapsible: true, // Скрывается в кнопку "i" по умолчанию
-  collapsed: true, // Начальное состояние — свёрнуто
-  tipLabel: "Sources & Licenses", // Подсказка при наведении
+  collapsible: true,
+  collapsed: true,
+  label: "©",
+  tipLabel: "Sources & Licenses",
   attributions: [
     '<a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener">MapTiler</a>: Land and Ocean Bases,',
     '<a href="https://developers.arcgis.com/documentation/esri-and-data-attribution/" target="_blank" rel="noopener">Powered by Esri</a>: Hillshade,',
@@ -775,6 +777,13 @@ function showCityDetails(feature) {
 
     minimap = new Map({
       target: "minimap",
+      controls: defaultControls({ attribution: false }).extend([
+        new Attribution({
+          collapsible: true,
+          collapsed: true,
+          label: "©",
+        }),
+      ]),
       layers: [
         new TileLayer({
           source: new XYZ({

@@ -745,7 +745,7 @@
 
       function openPage(pageName, elmnt, color, evt) {
         const mobileW = window.innerWidth <= 767;
-        const landscapeMobile = window.innerWidth > 767 && window.innerWidth <= 1024 && window.innerHeight <= 767;
+        const landscapeMobile = window.innerWidth <= 1024 && window.innerHeight <= 767 && window.innerWidth > window.innerHeight;
         const inMobileView = mobileW || landscapeMobile;
         // Mobile: same-tab toggle — collapse instead of re-opening (user click only)
         if (inMobileView && evt && evt.isTrusted === true) {
@@ -781,7 +781,7 @@
     if (inMobileView) {
       const sidebar = document.querySelector('.sidebar');
       const MAX_H = window.innerHeight * 0.9;
-      const TAB_BAR = 48;       const isLandscape = window.innerWidth > 767 && window.innerWidth <= 1024 && window.innerHeight <= 767;
+      const TAB_BAR = 48;       const isLandscape = window.innerWidth <= 1024 && window.innerHeight <= 767 && window.innerWidth > window.innerHeight;
 
       if (pageName === 'places') {
         const titleEl = document.getElementById('title');
