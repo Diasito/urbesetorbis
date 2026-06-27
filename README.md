@@ -34,7 +34,7 @@ The project serves two purposes:
   - Harvard's DARMC · Stanford's ORBIS · Oxford's Hanson database
   - Princeton Encyclopedia of Classical Sites · Tabula Peutingeriana
 - **Permalinks** — each settlement gets a stable URL (`#id130-slug`) for sharing and reference.
-- **Satellite minimap** — a Google Satellite inset shows the modern terrain for any selected location.
+- **Satellite minimap** — an Esri World Imagery inset shows the modern terrain for any selected location.
 - **Data downloads** — the full settlement dataset (CSV), ocean basemap (GeoJSON), and provincial boundaries (GeoJSON) are available for offline use.
 - **Road network** — overlaid Roman roads classified by certainty (certain / conjectured / hypothetical) from the Itiner-e project.
 
@@ -59,7 +59,6 @@ The project serves two purposes:
 
 - **Mobile responsiveness** — the sidebar and map controls are not yet fully optimised for small screens.
 - **Road geometry** — the road layer contains some geometric inaccuracies inherited from source data; a correction pass is planned.
-- **Base map tiles** — the current tile set is from an older generation; a migration to a modern source is in progress.
 
 ## Tech Stack
 
