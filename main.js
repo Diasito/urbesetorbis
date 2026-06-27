@@ -791,8 +791,9 @@ function showCityDetails(feature) {
       layers: [
         new TileLayer({
           source: new XYZ({
-            attributions: "Tiles © Google",
-            url: "https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}",
+            attributions:
+              "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+            url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
           }),
         }),
         new VectorLayer({
