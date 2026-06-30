@@ -28,6 +28,7 @@ opencode.json
 # Временные файлы
 *.tmp
 *.temp
+*.bak
 
 # IDE файлы
 .vscode/
