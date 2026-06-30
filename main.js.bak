@@ -248,7 +248,7 @@ const styleRoadsBase = new Style({
     fill: new Fill({ color: "red" }),
     stroke: new Stroke({ color: "#fff", width: 0.1 }),
     placement: "line",
-    repeat: 700,
+    repeat: 1000,
     textBaseline: "bottom",
     maxAngle: Math.PI / 10,
     overflow: true,
